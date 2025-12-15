@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!hasError) {
       if (validIds.includes(enteredId) && enteredPass === storedPass) {
         alert("Login successful!");
-         window.location.href = "table.html";
+         window.location.href = "token-list.html";
         form.reset(); 
       } else {
         errorMsg.textContent = "Invalid credentials. Please try again.";
