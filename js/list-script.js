@@ -61,3 +61,12 @@ fetch("https://zcutilities.zeroco.de/api/get/5762d2cf11a92c04abc386acd98cae6a5b6
   .catch(error => {
     accordion.innerHTML = `<div class="alert alert-danger">Failed to load data: ${error}</div>`;
   });
+
+
+    document.getElementById('openModalBtn').addEventListener('click', function () {
+    const modal = new bootstrap.Modal(document.getElementById('createCounterModal'));
+    modal.show();
+  });
+
+
+  // https://zcutilities.zeroco.de/api/get/4e521b8fe37e5c7a77d1ffad992884b2d8dc70ddf4c6000aa1bd93433daf80df

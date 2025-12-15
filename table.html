@@ -167,6 +167,99 @@
                     <span>Scan Barcode</span>
                 </button>
             </div>
+               <div class="stats-bar row m-0 mb-3 align-items-center   text-white flex-wrap">
+
+
+                <!-- Patients -->
+                <div class="stat-box col-1 d-flex align-items-center gap-2">
+                    <i class="bi bi-people"></i>
+                    <div>
+                        <small>Patients</small><br>
+                        <strong>1205</strong>
+                    </div>
+                </div>
+
+                <!-- Completed -->
+                <div class="stat-box col-auto d-flex align-items-center gap-2">
+                    <i class="bi bi-check-circle"></i>
+                    <div>
+                        <small>Completed</small><br>
+                        <strong>1000</strong>
+                    </div>
+                </div>
+
+                <!-- In Progress -->
+                <div class="stat-box col-auto d-flex align-items-center gap-2">
+                    <i class="bi bi-hourglass-split"></i>
+                    <div>
+                        <small>In Progress</small><br>
+                        <strong>205</strong>
+                    </div>
+                </div>
+
+                <!-- Hospitals -->
+                <div class="stat-box col-auto d-flex align-items-center gap-2">
+                    <i class="bi bi-hourglass-split"></i>
+                    <div>
+                        <small>Hospitals</small><br>
+                        <strong>21</strong>
+                    </div>
+                </div>
+
+                <!-- Date Range Inputs -->
+                <div class="stat-box col-auto d-flex align-items-center gap-2">
+                    <i class="bi bi-calendar"></i>
+                    <div class="d-flex  flex-column">
+                        <div class="d-flex  ">
+                            <label class="date-label">From:</label>
+                            <input type="date" class="date-input">
+                        </div>
+
+                        <div class="d-flex ">
+                            <label class="date-label">To:</label>
+                            <input type="date" class="date-input">
+                        </div>
+                    </div>
+
+                    <i class="bi bi-check-circle check-icon ms-2"></i>
+                </div>
+
+                
+                <!-- Hospitals -->
+                <div class="stat-box col-auto d-flex align-items-center gap-2">
+                    <i class="bi bi-hourglass-split"></i>
+                    <div>
+                        <small>Kiosk</small><br>
+                        <strong>512</strong>
+                    </div>
+                </div>
+
+                
+                <!-- Hospitals -->
+                <div class="stat-box col-auto d-flex align-items-center gap-2">
+                    <i class="bi bi-hourglass-split"></i>
+                    <div>
+                        <small>Direct</small><br>
+                        <strong>721</strong>
+                    </div>
+                </div>
+
+                
+                <!-- Hospitals -->
+                <div class="stat-box col-auto d-flex align-items-center gap-2">
+                    <i class="bi bi-hourglass-split"></i>
+                    <div>
+                        <small>Counters</small><br>
+                        <strong>5</strong>
+                        <button class="btn btn-light btn-sm ms-2" id="openModalBtn"><i class="icon-edit"></i></button>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
 
 
             <div class="token-list">
@@ -206,6 +299,33 @@
 
     </section>
 
+
+    <div class="modal fade" id="createCounterModal" tabindex="-1" aria-labelledby="createCounterLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createCounterLabel">Create Counter</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Counter buttons -->
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          <button class="btn btn-outline-secondary position-relative">01
+            <span class="position-absolute top-0 end-0 translate-middle badge bg-danger">
+              <i class="bi bi-trash"></i>
+            </span>
+          </button>
+          <!-- Repeat for 02–05 -->
+        </div>
+        <!-- Add button -->
+        <button class="btn btn-outline-primary w-100 mb-3">+</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
