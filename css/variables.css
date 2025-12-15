@@ -1,0 +1,32 @@
+:root{
+    --main-color:#347a83;
+     --header-height: 62px;
+}
+
+header {
+    --header-bg-color: var(--main-color);
+    --header-height: 62px;
+    --header-padding: 0 20px;
+    --header-width: 100%;
+    --header-position: fixed;
+    --header-top: 0;
+    --header-z-index: 999;
+    --header-box-shadow: none;
+    --header-logo-width: auto;
+    --header-logo-height: 70px;
+    --toggle-memu-link-color: var(--white);
+    --toggle-memu-link-font-size: 15px;
+    --toggle-memu-link-hover-bgcolor: hsla(0, 0%, 100%, .05);
+    --notifications-dp-toggle-color: hsla(0, 0%, 100%, .8);
+    --notifications-dp-toggle-hover-color: var(--white);
+    --notifications-dp-toggle-hover-bgcolor: hsla(0, 0%, 100%, .12);
+    --profile-dp-border-leftcolor: rgba(34, 34, 48, .12);
+    --welcome-user-pic-height: 2.25rem;
+    --welcome-user-pic-width: 2.25rem;
+    --bs-box-shadow: 0 0 0 1px rgb(20 20 31 / 5%), 0 2px 7px 1px rgb(20 20 31 / 16%);
+    --profile-dp-menu-item-hover-color: var(--white);
+    --profile-dp-menu-item-hover-bgcolor: var(--lapis-lazuli);
+    --profile-dp-menu-icon-color: #a6abbd;
+    --profile-dp-menu-item-hover-icon-color: var(--white);
+    --welcome-user-text-clr: var(--white);
+}

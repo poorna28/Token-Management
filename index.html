@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="icon-fonts/styles.css">
+    <link rel="stylesheet" href="css/bootstrap-min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/bootstrap.bundle-min.js"></script>
+    <!-- <script src="js/jquery-min.js"></script> -->
+</head>
+
+<body>
+    <div class="login-block">
+        <div class="bg-overlay"></div>
+        <div class="login-container">
+            <div class="login-sub-container">
+                <img src="images/logo.png" class="logo">
+                <div class="title">
+                    <h2>WELCOME TO</h2>
+                    <h1>TOKEN MANAGEMENT SYSTEM</h1>
+                </div>
+                <div class="login-box">
+                    <h3>Login</h3>
+                    <form id="loginForm" action="#" method="post" novalidate>
+                        <input type="text" id="employeeId" name="employee" placeholder="Enter your Employee ID/email" autocomplete="employeeName" aria-required="true" required/>
+                        <div class="error"></div>
+                        <input type="password" id="password" placeholder="Password" name="password" autocomplete="emplyPassword"  aria-required="true" required />
+                        <div class="error"></div>
+                        <p class="error-msg" id="errorMsg"></p>
+                        <button type="submit" aria-label="Login">Login</button>
+                        <p class="error-msg" id="errorMsg"></p>
+                        <a class="help">Help?</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="js/script.js"></script>
+
+</html>
