@@ -1,72 +1,107 @@
-const accordion = document.getElementById("customerAccordion");
+$(document).ready(function () {
+  fetch("https://zcutilities.zeroco.de/api/get/8b1bcdf367db70389f62a7911af94ca6c41e88c4fbc608c5a65f789566be7a68")
+    .then(response => response.json())
+    .then(data => {
+      const customers = data.customers || [];
 
-fetch("https://zcutilities.zeroco.de/api/get/5762d2cf11a92c04abc386acd98cae6a5b69a03ead446117984ef683664bae20")
-  .then(response => response.json())
-  .then(data => {
-    const customers = data.customers || [];
+      const table = $('#tokenTable').DataTable({
+        data: customers,
+        columns: [
+          {
+            data: 'name',
+            render: (data, type, row) => {
+              const initials = data.split(" ").map(w => w[0].toUpperCase()).join("");
+              return `<div class="d-flex align-items-center gap-2">
+                        <strong>${initials}</strong>
+                        <div>
+                          <p class="m-0">${data}</p>
+                          <span class="phone-number">${row.phone}</span>
+                        </div>
+                      </div>`;
+            }
+          },
+          { data: 'location' },
+          { data: 'token' },
+          { data: 'issueTime' },
+          {
+            data: 'exitTime',
+            render: data => data || "Pending"
+          },
+          {
+            data: 'duration',
+            render: data => data || "--"
+          },
+          {
+            data: 'counter',
+            render: data => data || "--"
+          },
+          {
+            data: null,
+            orderable: false,
+            searchable: false,
+            render: (data, type, row) => {
+              return `
+                <div class="d-flex gap-2">
+                  <button class="btn btn-sm btn-info toggle-history" title="View History" data-token="${row.token}">
+                    <i class="bi bi-chevron-down"></i>
+                  </button>
+                  <button class="btn btn-sm btn-primary edit-btn" data-id="${row.token}">Edit</button>
+                </div>
+              `;
+            }
+          }
+        ],
+        responsive: true
+      });
 
-    customers.forEach((customer, index) => {
+      // Expand/collapse only on icon click
+      $('#tokenTable tbody').on('click', '.toggle-history', function () {
+        const row = table.row($(this).closest('tr'));
+        const data = row.data();
 
-      const collapseId = `collapse${index}`;
-      const headingId = `heading${index}`;
+        if (row.child.isShown()) {
+          row.child.hide();
+          $(this).find('i').removeClass('bi-chevron-up').addClass('bi-chevron-down');
+        } else {
+          const historyHtml = (data.history || []).map(h => `
+            <li class="history-block">
+              <span style="width: 80px;">${h.token}</span>
+              <span style="width: 200px;">${h.issueTime}</span>
+              <span style="width: 200px;" class="exit-time">${h.exitTime}</span>
+              <span style="width: 100px;">${h.duration}</span>
+              <span style="width: 100px;">Counter: ${h.counter}</span>
+            </li>
+            <hr>
+          `).join("");
 
-      // Safe class name (replace spaces with hyphens)
-      const statusClass = `status-${customer.status.replace(/\s+/g, "-")}`;
+          row.child(`<div><h6>History:</h6><ul>${historyHtml || "<em>No history available.</em>"}</ul></div>`).show();
+          $(this).find('i').removeClass('bi-chevron-down').addClass('bi-chevron-up');
+        }
+      });
 
-      const historyHtml = (customer.history || []).map(h => `
-        <li class="history-block">
-        <span style="width: 80px;">   ${h.token} </span>
-        <span style="width: 200px;">  ${h.issueTime} </span>
-        <span style="width: 200px;" class = "exit-time">  ${h.exitTime} </span>
-        <span style="width: 100px;">  ${h.duration} </span>
-        <span style="width: 100px;"> Counter: ${h.counter} </span>
-        </li>
-        <hr>
-      `).join("");
-
-      const item = document.createElement("div");
-      item.className = "accordion-item";
-
-      item.innerHTML = `
-        <h2 class="accordion-header" id="${headingId}">
-          <button class="accordion-button collapsed" type="button"
-            data-bs-toggle="collapse" data-bs-target="#${collapseId}"
-            aria-expanded="false" aria-controls="${collapseId}">
-
-           <div class=" d-flex align-items-center gap-3" style="width: 20%;">
-             <p class="m-0 name-cell">${customer.name.split(" ").map(w => w[0].toUpperCase()).join("")}</p>
-              <div> <p class="m-0">${customer.name}</p>  <span class="phone-number">${customer.phone}</span> </div>
-           </div>
-            <div style="width: 10%;">${customer.location}</div>
-            <div style="width: 5%;">${customer.token}</div>
-            <div style="width: 16%;">${customer.issueTime}</div>
-            <div class="exit-time" style="width: 16%;">${customer.exitTime || "Pending"}</div>
-            <div style="width: 10%;">${customer.duration || "--"}</div>
-            <div style="width: 10%;">${customer.counter || "--"}</div>
-            <div style="width: 13%;"><span class="status-badge ${statusClass}">${customer.status}</span></div>
-          </button>
-        </h2>
-
-        <div id="${collapseId}" class="accordion-collapse collapse"
-          aria-labelledby="${headingId}" data-bs-parent="#customerAccordion">
-          <div class="accordion-body">
-            ${historyHtml ? `<h6>History:</h6><ul>${historyHtml}</ul>` : "<em>No history available.</em>"}
-          </div>
-        </div>
-      `;
-
-      accordion.appendChild(item);
+      // Edit button logic
+      $('#tokenTable tbody').on('click', '.edit-btn', function () {
+        const tokenId = $(this).data('id');
+        const rowData = table.row($(this).closest('tr')).data();
+        console.log("Edit clicked for token:", tokenId, rowData);
+        // modal logic here
+      });
     });
-  })
-  .catch(error => {
-    accordion.innerHTML = `<div class="alert alert-danger">Failed to load data: ${error}</div>`;
-  });
+});
 
 
-    document.getElementById('openModalBtn').addEventListener('click', function () {
-    const modal = new bootstrap.Modal(document.getElementById('createCounterModal'));
-    modal.show();
-  });
+// Custom filter by issue date
+$.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+  const selectedDate = $('#filterDate').val();
+  if (!selectedDate) return true;
 
+  const issueTime = data[3]; // 4th column: Issue Time
+  const issueDate = issueTime.split("T")[0];
 
-  // https://zcutilities.zeroco.de/api/get/4e521b8fe37e5c7a77d1ffad992884b2d8dc70ddf4c6000aa1bd93433daf80df
+  return issueDate === selectedDate;
+});
+
+// Trigger filter on date change
+$('#filterDate').on('change', function () {
+  $('#tokenTable').DataTable().draw();
+});
