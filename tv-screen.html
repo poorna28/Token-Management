@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Apollo Pharmacy – TV Screen</title>
@@ -12,27 +13,30 @@
 <body>
 
 
-    <div class="tv-screen">
-  <h2>Apollo Pharmacy</h2>
-  <div id="status">Loading...</div>
+  <div class="tv-screen">
+    <div class="tv-content">
+      <img src="images/logo.png" alt="Apollo Pharmacy Logo" class="logo">
+      <div id="status" class="date-status">Loading...</div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Token</th>
-        <th>Patient</th>
-        <th>Status</th>
-        <th>Counter</th>
-      </tr>
-    </thead>
-    <tbody id="tableBody">
-      <tr>
-        <td colspan="4">Loading...</td>
-      </tr>
-    </tbody>
-  </table>
+      <table>
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Patient</th>
+            <th>Status</th>
+            <th>Counter</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr>
+            <td colspan="4">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  <!-- JS -->
-  <script src="js/tv-screen.js"></script>
+  </div>
+    <!-- JS -->
+    <script src="js/tv-screen.js"></script>
 </body>
+
 </html>

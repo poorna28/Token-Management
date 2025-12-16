@@ -8,6 +8,7 @@ function getPriorityClass(priority) {
   if (priority === 1) return "p1";
   if (priority === 2) return "p2";
   if (priority === 4) return "p4";
+  if (priority === 3) return "p3";
   return "";
 }
 
