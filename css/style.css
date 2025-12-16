@@ -13,7 +13,7 @@ body {
             rgba(0, 128, 96, 0.75),
             rgba(0, 140, 170, 0.75)); */
     background: linear-gradient(90deg, rgba(15, 162, 122, 1) 0%, rgba(41, 145, 136, 1) 50%, rgba(68, 127, 153, 1) 100%);
-    
+
 }
 
 a {
@@ -91,7 +91,7 @@ ul {
 .login-block .login-box input {
     width: 100%;
     padding: 12px;
-    margin: 10px 0;
+    margin: 8px 0;
     border-radius: 8px;
     border: none;
     outline: none;
@@ -362,44 +362,61 @@ header .zc-header-right .zc-profile-dp-link {
     clear: both;
     background: #fff;
     margin: 0;
-    padding: 15px 45px;
+    padding: 40px 45px;
     border-radius: 5px;
 }
+
+.token-list .token-list-heading{
+    position: absolute;
+    top: 15px;
+    z-index: 9;
+    left: 44px;
+    font-size: 20px;
+    margin-bottom: 0px;
+}
+
 .token-list .dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-start {
     display: none;
 }
+
 div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
     justify-content: flex-end;
     margin-left: 0px !important;
 }
-.token-list .dt-search label{
+
+.token-list .dt-search label {
     display: none;
 }
-.token-list .dt-input{
-    width: 700px;
+
+.token-list .dt-input {
+    width: 996px;
 }
-.token-list .filters button{
+
+.token-list .filters button {
     background-color: white;
 }
+
 .filter-sub {
     display: flex;
     align-items: baseline;
     justify-content: right;
-    gap: 50px;
+    gap: 7px;
     position: absolute;
-    top: 13px;
+    top: 52px;
     z-index: 9;
-    right: 20px;
+    right: 54px;
 }
 
-.token-list{
+.token-list {
     position: relative;
 }
+
 .token-list td {
     background-color: #fff !important;
     box-shadow: none !important;
     height: 80px;
 }
+
 .token-list .name-letter {
     background-color: #e3ebc5;
     color: #36b248;
@@ -411,19 +428,23 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
     align-items: center;
     justify-content: center;
 }
-.token-list .phone-number{
+
+.token-list .phone-number {
     font-size: 13px;
     color: #919295;
 
 }
-.token-list p{
+
+.token-list p {
     margin-bottom: 0;
     font-size: 15px;
 }
-.token-list table tbody tr td .edit-btn{
+
+.token-list table tbody tr td .edit-btn {
     display: none;
 }
-.token-list table tbody tr td:last-child div{
+
+.token-list table tbody tr td:last-child div {
     justify-content: end;
     gap: 0;
 }
@@ -435,7 +456,7 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
     font-size: 22px;
 }
 
-.token-list table tbody .toggle-history:active{
+.token-list table tbody .toggle-history:active {
     background-color: transparent;
 }
 
@@ -443,9 +464,74 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
     border-bottom: 1px solid #808080;
     padding: 11px 0;
 }
+
 .token-list .history-block:last-child {
     border-bottom: none;
 }
+
+
+.token-list table.dataTable th.dt-type-date div.dt-column-header ,
+.token-list table.dataTable th.dt-type-numeric div.dt-column-header {
+    flex-direction: row;
+} 
+
+.token-list table.dataTable th.dt-type-numeric,
+.token-list  table.dataTable th.dt-type-date,
+ .token-list  table.dataTable td.dt-type-numeric,
+  .token-list table.dataTable td.dt-type-date {
+    text-align: left;
+}
+
+.token-list div.dt-container div.dt-layout-row:has(.dt-paging) {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    width: 100%;
+    margin: .75em 0;
+}
+
+.token-list .filter-date input,
+.token-list .filters button {
+    height: 35px;
+    padding: 0 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #302e2e;
+
+}
+
+.token-list table.dataTable thead>tr>th.dt-orderable-asc:hover,
+.token-list table.dataTable thead>tr>th.dt-orderable-desc:hover,
+.token-list table.dataTable thead>tr>td.dt-orderable-asc:hover,
+.token-list table.dataTable thead>tr>td.dt-orderable-desc:hover {
+    outline: 0px;
+    outline-offset: -2px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* list-styles end */
 
@@ -456,61 +542,74 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
 
 
 #status {
-  font-size: 14px;
-  color: #94a3b8;
-  margin-bottom: 10px;
+    font-size: 14px;
+    color: #94a3b8;
+    margin-bottom: 10px;
 }
 
 .tv-screen table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 7px; /* vertical gap between rows */
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 7px;
+    /* vertical gap between rows */
 
-  color: white;
+    color: white;
 }
+
 .tv-screen thead th {
-color: #fefe00;
-font-weight: 500;
+    color: #fefe00;
+    font-weight: 600;
+    padding-bottom: 0px;
 }
-.tv-screen th, .tv-screen td {
-  padding: 14px;
 
-  text-align: left;
-  font-size: 16px;
- margin-bottom: 10px;
+.tv-screen th,
+.tv-screen td {
+    padding: 14px;
+
+    text-align: left;
+    font-size: 16px;
+    margin-bottom: 10px;
 
 }
-.tv-screen{
-      background: #111827;
-      padding: 20px;
+
+.tv-screen {
+    background: #111827;
+    padding: 20px;
 }
+
 .tv-screen tr td:first-child {
- border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
+
 .tv-screen tr td:last-child {
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 /* Priority colors */
 .tv-screen tr:has(.p1) td {
-  background: #00a89c;
-  color: white;
+    background: #00a89c;
+    color: white;
+    font-weight: 600;
 }
 
 .tv-screen tr:has(.p2) td {
-  background: #ef5922;
-  color: white;
+    background: #ef5922;
+    color: white;
+     font-weight: 600;
 }
 
 .tv-screen tr:has(.p4) td,
 .tv-screen tr:has(.p3) td {
-  background: white;
-  color: black;
+    background: white;
+    color: black;
+     font-weight: 600;
 }
-.tv-screen tr .p3{
+
+.tv-screen tr .p3 {
     color: #ef5922 !important;
+     font-weight: 600;
 }
 
 /* .tv-screen .counter {
@@ -519,9 +618,10 @@ font-weight: 500;
   border-radius: 12px;
   font-size: 13px;
 } */
-.tv-screen .date-status{
+.tv-screen .date-status {
     display: none;
 }
-.tv-screen .logo{
+
+.tv-screen .logo {
     height: 50px;
 }

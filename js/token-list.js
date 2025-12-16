@@ -79,7 +79,7 @@ $(document).ready(function () {
     padding: 10px 15px;
         border-radius: 10px;
 
-"><h6>History:</h6><ul>${historyHtml || "<em>No history available.</em>"}</ul></div>`).show();
+"><h6 class="mb-0">History:</h6><ul>${historyHtml || "<em>No history available.</em>"}</ul></div>`).show();
           $(this).find('i').removeClass('bi-chevron-down').addClass('bi-chevron-up');
         }
       });
