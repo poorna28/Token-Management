@@ -362,7 +362,7 @@ header .zc-header-right .zc-profile-dp-link {
     clear: both;
     background: #fff;
     margin: 0;
-    padding: 8px 15px;
+    padding: 15px 45px;
     border-radius: 5px;
 }
 .token-list .dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-start {
@@ -381,52 +381,71 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
 .token-list .filters button{
     background-color: white;
 }
-.filter-sub{
-
+.filter-sub {
     display: flex;
     align-items: baseline;
     justify-content: right;
     gap: 50px;
-    position: relative;
-    top: 62px;
+    position: absolute;
+    top: 13px;
     z-index: 9;
     right: 20px;
-
 }
 
+.token-list{
+    position: relative;
+}
+.token-list td {
+    background-color: #fff !important;
+    box-shadow: none !important;
+    height: 80px;
+}
+.token-list .name-letter {
+    background-color: #e3ebc5;
+    color: #36b248;
+    padding: 10px;
+    border-radius: 50%;
+    height: 45px;
+    width: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.token-list .phone-number{
+    font-size: 13px;
+    color: #919295;
 
+}
+.token-list p{
+    margin-bottom: 0;
+    font-size: 15px;
+}
+.token-list table tbody tr td .edit-btn{
+    display: none;
+}
+.token-list table tbody tr td:last-child div{
+    justify-content: end;
+    gap: 0;
+}
 
+.token-list table tbody .toggle-history {
+    background: none;
+    border: 0;
+    color: #000;
+    font-size: 22px;
+}
 
+.token-list table tbody .toggle-history:active{
+    background-color: transparent;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.token-list .history-block {
+    border-bottom: 1px solid #808080;
+    padding: 11px 0;
+}
+.token-list .history-block:last-child {
+    border-bottom: none;
+}
 
 /* list-styles end */
 
@@ -506,6 +525,3 @@ font-weight: 500;
 .tv-screen .logo{
     height: 50px;
 }
-
-
-

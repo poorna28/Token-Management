@@ -12,8 +12,8 @@ $(document).ready(function () {
             render: (data, type, row) => {
               const initials = data.split(" ").map(w => w[0].toUpperCase()).join("");
               return `<div class="d-flex align-items-center gap-2">
-                        <strong>${initials}</strong>
-                        <div>
+                        <strong class="name-letter">${initials}</strong>
+                        <div class="d-flex flex-column">
                           <p class="m-0">${data}</p>
                           <span class="phone-number">${row.phone}</span>
                         </div>
@@ -65,16 +65,21 @@ $(document).ready(function () {
         } else {
           const historyHtml = (data.history || []).map(h => `
             <li class="history-block">
-              <span style="width: 80px;">${h.token}</span>
-              <span style="width: 200px;">${h.issueTime}</span>
-              <span style="width: 200px;" class="exit-time">${h.exitTime}</span>
-              <span style="width: 100px;">${h.duration}</span>
-              <span style="width: 100px;">Counter: ${h.counter}</span>
+              <span style="min-width: 80px;display: inline-block;">${h.token}</span>
+              <span style="min-width: 200px;display: inline-block;">${h.issueTime}</span>
+              <span style="min-width: 200px;display: inline-block;" class="exit-time">${h.exitTime}</span>
+              <span style="min-width: 120px;display: inline-block;">${h.duration}</span>
+              <span style="min-width: 120px;display: inline-block;">Counter: ${h.counter}</span>
             </li>
-            <hr>
+          
           `).join("");
 
-          row.child(`<div><h6>History:</h6><ul>${historyHtml || "<em>No history available.</em>"}</ul></div>`).show();
+          row.child(`<div style="
+    background-color: #f6f6f6;
+    padding: 10px 15px;
+        border-radius: 10px;
+
+"><h6>History:</h6><ul>${historyHtml || "<em>No history available.</em>"}</ul></div>`).show();
           $(this).find('i').removeClass('bi-chevron-down').addClass('bi-chevron-up');
         }
       });
