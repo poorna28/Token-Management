@@ -355,189 +355,75 @@ header .zc-header-right .zc-profile-dp-link {
 }
 
 /* list-styles start */
-.token-list {
-    background: #fff;
-    padding: 20px 35px;
-    border-radius: 10px;
-}
 
 
-.token-list-title {
-    font-size: 18px;
-    margin-bottom: 15px;
-}
-
-
-.token-list .accordion-item {
-    border-top: 2px solid #e9ecef;
-    border: 0;
-}
-
-.token-list .accordion-button:not(.collapsed) {
-    background-color: transparent;
-    color: #000;
-    box-shadow: none;
-}
-
-.token-list .accordion-button:focus {
-    box-shadow: none;
-    border-color: #e9ecef;
-}
-
-.token-list .accordion-item:first-of-type>.accordion-header .accordion-button {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-}
-
-.token-list .accordion-button {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.9rem;
-    border-top: 2px solid #e9ecef;
-    padding: 10px;
-}
-
-.token-list .accordion-button>div {
-    /* flex: 1 1 11%; */
-    padding: 2px 6px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.token-list .header-labels {
-    display: flex;
-    font-weight: bold;
-    font-size: 0.9rem;
-    margin-bottom: 6px;
-    padding: 6px;
-}
-
-.token-list .header-labels>div {
-    /* flex: 1 1 11%; */
-    padding: 2px 6px;
-}
-
-.token-list .status-badge {
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-align: center;
-}
-
-.token-list.status-Completed {
-    background-color: #28a745;
-}
-
-.token-list .status-In\ Progress {
-    background-color: #fd7e14;
-}
-
-.token-list .status-Not\ Started {
-    background-color: #6c757d;
-}
-
-.token-list .action-icon {
-    font-size: 1rem;
-    color: #0d6efd;
-    margin-left: 6px;
-}
-
-.token-list .accordion-body ul {
-    padding-left: 1rem;
-}
-
-.token-list .accordion-body li {
-    margin-bottom: 4px;
-}
-.token-list .accordion-body{
-    margin-left: 87px;
-    background-color: #f6f6f6;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    border: 1px solid #e9ecef;
-}
-
-
-.token-list .search-box {
+.token-list div.dt-container {
     position: relative;
-
-}
-
-.token-list .group-actions button {
-    background-color: transparent;
-    padding: 8px;
-    border: 1px solid #e9ecef;
-    border-radius: 6px;
-    font-size: 14px;
-    color: #9a9a9a;
-}
-
-.token-list .search-box .search-icon {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 18px;
-    color: #e9ecef;
-    pointer-events: none;
-}
-
-.token-list .search-bar {
-    width: 100%;
-    padding: 8px 12px 8px 36px;
-    border: 1px solid #e9ecef;
-    border-radius: 6px;
-    font-size: 14px;
-}
-
-.token-list input {
-    padding: 8px;
-    border: 1px solid #e9ecef;
-    border-radius: 6px;
-    font-size: 14px;
-    color: #9a9a9a;
-}
-.token-list .accordion-header .phone-number {
-    font-size: 12px;
-    color: #ccc;
-   
-}
-.name-cell{
+    clear: both;
+    background: #fff;
     margin: 0;
-    margin-right: 15px;
-    height: 50px;
-    width: 50px;
-    background: bisque;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 20px;
-    border-radius: 50%;
-    font-size: 20px;
-    font-weight: 500;
+    padding: 8px 15px;
+    border-radius: 5px;
 }
-.history-block span{
-    display: inline-block;
-    font-size: 14px;
- 
-}
-.token-list .accordion-body ul hr{
-    margin: 5px 0;
-}
-.token-list    .accordion-body ul hr:last-child{
+.token-list .dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-start {
     display: none;
 }
-.token-list .exit-time{
-    color: #3ab54a;
+div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
+    justify-content: flex-end;
+    margin-left: 0px !important;
 }
-.token-list .accordion {
-    max-height: 250px;
-    overflow-y: auto;
+.token-list .dt-search label{
+    display: none;
 }
+.token-list .dt-input{
+    width: 700px;
+}
+.token-list .filters button{
+    background-color: white;
+}
+.filter-sub{
+
+    display: flex;
+    align-items: baseline;
+    justify-content: right;
+    gap: 50px;
+    position: relative;
+    top: 62px;
+    z-index: 9;
+    right: 20px;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -620,3 +506,6 @@ font-weight: 500;
 .tv-screen .logo{
     height: 50px;
 }
+
+
+
