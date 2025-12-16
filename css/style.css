@@ -285,7 +285,7 @@ header .zc-header-right .zc-profile-dp-link {
 
 
 .stats-bar {
-    gap: 12px;
+    gap: 15px;
 }
 
 .stats-bar .stat-box {
@@ -295,6 +295,7 @@ header .zc-header-right .zc-profile-dp-link {
     display: flex;
     align-items: center;
     border: 1px solid #1eb3b9;
+    min-height: 82px;
 }
 
 .stats-bar .stat-box.loc-box {
@@ -311,7 +312,7 @@ header .zc-header-right .zc-profile-dp-link {
 }
 
 .stats-bar small {
-    font-size: 12px;
+    font-size: 14px;
 
 }
 
@@ -343,6 +344,7 @@ header .zc-header-right .zc-profile-dp-link {
     border: none;
     border-radius: 10px;
     padding: 10px 14px;
+    min-height: 82px;
 }
 
 .scan-btn i {
@@ -508,16 +510,59 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
     outline-offset: -2px;
 }
 
+.token-list div.dt-container .dt-search input {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 5px;
+    background-color: transparent;
+    color: inherit;
+    margin-left: 3px;
+}
 
+/* .token-list .dt-layout-table{
+    max-height: 280px;
+    overflow-y: auto;
+} */
 
+.counter-model .counting-btns button{
+    padding: 10px 20px;
+    border-color: #3f8396;
+}
+.counter-model .delete-icon i{
+    color: red;
+    position: absolute;
+    top: -1px;
+    font-size: 11px;
+    right: 3px;
+}
+.counter-model .value{
+    color: #3f8396;
+    font-weight: 600;
+    font-size: 16px;
+}
+/* .value:hover{
+    background-color: ;
+} */
+.counter-model .add-btn {
+    background-color: #3f8396;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+}
+.counter-model .save-btn{
+    background-color: #29aae0;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+}
 
-
-
-
-
-
-
-
+.counter-model .modal-footer{
+    justify-content: center;
+    border-top: 0px;
+}
+.modal-header {
+    border-bottom: 0px;
+}
 
 
 
@@ -625,3 +670,6 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
 .tv-screen .logo {
     height: 50px;
 }
+
+
+

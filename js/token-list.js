@@ -1,11 +1,14 @@
 $(document).ready(function () {
-  fetch("https://zcutilities.zeroco.de/api/get/8b1bcdf367db70389f62a7911af94ca6c41e88c4fbc608c5a65f789566be7a68")
+  // fetch("https://zcutilities.zeroco.de/api/get/8b1bcdf367db70389f62a7911af94ca6c41e88c4fbc608c5a65f789566be7a68")
+
+  fetch("https://zcutilities.zeroco.de/api/get/03902e9a26d5951a277064a74aac67c09e7001c5cd7bdf3d90d3855de048c322")
     .then(response => response.json())
     .then(data => {
       const customers = data.customers || [];
 
       const table = $('#tokenTable').DataTable({
         data: customers,
+  
         columns: [
           {
             data: 'name',
@@ -51,7 +54,11 @@ $(document).ready(function () {
             }
           }
         ],
-        responsive: true
+        responsive: true,
+          language: {
+    search: "",
+    searchPlaceholder: "Search by Name, Token, Location, Counter..."
+  }
       });
 
       // Expand/collapse only on icon click
@@ -85,12 +92,12 @@ $(document).ready(function () {
       });
 
       // Edit button logic
-      $('#tokenTable tbody').on('click', '.edit-btn', function () {
-        const tokenId = $(this).data('id');
-        const rowData = table.row($(this).closest('tr')).data();
-        console.log("Edit clicked for token:", tokenId, rowData);
-        // modal logic here
-      });
+      // $('#tokenTable tbody').on('click', '.edit-btn', function () {
+      //   const tokenId = $(this).data('id');
+      //   const rowData = table.row($(this).closest('tr')).data();
+      //   console.log("Edit clicked for token:", tokenId, rowData);
+      //   // modal logic here
+      // });
     });
 });
 
@@ -109,4 +116,17 @@ $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
 // Trigger filter on date change
 $('#filterDate').on('change', function () {
   $('#tokenTable').DataTable().draw();
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const openModalBtn = document.getElementById("openModalBtn");
+  const modalElement = document.getElementById("createCounterModal");
+
+  const counterModal = new bootstrap.Modal(modalElement);
+
+  openModalBtn.addEventListener("click", function () {
+    counterModal.show();
+  });
+
 });

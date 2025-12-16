@@ -114,7 +114,7 @@
     <div class="main-content">
         <div class="p-contain">
             <h2 class="table-title">TOKEN ADMIN MANAGER</h2>
-            <div class="stats-bar row m-0 mb-3 align-items-center   text-white flex-wrap">
+            <div class="stats-bar row m-0 mb-3 align-items-center   text-white flex-wrap ">
 
                 <!-- Location -->
                 <div class="stat-box col loc-box d-flex align-items-center gap-2">
@@ -123,7 +123,7 @@
                 </div>
 
                 <!-- Patients -->
-                <div class="stat-box col-1 d-flex align-items-center gap-2">
+                <div class="stat-box col-auto d-flex align-items-center gap-2">
                     <i class="bi bi-people"></i>
                     <div>
                         <small>Patients</small><br>
@@ -178,7 +178,7 @@
 
 
                 <!-- Patients -->
-                <div class="stat-box col-1 d-flex align-items-center gap-2">
+                <div class="stat-box col-auto d-flex align-items-center gap-2">
                     <i class="bi bi-people"></i>
                     <div>
                         <small>Patients</small><br>
@@ -255,11 +255,12 @@
                 <!-- Hospitals -->
                 <div class="stat-box col-auto d-flex align-items-center gap-2">
                     <i class="bi bi-hourglass-split"></i>
-                    <div>
-                        <small>Counters</small><br>
+                    <div class="d-flex flex-column">
+                        <small>Counters</small>
                         <strong>5</strong>
-                        <button class="btn btn-light btn-sm ms-2" id="openModalBtn"><i class="icon-edit"></i></button>
+                      
                     </div>
+                      <button class="btn  btn-sm ms-2" id="openModalBtn"><i class="bi bi-pencil-square"></i></button>
                 </div>
 
             </div>
@@ -276,6 +277,8 @@
                     </div>
                 </div>
                 <h4 class="token-list-heading">Token List</h4>
+
+
                 <table id="tokenTable" class="display" style="width:100%">
                     <thead>
                         <tr>
@@ -299,7 +302,7 @@
 
     </section>
 
-    <div class="modal fade" id="createCounterModal" tabindex="-1" aria-labelledby="createCounterLabel"
+    <div class="modal fade counter-model" id="createCounterModal" tabindex="-1" aria-labelledby="createCounterLabel"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -309,19 +312,20 @@
                 </div>
                 <div class="modal-body">
                     <!-- Counter buttons -->
-                    <div class="d-flex flex-wrap gap-2 mb-3">
-                        <button class="btn btn-outline-secondary position-relative">01
-                            <span class="position-absolute top-0 end-0 translate-middle badge bg-danger">
+                    <div class="d-flex flex-wrap gap-2 mb-3 counting-btns">
+                        <button class="btn btn-outline-secondary position-relative ">
+                            <span class="value">01</span>
+                            <span class="delete-icon translate-middle  ">
                                 <i class="bi bi-trash"></i>
                             </span>
                         </button>
                         <!-- Repeat for 02–05 -->
                     </div>
                     <!-- Add button -->
-                    <button class="btn btn-outline-primary w-100 mb-3">+</button>
+                    <button class="btn add-btn  mb-3">+</button>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn save-btn">Save</button>
                 </div>
             </div>
         </div>
