@@ -8,7 +8,7 @@ $(document).ready(function () {
 
       const table = $('#tokenTable').DataTable({
         data: customers,
-  
+
         columns: [
           {
             data: 'name',
@@ -55,10 +55,12 @@ $(document).ready(function () {
           }
         ],
         responsive: true,
-          language: {
-    search: "",
-    searchPlaceholder: "Search by Name, Token, Location, Counter..."
-  }
+        scrollCollapse: true,
+        scrollY: 'calc(100vh - 435px)',
+        language: {
+          search: "",
+          searchPlaceholder: "Search by Name, Token, Location, Counter..."
+        }
       });
 
       // Expand/collapse only on icon click
@@ -85,6 +87,7 @@ $(document).ready(function () {
     background-color: #f6f6f6;
     padding: 10px 15px;
         border-radius: 10px;
+        border:1px solid #ccc;
 
 "><h6 class="mb-0">History:</h6><ul>${historyHtml || "<em>No history available.</em>"}</ul></div>`).show();
           $(this).find('i').removeClass('bi-chevron-down').addClass('bi-chevron-up');

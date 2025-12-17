@@ -70,15 +70,16 @@ ul {
 }
 
 .login-block h1 {
-    margin-top: -10px;
-    font-size: 28px;
-    font-weight: 700;
+    margin-top: 0;
+    font-size: 27px;
+    font-weight: 600;
+    margin-bottom: 15px;
 }
 
 .login-block .login-box {
     padding: 35px 60px;
     border-radius: 25px;
-    background: rgba(31, 92, 109, 0.75);
+    background: #133d4869;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
 }
 
@@ -130,16 +131,24 @@ ul {
     cursor: pointer;
 }
 
+.login-sub-container .form-group {
+    position: relative;
+    margin-bottom: 5px;
+}
+
 .login-sub-container .title h2 {
-    font-size: 22px;
-    font-weight: 600;
+    font-size: 21px;
+    font-weight: 500;
+    margin-bottom: 0;
 }
 
 .error {
     margin-top: 6px;
-    font-size: 0.85rem;
-    color: #d93025;
+    color: #ef6e65;
     text-align: start;
+    position: absolute;
+    font-size: 10px;
+    bottom: -7px;
 }
 
 /* login-page styles end */
@@ -151,7 +160,8 @@ ul {
 }
 
 header {
-    background-color: var(--header-bg-color);
+    /* background-color: var(--header-bg-color); */
+    background-image: linear-gradient(to right, #1e8a76, #40758a);
     height: var(--header-height);
     padding: var(--header-padding);
     box-shadow: var(--header-box-shadow);
@@ -163,6 +173,10 @@ header {
     left: 0;
     width: 100%;
     z-index: 1000;
+}
+
+header .dropdown-toggle {
+    font-size: 20px;
 }
 
 .header-title {
@@ -189,16 +203,16 @@ li.zc-notifications {
 }
 
 .welcome-user-pic {
-    background: blue;
+    background: #3b87ef;
     color: #fff;
-    height: 40px;
-    width: 40px;
+    height: 32px;
+    width: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     margin-left: 7px;
-    font-size: 25px;
+    font-size: 20px;
     font-weight: 500;
 }
 
@@ -237,8 +251,28 @@ header .zc-header-right .zc-profile-dp-link {
     cursor: pointer;
 }
 
-.zc-notifications .dropdown-toggle:empty::after {
-    margin-left: 5px;
+.zc-profile-dp .dropdown-toggle::after {
+    content: unset;
+}
+
+.zc-notifications .dropdown-toggle::after {
+    content: unset;
+}
+
+.zc-notifications .dropdown-toggle span {
+    color: #fff;
+    background-color: red;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 12px;
+    position: absolute;
+    top: 1px;
+    right: -7px;
+    font-size: 10px;
+    min-width: 15px;
+    height: 15px;
 }
 
 .zc-notifications .dropdown-menu.show {
@@ -285,7 +319,7 @@ header .zc-header-right .zc-profile-dp-link {
 
 
 .stats-bar {
-    gap: 15px;
+    gap: 12px;
 }
 
 .stats-bar .stat-box {
@@ -300,6 +334,7 @@ header .zc-header-right .zc-profile-dp-link {
 
 .stats-bar .stat-box.loc-box {
     border: 0;
+    font-size: 14px;
 }
 
 .stats-bar .stat-box i {
@@ -339,6 +374,16 @@ header .zc-header-right .zc-profile-dp-link {
 
 }
 
+table.dataTable thead th,
+table.dataTable tfoot th {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+table.dataTable tbody td {
+    font-size: 14px;
+}
+
 .scan-btn {
     background: #29aae0;
     border: none;
@@ -364,17 +409,18 @@ header .zc-header-right .zc-profile-dp-link {
     clear: both;
     background: #fff;
     margin: 0;
-    padding: 40px 45px;
+    padding: 40px 24px 5px;
     border-radius: 5px;
 }
 
-.token-list .token-list-heading{
+.token-list .token-list-heading {
     position: absolute;
     top: 15px;
     z-index: 9;
-    left: 44px;
-    font-size: 20px;
+    left: 24px;
+    font-size: 18px;
     margin-bottom: 0px;
+    font-weight: 600;
 }
 
 .token-list .dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-start {
@@ -424,8 +470,8 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
     color: #36b248;
     padding: 10px;
     border-radius: 50%;
-    height: 45px;
-    width: 45px;
+    height: 35px;
+    width: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -463,7 +509,7 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
 }
 
 .token-list .history-block {
-    border-bottom: 1px solid #808080;
+    border-bottom: 1px solid #ccc;
     padding: 11px 0;
 }
 
@@ -472,15 +518,15 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
 }
 
 
-.token-list table.dataTable th.dt-type-date div.dt-column-header ,
+.token-list table.dataTable th.dt-type-date div.dt-column-header,
 .token-list table.dataTable th.dt-type-numeric div.dt-column-header {
     flex-direction: row;
-} 
+}
 
 .token-list table.dataTable th.dt-type-numeric,
-.token-list  table.dataTable th.dt-type-date,
- .token-list  table.dataTable td.dt-type-numeric,
-  .token-list table.dataTable td.dt-type-date {
+.token-list table.dataTable th.dt-type-date,
+.token-list table.dataTable td.dt-type-numeric,
+.token-list table.dataTable td.dt-type-date {
     text-align: left;
 }
 
@@ -517,6 +563,8 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
     background-color: transparent;
     color: inherit;
     margin-left: 3px;
+    width: calc(100vw - 423px);
+    outline: none;
 }
 
 /* .token-list .dt-layout-table{
@@ -524,22 +572,25 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
     overflow-y: auto;
 } */
 
-.counter-model .counting-btns button{
+.counter-model .counting-btns button {
     padding: 10px 20px;
     border-color: #3f8396;
 }
-.counter-model .delete-icon i{
+
+.counter-model .delete-icon i {
     color: red;
     position: absolute;
     top: -1px;
     font-size: 11px;
     right: 3px;
 }
-.counter-model .value{
+
+.counter-model .value {
     color: #3f8396;
     font-weight: 600;
     font-size: 16px;
 }
+
 /* .value:hover{
     background-color: ;
 } */
@@ -549,17 +600,19 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
     font-weight: 600;
     color: white;
 }
-.counter-model .save-btn{
+
+.counter-model .save-btn {
     background-color: #29aae0;
     color: white;
     font-size: 16px;
     font-weight: 500;
 }
 
-.counter-model .modal-footer{
+.counter-model .modal-footer {
     justify-content: center;
     border-top: 0px;
 }
+
 .modal-header {
     border-bottom: 0px;
 }
@@ -610,16 +663,20 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
 .tv-screen th,
 .tv-screen td {
     padding: 14px;
-
     text-align: left;
-    font-size: 16px;
+    font-size: 20px;
     margin-bottom: 10px;
+    font-weight: 500 !important;
 
 }
 
 .tv-screen {
-    background: #111827;
+    background: #313031;
     padding: 20px;
+    max-width: 80vw;
+    margin: 15px auto;
+    border: 18px solid #6a5555;
+    box-shadow: inset 0px 0px 46px #000;
 }
 
 .tv-screen tr td:first-child {
@@ -642,19 +699,19 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
 .tv-screen tr:has(.p2) td {
     background: #ef5922;
     color: white;
-     font-weight: 600;
+    font-weight: 600;
 }
 
 .tv-screen tr:has(.p4) td,
 .tv-screen tr:has(.p3) td {
     background: white;
     color: black;
-     font-weight: 600;
+    font-weight: 600;
 }
 
 .tv-screen tr .p3 {
     color: #ef5922 !important;
-     font-weight: 600;
+    font-weight: 600;
 }
 
 /* .tv-screen .counter {
@@ -668,8 +725,5 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
 }
 
 .tv-screen .logo {
-    height: 50px;
+    height: 60px;
 }
-
-
-

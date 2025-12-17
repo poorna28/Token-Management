@@ -36,19 +36,19 @@ document.addEventListener("DOMContentLoaded", function () {
     if (enteredPass === "") {
       showError(passwordInput, "Password is required.");
       hasError = true;
-    } 
-      else if (
+    }
+    else if (
       !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(enteredPass)
     ) {
-      showError(passwordInput, "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
+      showError(passwordInput, "Password must be atleast 1 capital, number, symbol pattern");
       hasError = true;
     }
 
     if (!hasError) {
       if (validIds.includes(enteredId) && enteredPass === storedPass) {
-        alert("Login successful!");
-         window.location.href = "token-list.html";
-        form.reset(); 
+        // alert("Login successful!");
+        window.location.href = "token-list.html";
+        form.reset();
       } else {
         errorMsg.textContent = "Invalid credentials. Please try again.";
       }
