@@ -86,7 +86,7 @@ function formatDate(date) {
 async function fetchLocationsAndBind() {
     const params = new URLSearchParams(window.location.search);
     const userId = params.get("userId");
-    const urlLocationId = params.get("locationId"); 
+    const urlLocationId = params.get("locationId");
 
     if (!userId) {
         alert("userId missing in URL");
@@ -116,7 +116,7 @@ async function fetchLocationsAndBind() {
         //     dropdown.appendChild(option);
         // });
 
-              let selectedLocation = locations[0];
+        let selectedLocation = locations[0];
         if (urlLocationId) {
             const match = locations.find(loc => String(loc.LocationId) === String(urlLocationId));
             if (match) {
@@ -216,7 +216,7 @@ async function fetchAndBindMetrics(locationId, locationName) {
 
 $(document).ready(function () {
 
-      const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(window.location.search);
     let locationId = params.get("locationId") || "10"; // fallback if missing
     let fromDate = params.get("fromDate") || formatDate(new Date());
     let toDate = params.get("toDate") || formatDate(new Date());
@@ -225,9 +225,9 @@ $(document).ready(function () {
     let sort = params.get("sort") || "issueTime";
     let status = params.get("status") || "ALL";
 
-   const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetLocationTokens/location-tokens?locationId=${encodeURIComponent(locationId)}&fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}&page=${page}&size=${size}&sort=${sort}&status=${status}`;
+    // const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetLocationTokens/location-tokens?locationId=${encodeURIComponent(locationId)}&fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}&page=${page}&size=${size}&sort=${sort}&status=${status}`;
 
-   //  const API_URL = "https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetLocationTokens/location-tokens?locationId=10&fromDate=07-11-2025&toDate=07-11-2025&page=0&size=20&sort=issueTime&status=ALL";
+    const API_URL = "https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetLocationTokens/location-tokens?locationId=10&fromDate=07-11-2025&toDate=07-11-2025&page=0&size=20&sort=issueTime&status=ALL";
 
     fetch(API_URL)
         .then(response => response.json())
@@ -307,11 +307,11 @@ $(document).ready(function () {
                     // const page = 0;
                     // const size = 20;
 
-                     const customerId = data.customerId;
+                    const customerId = data.customerId;
 
                     const historyUrl = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetCustomerHistory/customers/history?customerId=${encodeURIComponent(customerId)}&fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}&page=${page}&size=${size}`;
 
-                      // const historyUrl = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetCustomerHistory/customers/history?customerId=${customerId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&size=${size}`;
+                    // const historyUrl = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetCustomerHistory/customers/history?customerId=${customerId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&size=${size}`;
 
                     // --- Fetch history ---
                     fetch(historyUrl)
