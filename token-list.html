@@ -115,13 +115,17 @@
     </header>
     <div class="main-content">
         <div class="p-contain">
-            <h2 class="table-title">TOKEN ADMIN MANAGER <span id="location-name"></span></h2>
-     
+            <h2 class="table-title">
+                TOKEN ADMIN MANAGER –
+                <span class="location-wrapper">
+                    <span id="location-name"></span>
+                    <select id="location-dropdown" class="location-dropdown"></select>
+                </span>
+            </h2>
 
-            <div class="stats-bar row m-0 mb-3 align-items-center   text-white flex-wrap ">
 
 
-                <!-- Patients -->
+            <div class="stats-bar row m-0 mb-3 align-items-center text-white flex-wrap ">
                 <div class="stat-box col-auto d-flex align-items-center gap-2">
                     <i class="bi bi-people"></i>
                     <div>
@@ -130,7 +134,6 @@
                     </div>
                 </div>
 
-                <!-- Completed -->
                 <div class="stat-box col-auto d-flex align-items-center gap-2">
                     <i class="bi bi-check-circle"></i>
                     <div>
@@ -139,7 +142,6 @@
                     </div>
                 </div>
 
-                <!-- In Progress -->
                 <div class="stat-box col-auto d-flex align-items-center gap-2">
                     <i class="bi bi-hourglass-split"></i>
                     <div>
@@ -148,67 +150,36 @@
                     </div>
                 </div>
 
-                <!-- Hospitals -->
-                <div class="stat-box col-auto d-flex align-items-center gap-2">
-                    <i class="bi bi-hourglass-split"></i>
-                    <div>
-                        <small>Hospitals</small><br>
-                        <strong><span id="hospitals"></span></strong>
-                    </div>
-                </div>
-
-                <!-- Date Range Inputs -->
                 <div class="stat-box col-auto d-flex align-items-center gap-2">
                     <i class="bi bi-calendar"></i>
                     <div class="d-flex  flex-column">
                         <div class="d-flex  ">
                             <label class="date-label">From:</label>
-                            <!-- <input type="date" class="date-input"> -->
-                             <span id="fromDate"></span>
+                            <span id="fromDate"></span>
                         </div>
-
                         <div class="d-flex ">
                             <label class="date-label">To:</label>
-                            <!-- <input type="date" class="date-input"> -->
-                             <span id="toDate"></span>
+                            <span id="toDate"></span>
                         </div>
                     </div>
-
                     <i class="bi bi-check-circle check-icon ms-2"></i>
                 </div>
 
-
-                <!-- Hospitals -->
                 <div class="stat-box col-auto d-flex align-items-center gap-2">
                     <i class="bi bi-hourglass-split"></i>
                     <div>
                         <small>Kiosk</small><br>
-                        <strong>512</strong>
+                        <strong><span id="kioskCount"></span></strong>
                     </div>
                 </div>
 
-
-                <!-- Hospitals -->
                 <div class="stat-box col-auto d-flex align-items-center gap-2">
                     <i class="bi bi-hourglass-split"></i>
                     <div>
                         <small>Direct</small><br>
-                        <strong>721</strong>
+                        <strong><span id="directCount"></span></strong>
                     </div>
                 </div>
-
-
-                <!-- Hospitals -->
-                <div class="stat-box col-auto d-flex align-items-center gap-2">
-                    <i class="bi bi-hourglass-split"></i>
-                    <div class="d-flex flex-column">
-                        <small>Counters</small>
-                        <strong>5</strong>
-
-                    </div>
-                    <button class="btn  btn-sm ms-2" id="openModalBtn"><i class="bi bi-pencil-square"></i></button>
-                </div>
-
             </div>
 
             <div class="token-list">

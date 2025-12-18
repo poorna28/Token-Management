@@ -727,3 +727,15 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
 .tv-screen .logo {
     height: 60px;
 }
+
+.location-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.location-dropdown {
+  padding: 4px 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
