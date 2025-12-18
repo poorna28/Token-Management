@@ -133,3 +133,64 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 });
+
+
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  fetchLocationName();
+});
+
+let locationIdValue = null;
+
+function getLocationId() {
+  return locationIdValue;
+}
+window.getLocationId = getLocationId;
+
+
+async function fetchLocationName() {
+  const USERNAME = "APL23232";
+    //const USERNAME = window.getEmployeeId(); 
+  // const TOKEN = "YOUR_BEARER_TOKEN_HERE";
+
+  const API_URL =
+    `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/getLocationMaster?username=${encodeURIComponent(USERNAME)}`;
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "GET",
+      headers: {
+        // "Authorization": `Bearer ${TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP Error ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    //  FIX HERE
+    if (result.Locations && result.Locations.length > 0) {
+
+      //  Store LocationId in a variable
+        locationIdValue = result.Locations[0].LocationId;
+      console.log("Stored LocationId:", locationIdValue);
+
+      document.getElementById("location-name").textContent =
+        result.Locations[0].Name;
+    } else {
+      document.getElementById("location-name").textContent =
+        "Location Not Found";
+    }
+
+  } catch (error) {
+    console.error("Location API Error:", error);
+    document.getElementById("location-name").textContent =
+      "Error loading location";
+  }
+}

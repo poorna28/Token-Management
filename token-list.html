@@ -115,66 +115,8 @@
     </header>
     <div class="main-content">
         <div class="p-contain">
-            <h2 class="table-title">TOKEN ADMIN MANAGER</h2>
-            <div class="stats-bar row m-0 mb-2 align-items-center   text-white flex-wrap d-none">
-
-                <!-- Location -->
-                <div class="stat-box col loc-box d-flex align-items-center gap-2">
-                    <i class="bi bi-geo-alt"></i>
-                    <span>Apollo Hospitals, JubileeHills, Hyderabad</span>
-                </div>
-
-                <!-- Patients -->
-                <div class="stat-box col-auto d-flex align-items-center gap-2">
-                    <i class="bi bi-people"></i>
-                    <div>
-                        <small>Patients</small><br>
-                        <strong>205</strong>
-                    </div>
-                </div>
-
-                <!-- Completed -->
-                <div class="stat-box col-auto d-flex align-items-center gap-2">
-                    <i class="bi bi-check-circle"></i>
-                    <div>
-                        <small>Completed</small><br>
-                        <strong>200</strong>
-                    </div>
-                </div>
-
-                <!-- In Progress -->
-                <div class="stat-box col-auto d-flex align-items-center gap-2">
-                    <i class="bi bi-hourglass-split"></i>
-                    <div>
-                        <small>In Progress</small><br>
-                        <strong>5</strong>
-                    </div>
-                </div>
-
-                <!-- Date Range Inputs -->
-                <div class="stat-box col-auto d-flex align-items-center gap-2">
-                    <i class="bi bi-calendar"></i>
-                    <div class="d-flex  flex-column">
-                        <div class="d-flex  ">
-                            <label class="date-label">From:</label>
-                            <input type="date" id="fromDate" class="date-input">
-                        </div>
-
-                        <div class="d-flex ">
-                            <label class="date-label">To:</label>
-                            <input type="date" id="toDate" class="date-input">
-                        </div>
-                    </div>
-
-                    <i class="bi bi-check-circle check-icon ms-2" id="applyDateFilter"></i>
-                </div>
-
-                <!-- Scan Barcode Button -->
-                <button class="btn btn-primary col-auto d-flex align-items-center gap-2 scan-btn">
-                    <i class="bi bi-upc-scan"></i>
-                    <span>Scan Barcode</span>
-                </button>
-            </div>
+            <h2 class="table-title">TOKEN ADMIN MANAGER <span id="location-name"></span></h2>
+     
 
             <div class="stats-bar row m-0 mb-3 align-items-center   text-white flex-wrap ">
 
@@ -184,7 +126,7 @@
                     <i class="bi bi-people"></i>
                     <div>
                         <small>Patients</small><br>
-                        <strong>1205</strong>
+                        <strong><span id="patients"></span></strong>
                     </div>
                 </div>
 
@@ -193,7 +135,7 @@
                     <i class="bi bi-check-circle"></i>
                     <div>
                         <small>Completed</small><br>
-                        <strong>1000</strong>
+                        <strong><span id="completed"></span></strong>
                     </div>
                 </div>
 
@@ -202,7 +144,7 @@
                     <i class="bi bi-hourglass-split"></i>
                     <div>
                         <small>In Progress</small><br>
-                        <strong>205</strong>
+                        <strong><span id="inProgress"></span></strong>
                     </div>
                 </div>
 
@@ -211,7 +153,7 @@
                     <i class="bi bi-hourglass-split"></i>
                     <div>
                         <small>Hospitals</small><br>
-                        <strong>21</strong>
+                        <strong><span id="hospitals"></span></strong>
                     </div>
                 </div>
 
@@ -221,12 +163,14 @@
                     <div class="d-flex  flex-column">
                         <div class="d-flex  ">
                             <label class="date-label">From:</label>
-                            <input type="date" class="date-input">
+                            <!-- <input type="date" class="date-input"> -->
+                             <span id="fromDate"></span>
                         </div>
 
                         <div class="d-flex ">
                             <label class="date-label">To:</label>
-                            <input type="date" class="date-input">
+                            <!-- <input type="date" class="date-input"> -->
+                             <span id="toDate"></span>
                         </div>
                     </div>
 
@@ -334,6 +278,8 @@
     </div>
 
 </body>
+<!-- <script src="js/script.js"></script> -->
 <script src="js/token-list.js"></script>
+
 
 </html>

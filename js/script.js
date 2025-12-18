@@ -1,59 +1,84 @@
-if (!localStorage.getItem("empidList")) {
-  const validUsers = JSON.stringify(["admin", "test@gmail.com"]);
-  localStorage.setItem("empidList", validUsers);
-  localStorage.setItem("password", "Test@1234");
-}
 
-document.addEventListener("DOMContentLoaded", function () {
+
+let employeeIdValue = "";
+
+function getEmployeeId() {
+  return employeeIdValue;
+}
+window.getEmployeeId = getEmployeeId;
+document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("loginForm");
   const employeeIdInput = document.getElementById("employeeId");
   const passwordInput = document.getElementById("password");
   const errorMsg = document.getElementById("errorMsg");
 
-  employeeIdInput.addEventListener("input", () => clearError(employeeIdInput));
+  
+  employeeIdInput.addEventListener("input", () => {
+    employeeIdValue = employeeIdInput.value.trim();  
+    clearError(employeeIdInput);
+    console.log("Employee ID variable:", employeeIdValue);
+  });
+
   passwordInput.addEventListener("input", () => clearError(passwordInput));
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
+  form.addEventListener("submit", handleLogin);
 
-    const enteredId = employeeIdInput.value.trim();
-    const enteredPass = passwordInput.value.trim();
-    const validIds = JSON.parse(localStorage.getItem("empidList"));
-    const storedPass = localStorage.getItem("password");
+  async function handleLogin(event) {
+    event.preventDefault();
+
+    const username = employeeIdInput.value.trim();
+    const password = passwordInput.value.trim();
 
     clearAllErrors();
-
     let hasError = false;
 
-    if (enteredId === "") {
+    // Inline validations
+    if (username === "") {
       showError(employeeIdInput, "Employee ID/email is required.");
       hasError = true;
-    } else if (enteredId.includes("@") && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(enteredId)) {
+    } else if (username.includes("@") && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(username)) {
       showError(employeeIdInput, "Please enter a valid email address.");
       hasError = true;
     }
 
-    if (enteredPass === "") {
+    if (password === "") {
       showError(passwordInput, "Password is required.");
       hasError = true;
-    }
-    else if (
-      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(enteredPass)
-    ) {
-      showError(passwordInput, "Password must be atleast 1 capital, number, symbol pattern");
+    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(password)) {
+      showError(passwordInput, "Password must be atleast 1 capital, number, symbol pattern.");
       hasError = true;
     }
 
-    if (!hasError) {
-      if (validIds.includes(enteredId) && enteredPass === storedPass) {
-        // alert("Login successful!");
-        window.location.href = "token-list.html";
-        form.reset();
-      } else {
-        errorMsg.textContent = "Invalid credentials. Please try again.";
+    if (hasError) return;
+
+    const API_URL =
+      "https://zcutilities.zeroco.de/api/get/9f90282514ff2a7d84e0260fec9cc606197a24d7f6352e37b1660012eb431f14/login";
+
+    const payload = { username, password };
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP Error ${response.status}`);
       }
+
+      const result = await response.json();
+
+      if ( result.userName) {
+        window.location.href = "token-list.html";
+      } else {
+        errorMsg.textContent = "Invalid login response.";
+      }
+    } catch (error) {
+      errorMsg.textContent = "Login failed. Please check credentials.";
     }
-  });
+  }
+
 
   function showError(element, message) {
     let error = element.nextElementSibling;
@@ -74,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function clearAllErrors() {
-    document.querySelectorAll(".error").forEach(el => el.textContent = "");
+    document.querySelectorAll(".error").forEach(el => (el.textContent = ""));
     errorMsg.textContent = "";
   }
 });
