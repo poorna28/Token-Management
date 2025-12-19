@@ -1,15 +1,25 @@
-document.addEventListener("DOMContentLoaded", () => {
-    fetchLocationName();
+/* ============================================================
+   GLOBAL STATE
+============================================================ */
+let locationIdValue = null;
+
+/* ============================================================
+   DOM READY
+============================================================ */
+document.addEventListener("DOMContentLoaded", async () => {
+    await initPage();
 });
-
-var locationIdValue = null;
-
-function getLocationId() {
-    return locationIdValue;
+function showLoader() {
+    $("#loader").show();
 }
-window.getLocationId = getLocationId;
 
-async function fetchLocationName() {
+function hideLoader() {
+    $("#loader").hide();
+}
+/* ============================================================
+   INITIALIZER
+============================================================ */
+async function initPage() {
     const params = new URLSearchParams(window.location.search);
     const userId = params.get("userId");
 
@@ -18,343 +28,313 @@ async function fetchLocationName() {
         return;
     }
 
-    const API_URL = `https://zcutilities.zeroco.de/api/get/06368b0c1d5d5c14f6cc9c7e330761ce3e4a974bd87ebe392be31adbd115eaf1?username=${encodeURIComponent(
-        userId
-    )}`;
-
-    try {
-        const response = await fetch(API_URL, { cache: "no-store" });
-
-        const result = await response.json();
-
-        if (!result.Locations || result.Locations.length === 0) {
-            document.getElementById("location-name").textContent =
-                "Location Not Found";
-            return;
-        }
-
-        const locations = result.Locations;
-        const dropdown = document.getElementById("location-dropdown");
-
-        dropdown.innerHTML = "";
-
-        locationIdValue = locations[0].LocationId;
-
-        locations.forEach((loc, index) => {
-            const option = document.createElement("option");
-            option.value = loc.LocationId;
-            option.textContent = loc.Name;
-
-            if (index === 0) option.selected = true;
-
-            dropdown.appendChild(option);
-        });
-
-        dropdown.addEventListener("change", function () {
-            const selectedIndex = this.selectedIndex;
-            const selectedLocation = locations[selectedIndex];
-
-            locationIdValue = selectedLocation.LocationId;
-
-            console.log("Selected LocationId:", locationIdValue);
-        });
-    } catch (error) {
-        console.error("Location API Error:", error);
-        document.getElementById("location-name").textContent =
-            "Error loading location";
-    }
+    await fetchLocationsAndBind(userId);
+    loadTokens();
 }
 
-
-//=======================================================================================
-
-document.addEventListener("DOMContentLoaded", () => {
-    fetchLocationsAndBind();
-});
+/* ============================================================
+   HELPERS
+============================================================ */
 function getLocationId() {
     return locationIdValue;
 }
 window.getLocationId = getLocationId;
-function formatDate(date) {
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = months[date.getMonth()];
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
+
+function formatDateDDMMMYYYY(date) {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return `${String(date.getDate()).padStart(2, "0")}-${months[date.getMonth()]}-${date.getFullYear()}`;
 }
-async function fetchLocationsAndBind() {
+
+function toDDMMYYYY(date) {
+    if (date instanceof Date) {
+        return `${String(date.getDate()).padStart(2, "0")}-${String(date.getMonth() + 1).padStart(2, "0")}-${date.getFullYear()}`;
+    }
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        const [y, m, d] = date.split("-");
+        return `${d}-${m}-${y}`;
+    }
+    return date || "";
+}
+
+/* ============================================================
+   FETCH LOCATIONS + DROPDOWN
+============================================================ */
+async function fetchLocationsAndBind(userId) {
+
+    // showLoader();   //  START LOADER
+
     const params = new URLSearchParams(window.location.search);
-    const userId = params.get("userId");
     const urlLocationId = params.get("locationId");
 
-    if (!userId) {
-        alert("userId missing in URL");
-        return;
-    }
-    const LOCATIONS_API = `https://zcutilities.zeroco.de/api/get/06368b0c1d5d5c14f6cc9c7e330761ce3e4a974bd87ebe392be31adbd115eaf1?username=${encodeURIComponent(userId)}`;
-    try {
-        const response = await fetch(LOCATIONS_API, { cache: "no-store" });
-        const result = await response.json();
+    // const API =
+    //     `https://zcutilities.zeroco.de/api/get/06368b0c1d5d5c14f6cc9c7e330761ce3e4a974bd87ebe392be31adbd115eaf1?username=${encodeURIComponent(userId)}`;
+    const API =
+        `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/getLocationMaster?username=${encodeURIComponent(userId)}`;
 
-        if (!result.Locations || result.Locations.length === 0) {
-            document.getElementById("location-name").textContent = "Location Not Found";
-            return;
+    try {
+        const res = await fetch(API, { cache: "no-store" });
+        const data = await res.json();
+        if (!data.Locations?.length) {
+            alert("No Locations available")
         }
-        const locations = result.Locations;
+
+        if (!data.Locations?.length) return;
+
+        const locations = data.Locations;
         const dropdown = document.getElementById("location-dropdown");
         dropdown.innerHTML = "";
 
-        // locationIdValue = locations[0].LocationId;
-        // document.getElementById("location-name").textContent = locations[0].Name;
+        let selected = locations.find(l => String(l.LocationId) === urlLocationId) || locations[0];
+        locationIdValue = selected.LocationId;
 
-        // locations.forEach((loc, index) => {
-        //     const option = document.createElement("option");
-        //     option.value = loc.LocationId;
-        //     option.textContent = loc.Name;
-        //     if (index === 0) option.selected = true;
-        //     dropdown.appendChild(option);
-        // });
-
-        let selectedLocation = locations[0];
-        if (urlLocationId) {
-            const match = locations.find(loc => String(loc.LocationId) === String(urlLocationId));
-            if (match) {
-                selectedLocation = match;
-            }
-        }
-
-        locationIdValue = selectedLocation.LocationId;
-        document.getElementById("location-name").textContent = selectedLocation.Name;
-
-        // Populate dropdown
-        locations.forEach((loc) => {
-            const option = document.createElement("option");
-            option.value = loc.LocationId;
-            option.textContent = loc.Name;
-            if (loc.LocationId === locationIdValue) option.selected = true; //  select correct one
-            dropdown.appendChild(option);
+        locations.forEach(loc => {
+            const opt = document.createElement("option");
+            opt.value = loc.LocationId;
+            opt.textContent = loc.Name;
+            opt.selected = loc.LocationId === locationIdValue;
+            dropdown.appendChild(opt);
         });
 
-        await fetchAndBindMetrics(locationIdValue, locations[0].Name);
+        updateUrl({ locationId: locationIdValue });
+        await fetchAndBindMetrics(locationIdValue);
 
         dropdown.addEventListener("change", async function () {
-            const selectedIndex = this.selectedIndex;
-            const selectedLocation = locations[selectedIndex];
+            locationIdValue = this.value;
 
-            locationIdValue = selectedLocation.LocationId;
-            document.getElementById("location-name").textContent = selectedLocation.Name;
+            updateUrl({
+                locationId: locationIdValue,
+                fromDate: "07-11-2025",
+                toDate: "07-11-2025"
+            });
 
-            // Update metrics
-            await fetchAndBindMetrics(locationIdValue, selectedLocation.Name);
-
-            // --- FIX: Work with clean params ---
-            const params = new URLSearchParams(window.location.search);
-
-            // Get userId safely (decode once)
-            const userId = decodeURIComponent(params.get("userId") || "");
-
-            // Reset params cleanly
-            const newParams = new URLSearchParams();
-            newParams.set("userId", userId);
-            newParams.set("locationId", locationIdValue);
-            newParams.set("fromDate", "07-nov-2025");
-            newParams.set("toDate", "07-nov-2025");
-
-            // newParams.set("fromDate", formatDate(new Date())); //  dynamic date
-            // newParams.set("toDate", formatDate(new Date()));
-
-            const newUrl = `${window.location.pathname}?${newParams.toString()}`;
-            window.history.replaceState({}, "", newUrl);
+            await fetchAndBindMetrics(locationIdValue);
+            loadTokens();
         });
 
-    } catch (error) {
-        console.error("Location API Error:", error);
-        document.getElementById("location-name").textContent = "Error loading location";
+    } catch (err) {
+        console.error("Location API Error:", err);
+    } finally {
+        // hideLoader();   //  STOP LOADER
     }
 }
 
-async function fetchAndBindMetrics(locationId, locationName) {
-    const today = new Date();
-    //   const formattedDate = formatDate(today);
 
-    //     const fromDate = formatDate(today);
-    // const toDate = formatDate(today);
+/* ============================================================
+   METRICS
+============================================================ */
+async function fetchAndBindMetrics(locationId) {
 
-    // locationId=${encodeURIComponent(locationId)}&fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}
+    // showLoader();   //  START LOADER
 
+    const fromDate = "07-Nov-2025";
+    const toDate = "07-Nov-2025";
 
-
-    const fromDate = "07-nov-2025";
-    const toDate = "07-nov-2025";
-
-    const METRICS_API = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetTokenSummary/store-tokens/summary?locationId=${locationId}&fromDate=${fromDate}&toDate=${toDate}`;
+    const API =
+        `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetTokenSummary/store-tokens/summary?locationId=${locationId}&fromDate=${fromDate}&toDate=${toDate}`;
 
     try {
-        const response = await fetch(METRICS_API, { cache: "no-store" });
-        const data = await response.json();
+        const res = await fetch(API, { cache: "no-store" });
+        const data = await res.json();
 
         document.getElementById("patients").textContent = data.metrics.patients;
         document.getElementById("completed").textContent = data.metrics.completed;
         document.getElementById("inProgress").textContent = data.metrics.inProgress;
+        document.getElementById("kioskCount").textContent = data.metrics.kioskCount;
+        document.getElementById("directCount").textContent = data.metrics.directCount;
         document.getElementById("fromDate").textContent = data.fromDate;
         document.getElementById("toDate").textContent = data.toDate;
-        document.getElementById("kioskCount").textContent = data.metrics.kioskCount;
-        document.getElementById("directCount").textContent = data.metrics.directCount
 
-
-
-    } catch (error) {
-        console.error("Metrics API Error:", error);
+    } catch (err) {
+        console.error("Metrics API Error:", err);
+    } finally {
+        // hideLoader();   //  STOP LOADER
     }
 }
 
 
+/* ============================================================
+   TOKENS TABLE
+============================================================ */
+function loadTokens() {
 
-//===================================================================================================
-
-
-$(document).ready(function () {
+    // showLoader(); //  START LOADER
 
     const params = new URLSearchParams(window.location.search);
-    let locationId = params.get("locationId") || "10"; // fallback if missing
-    let fromDate = params.get("fromDate") || formatDate(new Date());
-    let toDate = params.get("toDate") || formatDate(new Date());
-    let page = params.get("page") || 0;
-    let size = params.get("size") || 20;
-    let sort = params.get("sort") || "issueTime";
-    let status = params.get("status") || "ALL";
 
-    // const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetLocationTokens/location-tokens?locationId=${encodeURIComponent(locationId)}&fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}&page=${page}&size=${size}&sort=${sort}&status=${status}`;
+    const locationId = params.get("locationId") || locationIdValue;
+    const fromDate = params.get("fromDate") || "07-11-2025";
+    const toDate = params.get("toDate") || "07-11-2025";
+    const page = params.get("page") || 0;
+    const size = params.get("size") || 20;
+    const sort = params.get("sort") || "issueTime";
+    const status = params.get("status") || "ALL";
 
-    const API_URL = "https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetLocationTokens/location-tokens?locationId=10&fromDate=07-11-2025&toDate=07-11-2025&page=0&size=20&sort=issueTime&status=ALL";
+    const API =
+        `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetLocationTokens/location-tokens` +
+        `?locationId=${locationId}&fromDate=${fromDate}&toDate=${toDate}` +
+        `&page=${page}&size=${size}&sort=${sort}&status=${status}`;
 
-    fetch(API_URL)
-        .then(response => response.json())
+    fetch(API)
+        .then(resp => resp.json())
         .then(data => {
-            // Apollo API returns "content" array
-            const tokens = data.content || [];
 
-            const table = $('#tokenTable').DataTable({
+            const tokens = data?.content || [];
+
+            /* ============================
+               SAFE DESTROY
+            ============================ */
+            if ($.fn.DataTable.isDataTable("#tokenTable")) {
+                const dt = $("#tokenTable").DataTable();
+                dt.clear();
+                dt.destroy();
+                $("#tokenTable tbody").empty(); //  REQUIRED
+            }
+
+            /* ============================
+               INIT DATATABLE
+            ============================ */
+            const table = $("#tokenTable").DataTable({
                 data: tokens,
-
+                destroy: true,
+                responsive: true,
+                scrollY: "calc(100vh - 370px)",
+                language: {
+                    search: "",
+                    searchPlaceholder: "Search by Name, Token, Location, Counter..."
+                },
+                deferRender: true,
+                autoWidth: false,
                 columns: [
                     {
-                        data: 'customerName',
-                        render: (data, type, row) => {
-                            const initials = row.customerInitials || data.split(" ").map(w => w[0].toUpperCase()).join("");
-                            return `<div class="d-flex align-items-center gap-2">
-                        <strong class="name-letter">${initials}</strong>
-                        <div class="d-flex flex-column">
-                          <p class="m-0">${data}</p>
-                          <span class="phone-number">${row.customerPhone || ""}</span>
-                        </div>
-                      </div>`;
-                        }
+                        data: "customerName",
+                        render: (d, t, r) => `
+                            <div class="d-flex align-items-center gap-2">
+                                <strong class="name-letter">
+                                    ${r.customerInitials || (d ? d[0] : "")}
+                                </strong>
+                                <div>
+                                    <p class="m-0">${d || "--"}</p>
+                                    <span class="phone-number">${r.customerPhone || ""}</span>
+                                </div>
+                            </div>`
                     },
-                    { data: 'location' },
-                    { data: 'tokenNumber' },
-                    { data: 'issueTime' },
+                    { data: "location", defaultContent: "--" },
+                    { data: "tokenNumber", defaultContent: "--" },
+
                     {
-                        data: 'exitTime',
-                        render: data => data || "Pending"
+                        data: "issueTime",
+                        className: "green-text",
+                        render: d => d ? formatDateTime(d) : "--"
+                    },
+
+                    {
+                        data: "exitTime",
+                        className: "green-text",
+                        render: d => d ? formatDateTime(d) : "Pending"
                     },
                     {
-                        data: 'timeDurationMinutes',
-                        render: data => data ? `${data} min` : "--"
+                        data: "timeDurationMinutes",
+                        render: d => d ? `${d} min` : "--"
                     },
                     {
-                        data: 'counterNumber',
-                        render: data => data || "--"
+                        data: "counterNumber",
+                        defaultContent: "--"
                     },
                     {
                         data: null,
                         orderable: false,
                         searchable: false,
-                        render: (data, type, row) => {
-                            return `
-                <div class="d-flex gap-2">
-                  <button class="btn btn-sm btn-info toggle-history" title="View History" data-token="${row.tokenNumber}">
-                    <i class="bi bi-chevron-down"></i>
-                  </button>
-                  <button class="btn btn-sm btn-primary edit-btn" data-id="${row.tokenId}">Edit</button>
-                </div>
-              `;
-                        }
+                        render: () => `
+                            <button class="btn btn-sm btn-info toggle-history">
+                                <i class="bi bi-chevron-down"></i>
+                            </button>`
                     }
-                ],
-                responsive: true,
-                scrollCollapse: true,
-                scrollY: 'calc(100vh - 435px)',
-                language: {
-                    search: "",
-                    searchPlaceholder: "Search by Name, Token, Location, Counter..."
-                }
+                ]
             });
 
-            $('#tokenTable tbody').on('click', '.toggle-history', function () {
-                const row = table.row($(this).closest('tr'));
-                const data = row.data(); // this is the row from main tokens API
+            /* ============================
+               BIND HISTORY TOGGLE
+            ============================ */
+            bindHistoryToggle(table, page, size);
 
-                if (row.child.isShown()) {
-                    row.child.hide();
-                    $(this).find('i').removeClass('bi-chevron-up').addClass('bi-chevron-down');
-                } else {
-                    // --- Build history API URL dynamically ---
-                    // const customerId = data.customerId;   // comes from main API row
-                    // const fromDate = "07-nov-2025";       // static for now
-                    // const toDate = "07-nov-2025";       // static for now
-                    // const page = 0;
-                    // const size = 20;
+            /* ============================
+               UPDATE URL DATES
+            ============================ */
+            if (data.fromDate && data.toDate) {
+                updateUrl({
+                    fromDate: toDDMMYYYY(data.fromDate),
+                    toDate: toDDMMYYYY(data.toDate)
+                });
+            }
 
-                    const customerId = data.customerId;
+        })
+        .catch(err => {
+            console.error("Tokens API Error:", err);
+        })
+        .finally(() => {
+            // hideLoader(); //  STOP LOADER
+        });
+}
 
-                    const historyUrl = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetCustomerHistory/customers/history?customerId=${encodeURIComponent(customerId)}&fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}&page=${page}&size=${size}`;
 
-                    // const historyUrl = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetCustomerHistory/customers/history?customerId=${customerId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&size=${size}`;
+/* ============================================================
+   HISTORY TOGGLE
+============================================================ */
+function bindHistoryToggle(table, page, size) {
 
-                    // --- Fetch history ---
-                    fetch(historyUrl)
-                        .then(resp => resp.json())
-                        .then(historyData => {
-                            const visits = historyData.visits || [];
+    $("#tokenTable tbody")
+        .off("click", ".toggle-history")
+        .on("click", ".toggle-history", function () {
 
-                            const historyHtml = visits.map(h => `
-          <li class="history-block">
+            const row = table.row($(this).closest("tr"));
+            const data = row.data();
+            const icon = $(this).find("i");
+
+            if (row.child.isShown()) {
+                row.child.hide();
+                icon.toggleClass("bi-chevron-up bi-chevron-down");
+                return;
+            }
+
+            const fromDate = "07-nov-2025";
+            const API =
+                `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetCustomerHistory/customers/history?customerId=${data.customerId}&fromDate=${fromDate}&toDate=${fromDate}&page=${page}&size=${size}`;
+
+            fetch(API)
+                .then(r => r.json())
+                .then(h => {
+                    const html = (h.visits || []).map(h => `
+                        <li class="history-block">
             <span style="min-width: 80px;display: inline-block;">${h.tokenNumber}</span>
-            <span style="min-width: 200px;display: inline-block;">${h.issueTime}</span>
-            <span style="min-width: 200px;display: inline-block;" class="exit-time">${h.exitTime || "Pending"}</span>
+            <span style="min-width: 200px;display: inline-block;" class="green-text">${formatDateTime(h.issueTime)}</span>
+            <span style="min-width:200px; display:inline-block;" class="exit-time">
+    ${h.issueTime && h.exitTime
+                            ? `${Math.floor((new Date(h.exitTime) - new Date(h.issueTime)) / 60000)} min`
+                            : "--"
+                        }
+</span>
             <span style="min-width: 120px;display: inline-block;">${h.status}</span>
             <span style="min-width: 120px;display: inline-block;">Order: ${h.orderId || "--"}</span>
-          </li>
-        `).join("");
+          </li>`).join("");
 
-                            row.child(`
-          <div style="background-color:#f6f6f6;padding:10px 15px;border-radius:10px;border:1px solid #ccc;">
+                    row.child(`<div style="background-color:#f6f6f6;padding:10px 15px;border-radius:10px;border:1px solid #ccc;margin-left:45px">
             <h6 class="mb-0">History:</h6>
-            <ul>${historyHtml || "<em>No history available.</em>"}</ul>
+            <ul>${html || "<em>No history available.</em>"}</ul>
           </div>
         `).show();
-
-                            $(this).find('i').removeClass('bi-chevron-down').addClass('bi-chevron-up');
-                        })
-                        .catch(err => {
-                            console.error("History API error:", err);
-                            row.child(`<div><em>Error loading history</em></div>`).show();
-                        });
-                }
-            });
+                    icon.toggleClass("bi-chevron-down bi-chevron-up");
+                });
 
         });
-});
+}
 
-function formatDate(date) {
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = months[date.getMonth()];
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
+/* ============================================================
+   URL UPDATE
+============================================================ */
+function updateUrl(values) {
+    const url = new URL(window.location);
+    Object.entries(values).forEach(([k, v]) => url.searchParams.set(k, v));
+    window.history.replaceState({}, "", url);
 }
 
 // Custom filter by issue date
@@ -374,15 +354,58 @@ $('#filterDate').on('change', function () {
 });
 
 
-document.addEventListener("DOMContentLoaded", function () {
 
-    const openModalBtn = document.getElementById("openModalBtn");
-    const modalElement = document.getElementById("createCounterModal");
 
-    const counterModal = new bootstrap.Modal(modalElement);
+(function () {
+    let activeFetchCount = 0;
 
-    openModalBtn.addEventListener("click", function () {
-        counterModal.show();
+    const loader = document.getElementById('loader');
+
+    if (!loader) {
+        console.error('Loader element not found');
+        return;
+    }
+
+    function showLoader() {
+        loader.style.display = 'flex';
+    }
+
+    function hideLoader() {
+        loader.style.display = 'none';
+    }
+
+    const originalFetch = window.fetch;
+
+    window.fetch = function (...args) {
+        activeFetchCount++;
+        showLoader();
+
+        return originalFetch.apply(this, args)
+            .finally(() => {
+                activeFetchCount--;
+
+                if (activeFetchCount <= 0) {
+                    activeFetchCount = 0;
+                    hideLoader();
+                }
+            });
+    };
+})();
+
+
+function formatDateTime(value) {
+    if (!value) return "Pending";
+
+    const date = new Date(value);
+    if (isNaN(date)) return "--";
+
+    return date.toLocaleString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
     });
-
-});
+}

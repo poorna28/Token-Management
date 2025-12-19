@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 
 * {
@@ -14,6 +14,44 @@ body {
             rgba(0, 140, 170, 0.75)); */
     background: linear-gradient(90deg, rgba(15, 162, 122, 1) 0%, rgba(41, 145, 136, 1) 50%, rgba(68, 127, 153, 1) 100%);
 
+}
+
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffffbf;
+}
+
+.login-container .back {
+    position: relative;
+    top: -30px;
+}
+
+.login-container .back img {
+    opacity: 0.5;
+    height: 80px;
+}
+
+.loader-img {
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0px 0 17px 1px #ccc;
+    background: #ffffffcf;
+}
+
+#loader img {
+    height: 80px;
 }
 
 a {
@@ -180,7 +218,7 @@ header .dropdown-toggle {
 }
 
 .header-title {
-    margin-left: 25px;
+    margin-left: 15px;
     color: #fff;
 }
 
@@ -311,9 +349,9 @@ header .zc-header-right .zc-profile-dp-link {
 
 
 .table-title {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 500;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     color: #fff;
 }
 
@@ -324,12 +362,12 @@ header .zc-header-right .zc-profile-dp-link {
 
 .stats-bar .stat-box {
     background: transparent;
-    padding: 10px 16px;
+    padding: 8px 12px;
     border-radius: 10px;
     display: flex;
     align-items: center;
     border: 1px solid #1eb3b9;
-    min-height: 82px;
+    min-height: 70px;
 }
 
 .stats-bar .stat-box.loc-box {
@@ -346,14 +384,19 @@ header .zc-header-right .zc-profile-dp-link {
     color: #fff;
 }
 
+.stats-bar img {
+    height: 28px;
+}
+
 .stats-bar small {
     font-size: 14px;
 
 }
 
 .stats-bar strong {
-    font-size: 17px;
+    font-size: 24px;
     font-weight: 500;
+    line-height: 1;
 }
 
 .date-input {
@@ -369,9 +412,15 @@ header .zc-header-right .zc-profile-dp-link {
     cursor: pointer;
 }
 
-.date-label {
-    font-size: 12px;
+.dates-box .date-label {
+    font-size: 14px;
+}
 
+.dates-box span {
+    font-size: 14px;
+    padding-left: 5px;
+    color: #1dbdc5;
+    font-weight: 500;
 }
 
 table.dataTable thead th,
@@ -390,6 +439,14 @@ table.dataTable tbody td {
     border-radius: 10px;
     padding: 10px 14px;
     min-height: 82px;
+}
+
+tbody .green-text {
+    color: green;
+}
+
+table.dataTable thead>tr>th div.dt-column-header span.dt-column-title {
+    font-weight: 600;
 }
 
 .scan-btn i {
@@ -415,7 +472,7 @@ table.dataTable tbody td {
 
 .token-list .token-list-heading {
     position: absolute;
-    top: 15px;
+    top: 24px;
     z-index: 9;
     left: 24px;
     font-size: 18px;
@@ -448,11 +505,11 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
     display: flex;
     align-items: baseline;
     justify-content: right;
-    gap: 7px;
+    gap: 8px;
     position: absolute;
-    top: 52px;
+    top: 12px;
     z-index: 9;
-    right: 54px;
+    right: 16px;
 }
 
 .token-list {
@@ -542,10 +599,23 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
 .token-list .filters button {
     height: 35px;
     padding: 0 8px;
-    border: 1px solid #ccc;
+    border: 1px solid #e5e6e7;
     border-radius: 4px;
     color: #302e2e;
 
+}
+
+
+
+.token-list div.dt-container div.dt-layout-row:has(.dt-paging) {
+    position: absolute;
+    right: 0;
+    color: #fff;
+}
+
+table.dataTable>thead>tr>th,
+table.dataTable>thead>tr>td {
+    border-color: #e6e7e8 !important;
 }
 
 .token-list table.dataTable thead>tr>th.dt-orderable-asc:hover,
@@ -556,15 +626,49 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
     outline-offset: -2px;
 }
 
+div.dt-container .dt-paging .dt-paging-button {
+    padding: 2px 12px !important;
+}
+
+div.dt-container .dt-paging .dt-paging-button.disabled,
+div.dt-container .dt-paging .dt-paging-button.disabled:hover,
+div.dt-container .dt-paging .dt-paging-button.disabled:active {
+    color: #fff !important;
+}
+
+div.dt-container.dt-empty-footer .dt-scroll-body {
+    border-bottom: 0 !important;
+}
+
+.token-list div.dt-container .dt-search {
+    position: absolute;
+    right: 286px;
+    top: 11px;
+    width: 500px;
+}
+
+.token-list div.dt-container .dt-search::before {
+    content: '\e156';
+    font-family: 'tssfont' !important;
+    position: absolute;
+    left: 10px;
+    top: 3px;
+    color: #babcbe;
+    font-size: 19px;
+}
+
 .token-list div.dt-container .dt-search input {
-    border: 1px solid #ccc;
-    border-radius: 3px;
+    border: 1px solid #e5e6e7;
+    border-radius: 6px;
     padding: 5px;
     background-color: transparent;
     color: inherit;
     margin-left: 3px;
-    width: calc(100vw - 423px);
+    width: 100%;
+    font-size: 14px;
     outline: none;
+    height: 36px;
+    padding-left: 30px;
 }
 
 /* .token-list .dt-layout-table{
@@ -729,13 +833,22 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
 }
 
 .location-wrapper {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .location-dropdown {
-  padding: 4px 8px;
-  font-size: 14px;
-  cursor: pointer;
+    cursor: pointer;
+    background: transparent;
+    color: #fff;
+    border: 0;
+    padding: 0;
+    font-size: 16px;
+    outline: none;
+}
+
+.location-dropdown option {
+    color: #000;
+    font-size: 14px;
 }

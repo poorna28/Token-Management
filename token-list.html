@@ -25,6 +25,11 @@
 </head>
 
 <body>
+    <div id="loader" style="display: none;">
+        <div class="loader-img">
+            <img src="./images/loader.gif" alt="Loading...">
+        </div>
+    </div>
     <header class="zc-header d-flex align-items-center justify-content-between">
 
         <!-- Left Section -->
@@ -40,9 +45,14 @@
                 <p>JublieeHills, Hyderabad</p>
             </div>
         </div>
+        <h2 class="table-title">
+            TOKEN ADMIN MANAGER
+        </h2>
 
+        <div style="min-width: 200px;">
+        </div>
         <!-- Right Section -->
-        <div class="zc-header-right d-flex h-100 align-items-center">
+        <div class="zc-header-right d-flex h-100 align-items-center d-none">
             <ul class="zc-header-right-list d-flex h-100 align-items-center">
 
                 <!-- Notifications -->
@@ -115,70 +125,73 @@
     </header>
     <div class="main-content">
         <div class="p-contain">
-            <h2 class="table-title">
-                TOKEN ADMIN MANAGER –
-                <span class="location-wrapper">
-                    <span id="location-name"></span>
-                    <select id="location-dropdown" class="location-dropdown"></select>
-                </span>
-            </h2>
 
 
 
             <div class="stats-bar row m-0 mb-3 align-items-center text-white flex-wrap ">
-                <div class="stat-box col-auto d-flex align-items-center gap-2">
-                    <i class="bi bi-people"></i>
+                <div class="col d-flex align-items-center p-0">
+                    <img height="20px" src="images/map.png" alt=""><select id="location-dropdown"
+                        class="location-dropdown"></select>
+                </div>
+                <div class="stat-box col d-flex align-items-center gap-2">
+                    <img src="images/patients.png" alt="">
                     <div>
-                        <small>Patients</small><br>
+                        <small>Patients</small>
+                        <div></div>
                         <strong><span id="patients"></span></strong>
                     </div>
                 </div>
 
-                <div class="stat-box col-auto d-flex align-items-center gap-2">
-                    <i class="bi bi-check-circle"></i>
+                <div class="stat-box col d-flex align-items-center gap-2">
+                    <img src="images/check.png" alt="">
                     <div>
-                        <small>Completed</small><br>
+                        <small>Completed</small>
+                        <div></div>
                         <strong><span id="completed"></span></strong>
                     </div>
                 </div>
 
-                <div class="stat-box col-auto d-flex align-items-center gap-2">
-                    <i class="bi bi-hourglass-split"></i>
+                <div class="stat-box col d-flex align-items-center gap-2">
+                    <img src="images/inprogress.png" alt="">
                     <div>
-                        <small>In Progress</small><br>
+                        <small>In Progress</small>
+                        <div></div>
                         <strong><span id="inProgress"></span></strong>
                     </div>
                 </div>
 
-                <div class="stat-box col-auto d-flex align-items-center gap-2">
-                    <i class="bi bi-calendar"></i>
-                    <div class="d-flex  flex-column">
-                        <div class="d-flex  ">
-                            <label class="date-label">From:</label>
-                            <span id="fromDate"></span>
-                        </div>
-                        <div class="d-flex ">
-                            <label class="date-label">To:</label>
-                            <span id="toDate"></span>
-                        </div>
-                    </div>
-                    <i class="bi bi-check-circle check-icon ms-2"></i>
-                </div>
 
-                <div class="stat-box col-auto d-flex align-items-center gap-2">
+
+                <div class="stat-box col d-flex align-items-center gap-2">
                     <i class="bi bi-hourglass-split"></i>
                     <div>
-                        <small>Kiosk</small><br>
+                        <small>Kiosk</small>
+                        <div></div>
                         <strong><span id="kioskCount"></span></strong>
                     </div>
                 </div>
 
-                <div class="stat-box col-auto d-flex align-items-center gap-2">
+                <div class="stat-box col d-flex align-items-center gap-2">
                     <i class="bi bi-hourglass-split"></i>
                     <div>
-                        <small>Direct</small><br>
+                        <small>Direct</small>
+                        <div></div>
                         <strong><span id="directCount"></span></strong>
                     </div>
+                </div>
+                <div class="stat-box col d-flex align-items-center gap-2 text-nowrap">
+                    <img src="images/calender.png" alt="">
+                    <div class="d-flex  flex-column dates-box">
+                        <div class="d-flex align-items-center">
+                            <label class="date-label">From:</label>
+                            <span id="fromDate"></span>
+                        </div>
+                        <div class="d-flex  align-items-center">
+                            <label class="date-label">To:</label>
+                            <span id="toDate"></span>
+                        </div>
+                    </div>
+                    <img src="images/check-white.png" alt="">
                 </div>
             </div>
 
