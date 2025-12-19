@@ -339,6 +339,12 @@ function updateUrl(values) {
 
 // Custom filter by issue date
 $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+
+        // Disable future dates
+    const today = new Date().toISOString().split('T')[0];
+    $('#filterDate').attr('max', today);
+
+    
     const selectedDate = $('#filterDate').val();
     if (!selectedDate) return true;
 
