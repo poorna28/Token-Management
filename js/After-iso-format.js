@@ -9,13 +9,7 @@ let locationIdValue = null;
 document.addEventListener("DOMContentLoaded", async () => {
     await initPage();
 });
-function showLoader() {
-    $("#loader").show();
-}
 
-function hideLoader() {
-    $("#loader").hide();
-}
 /* ============================================================
    INITIALIZER
 ============================================================ */
@@ -27,7 +21,6 @@ async function initPage() {
     loadTokens();
 }
 
-
 /* ============================================================
    HELPERS
 ============================================================ */
@@ -36,25 +29,44 @@ function getLocationId() {
 }
 window.getLocationId = getLocationId;
 
+/** Format ISO date (YYYY-MM-DD or full ISO) into "Nov 7, 2025" */
+function formatDateDisplay(value) {
+    if (!value) return "--";
+    const date = new Date(value);
+    if (isNaN(date)) return "--";
+    return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+    });
+}
 
-
-
+/** Format ISO datetime into "Nov 7, 2025, 8:27 AM" */
+function formatDateTime(value) {
+    if (!value) return "Pending";
+    const date = new Date(value);
+    if (isNaN(date)) return "--";
+    return date.toLocaleString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+    });
+}
 
 /* ============================================================
    FETCH LOCATIONS + DROPDOWN
 ============================================================ */
 async function fetchLocationsAndBind(userIdParam) {
-
     const userId = userIdParam || getUserId();
     if (!userId) return;
-
-    // showLoader();   //  START LOADER
 
     const params = new URLSearchParams(window.location.search);
     const urlLocationId = params.get("locationId");
 
-    // const API =
-    //     `https://zcutilities.zeroco.de/api/get/06368b0c1d5d5c14f6cc9c7e330761ce3e4a974bd87ebe392be31adbd115eaf1?username=${encodeURIComponent(userId)}`;
     const API =
         `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/getLocationMaster?username=${encodeURIComponent(userId)}`;
 
@@ -67,8 +79,6 @@ async function fetchLocationsAndBind(userIdParam) {
             updateUrl({ locationId: null });
             return;
         }
-
-
 
         const locations = data.Locations;
         const dropdown = document.getElementById("location-dropdown");
@@ -92,7 +102,6 @@ async function fetchLocationsAndBind(userIdParam) {
             dropdown.appendChild(opt);
         });
 
-        // Only update URL if locationIdValue is valid
         if (locationIdValue) {
             updateUrl({ locationId: locationIdValue });
             await fetchAndBindMetrics(locationIdValue);
@@ -100,16 +109,12 @@ async function fetchLocationsAndBind(userIdParam) {
 
         dropdown.addEventListener("change", async function () {
             locationIdValue = this.value || null;
-
             if (!locationIdValue) {
                 alert("Invalid location selected.");
                 return;
             }
-
             const { fromDate, toDate } = getDateParams();
             updateUrl({ locationId: locationIdValue, fromDate, toDate });
-
-
             await fetchAndBindMetrics(locationIdValue);
             loadTokens();
         });
@@ -118,23 +123,18 @@ async function fetchLocationsAndBind(userIdParam) {
         console.error("Location API Error:", err);
         locationIdValue = null;
         updateUrl({ locationId: null });
-    } finally {
-        // hideLoader();   //  STOP LOADER
     }
 }
-
 
 /* ============================================================
    METRICS
 ============================================================ */
 async function fetchAndBindMetrics(locationId) {
-
     const userId = getUserId();
     if (!userId) return;
 
-    // showLoader();   //  START LOADER
-
     const { fromDate, toDate } = getDateParams();
+
     const API =
         `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetTokenSummary/store-tokens/summary?locationId=${locationId}&fromDate=${fromDate}&toDate=${toDate}`;
 
@@ -147,40 +147,31 @@ async function fetchAndBindMetrics(locationId) {
         document.getElementById("inProgress").textContent = data.metrics.inProgress ?? "--";
         document.getElementById("kioskCount").textContent = data.metrics.kioskCount ?? "--";
         document.getElementById("directCount").textContent = data.metrics.directCount ?? "--";
-        document.getElementById("fromDate").textContent = data.fromDate;
-        document.getElementById("toDate").textContent = data.toDate;
+        document.getElementById("fromDate").textContent = formatDateDisplay(data.fromDate);
+        document.getElementById("toDate").textContent = formatDateDisplay(data.toDate);
 
     } catch (err) {
         console.error("Metrics API Error:", err);
-    } finally {
-        // hideLoader();   //  STOP LOADER
     }
 }
-
 
 /* ============================================================
    TOKENS TABLE
 ============================================================ */
 function loadTokens() {
-
     const userId = getUserId();
     if (!userId) return;
 
-    // showLoader(); //  START LOADER
-
     const params = new URLSearchParams(window.location.search);
-
     const locationId = params.get("locationId") || locationIdValue;
     const { fromDate, toDate } = getDateParams();
-    // Validate page + size
+
     const page = getIntParam(params, "page", 0, 0, 9999);
     const size = getIntParam(params, "size", 20, 1, 100);
 
-    // Whitelist sort
     const validSortFields = ["issueTime", "exitTime", "tokenNumber"];
     const sort = getWhitelistedParam(params, "sort", validSortFields, "issueTime");
 
-    //  Whitelist status
     const validStatuses = ["ALL", "COMPLETED", "IN_PROGRESS", "PENDING"];
     const status = getWhitelistedParam(params, "status", validStatuses, "ALL");
 
@@ -192,22 +183,15 @@ function loadTokens() {
     fetch(API)
         .then(resp => resp.json())
         .then(data => {
-
             const tokens = data?.content || [];
 
-            /* ============================
-               SAFE DESTROY
-            ============================ */
             if ($.fn.DataTable.isDataTable("#tokenTable")) {
                 const dt = $("#tokenTable").DataTable();
                 dt.clear();
                 dt.destroy();
-                $("#tokenTable tbody").empty(); //  REQUIRED
+                $("#tokenTable tbody").empty();
             }
 
-            /* ============================
-               INIT DATATABLE
-            ============================ */
             const table = $("#tokenTable").DataTable({
                 data: tokens,
                 destroy: true,
@@ -235,13 +219,11 @@ function loadTokens() {
                     },
                     { data: "location", defaultContent: "--" },
                     { data: "tokenNumber", defaultContent: "--" },
-
                     {
                         data: "issueTime",
                         className: "green-text",
                         render: d => d ? formatDateTime(d) : "--"
                     },
-
                     {
                         data: "exitTime",
                         className: "green-text",
@@ -251,10 +233,7 @@ function loadTokens() {
                         data: "timeDurationMinutes",
                         render: d => d ? `${d} min` : "--"
                     },
-                    {
-                        data: "counterNumber",
-                        defaultContent: "--"
-                    },
+                    { data: "counterNumber", defaultContent: "--" },
                     {
                         data: null,
                         orderable: false,
@@ -267,39 +246,30 @@ function loadTokens() {
                 ]
             });
 
-            /* ============================
-               BIND HISTORY TOGGLE
-            ============================ */
             bindHistoryToggle(table, page, size);
 
-            /* ============================
+                       /* ============================
                UPDATE URL DATES
             ============================ */
             if (data.fromDate && data.toDate) {
                 updateUrl({
-                    fromDate: data.fromDate, toDate: data.toDate
+                    fromDate: data.fromDate,
+                    toDate: data.toDate
                 });
             }
-
         })
         .catch(err => {
             console.error("Tokens API Error:", err);
-        })
-        .finally(() => {
-            // hideLoader(); //  STOP LOADER
         });
 }
-
 
 /* ============================================================
    HISTORY TOGGLE
 ============================================================ */
 function bindHistoryToggle(table, page, size) {
-
     $("#tokenTable tbody")
         .off("click", ".toggle-history")
         .on("click", ".toggle-history", function () {
-
             const row = table.row($(this).closest("tr"));
             const data = row.data();
             const icon = $(this).find("i");
@@ -310,34 +280,34 @@ function bindHistoryToggle(table, page, size) {
                 return;
             }
 
-            const { fromDate, toDate } = getDateParams(); const API =
+            const { fromDate, toDate } = getDateParams();
+            const API =
                 `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetCustomerHistory/customers/history?customerId=${data.customerId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&size=${size}`;
 
             fetch(API)
                 .then(r => r.json())
                 .then(h => {
-                    const html = (h.visits || []).map(h => `
+                    const html = (h.visits || []).map(v => `
                         <li class="history-block">
-            <span style="min-width: 80px;display: inline-block;">${h.tokenNumber}</span>
-            <span style="min-width: 200px;display: inline-block;" class="green-text">${formatDateTime(h.issueTime)}</span>
-            <span style="min-width:200px; display:inline-block;" class="exit-time">
-    ${h.issueTime && h.exitTime
-                            ? `${Math.floor((new Date(h.exitTime) - new Date(h.issueTime)) / 60000)} min`
-                            : "--"
-                        }
-</span>
-            <span style="min-width: 120px;display: inline-block;">${h.status}</span>
-            <span style="min-width: 120px;display: inline-block;">Order: ${h.orderId || "--"}</span>
-          </li>`).join("");
+                            <span style="min-width: 80px;display: inline-block;">${v.tokenNumber}</span>
+                            <span style="min-width: 200px;display: inline-block;" class="green-text">${formatDateTime(v.issueTime)}</span>
+                            <span style="min-width:200px; display:inline-block;" class="exit-time">
+                                ${v.issueTime && v.exitTime
+                                    ? `${Math.floor((new Date(v.exitTime) - new Date(v.issueTime)) / 60000)} min`
+                                    : "--"}
+                            </span>
+                            <span style="min-width: 120px;display: inline-block;">${v.status}</span>
+                            <span style="min-width: 120px;display: inline-block;">Order: ${v.orderId || "--"}</span>
+                        </li>`).join("");
 
-                    row.child(`<div style="background-color:#f6f6f6;padding:10px 15px;border-radius:10px;border:1px solid #ccc;margin-left:45px">
-            <h6 class="mb-0">History:</h6>
-            <ul>${html || "<em>No history available.</em>"}</ul>
-          </div>
-        `).show();
+                    row.child(`
+                        <div style="background-color:#f6f6f6;padding:10px 15px;border-radius:10px;border:1px solid #ccc;margin-left:45px">
+                            <h6 class="mb-0">History:</h6>
+                            <ul>${html || "<em>No history available.</em>"}</ul>
+                        </div>
+                    `).show();
                     icon.toggleClass("bi-chevron-down bi-chevron-up");
                 });
-
         });
 }
 
@@ -348,79 +318,13 @@ function updateUrl(values) {
     const url = new URL(window.location);
     Object.entries(values).forEach(([k, v]) => {
         if (v === null || v === undefined || v === "") {
-            //  Remove param if value is empty/null
             url.searchParams.delete(k);
         } else {
-            //  Otherwise set/update param
             url.searchParams.set(k, v);
         }
     });
     window.history.replaceState({}, "", url);
 }
-
-
-
-
-
-/* ============================================================
-   LOADER HANDLER (Unified)
-============================================================ */
-(function () {
-    let activeFetchCount = 0;
-    const loader = document.getElementById('loader');
-
-    if (!loader) {
-        console.error('Loader element not found');
-        return;
-    }
-
-    function showLoader() {
-        loader.style.display = 'flex';
-    }
-
-    function hideLoader() {
-        loader.style.display = 'none';
-    }
-
-    // Expose globally for manual use
-    window.showLoader = showLoader;
-    window.hideLoader = hideLoader;
-
-    const originalFetch = window.fetch;
-    window.fetch = function (...args) {
-        activeFetchCount++;
-        showLoader();
-
-        return originalFetch.apply(this, args)
-            .finally(() => {
-                activeFetchCount--;
-                if (activeFetchCount <= 0) {
-                    activeFetchCount = 0;
-                    hideLoader();
-                }
-            });
-    };
-})();
-
-
-
-function formatDateTime(value) {
-    if (!value) return "Pending";
-
-    const date = new Date(value);
-    if (isNaN(date)) return "--";
-
-    return date.toLocaleString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true
-    });
-}
-
 
 /* ============================================================
    HELPERS
@@ -437,8 +341,6 @@ function getUserId() {
 }
 window.getUserId = getUserId;
 
-
-
 function getIntParam(params, key, defaultValue, min, max) {
     const val = parseInt(params.get(key), 10);
     if (isNaN(val)) return defaultValue;
@@ -450,16 +352,15 @@ function getWhitelistedParam(params, key, whitelist, defaultValue) {
     return whitelist.includes(val) ? val : defaultValue;
 }
 
-
-
-
-
+/* ============================================================
+   DATE PARAMS (ISO)
+============================================================ */
 function getDateParams() {
     const params = new URLSearchParams(window.location.search);
     const isoRegex = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD
 
     let fromDate = params.get("fromDate");
-    let toDate = params.get("toDate");
+    let toDate   = params.get("toDate");
 
     if (!fromDate || !isoRegex.test(fromDate)) {
         fromDate = new Date().toISOString().split("T")[0]; // today
@@ -470,4 +371,3 @@ function getDateParams() {
 
     return { fromDate, toDate };
 }
-
