@@ -1,13 +1,14 @@
 // ----------------------
 // CONFIG
 // ----------------------
-const API_URL =
-  "https://zcutilities.zeroco.de/api/get/d0cc0866412341f65eec468ca97d4a73c1adf6f75be22e81cb4c7e9e83e7a8ff?locationId=10&limit=25";
+// const API_URL =
+  // "https://zcutilities.zeroco.de/api/get/d0cc0866412341f65eec468ca97d4a73c1adf6f75be22e81cb4c7e9e83e7a8ff?locationId=10&limit=25";
 
+  const API_URL = "https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=10&limit=25";
 const DISPLAY_LIMIT = 6;
 
 const STATUS_ORDER = [
-  "COLLECT_HERE",
+  "READY_FOR_DELIVERY",
   "BILLING",
   "PICKING",
   "PACKING"
@@ -15,7 +16,7 @@ const STATUS_ORDER = [
 
 // Cursor memory per status
 const statusIndex = {
-  COLLECT_HERE: 0,
+  READY_FOR_DELIVERY: 0,
   BILLING: 0,
   PICKING: 0,
   PACKING: 0
@@ -54,7 +55,7 @@ async function fetchTokenBoard() {
 function buildDisplayList(tokens) {
   // Group by STATUS LABEL
   const grouped = {
-    COLLECT_HERE: [],
+    READY_FOR_DELIVERY: [],
     BILLING: [],
     PICKING: [],
     PACKING: []
@@ -130,7 +131,7 @@ fetchTokenBoard();
 // const DISPLAY_LIMIT = 6;
 
 // const STATUS_ORDER = [
-//   "COLLECT_HERE",
+//   "READY_FOR_DELIVERY",
 //   "BILLING",
 //   "PICKING",
 //   "PACKING"
