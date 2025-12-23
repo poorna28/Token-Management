@@ -95,16 +95,37 @@ function buildDisplayList(tokens) {
 // ----------------------
 // UI UPDATE (NO FLICKER)
 // ----------------------
+// function updateTable(tokens) {
+//   const tbody = document.getElementById("tableBody");
+
+//   let html = "";
+//   tokens.forEach(t => {
+//     html += `
+//     <div>
+//       <tr class="${t.highlight ? "highlight" : ""}">
+//         <td>${t.tokenNumber}</td>
+//         <td>${t.customerName || "-"}</td>
+//         <td>${formatStatus(t.statusLabel)}</td>
+
+//         <td>${t.counterNumber || "-"}</td>
+//       </tr>
+//     </div>
+//     `;
+//   });
+
+//   tbody.innerHTML = html;
+// }
 function updateTable(tokens) {
   const tbody = document.getElementById("tableBody");
 
   let html = "";
   tokens.forEach(t => {
+    const statusClass = `status-${t.statusLabel.toLowerCase()}`;
     html += `
-      <tr class="${t.highlight ? "highlight" : ""}">
+      <tr class="${statusClass} ${t.highlight ? "highlight" : ""}">
         <td>${t.tokenNumber}</td>
         <td>${t.customerName || "-"}</td>
-        <td>${t.statusLabel.replace("_", " ")}</td>
+        <td>${formatStatus(t.statusLabel)}</td>
         <td>${t.counterNumber || "-"}</td>
       </tr>
     `;
@@ -113,129 +134,16 @@ function updateTable(tokens) {
   tbody.innerHTML = html;
 }
 
+
 // ----------------------
 // INITIAL LOAD
 // ----------------------
 fetchTokenBoard();
 
 
-//======================================================================
-
-
-// // ----------------------
-// // CONFIG
-// // ----------------------
-// const API_URL =
-//   "https://zcutilities.zeroco.de/api/get/d0cc0866412341f65eec468ca97d4a73c1adf6f75be22e81cb4c7e9e83e7a8ff?locationId=10&limit=25";
-
-// const DISPLAY_LIMIT = 6;
-
-// const STATUS_ORDER = [
-//   "READY_FOR_DELIVERY",
-//   "BILLING",
-//   "PICKING",
-//   "PACKING"
-// ];
-
-// let refreshTimer = null;
-// let globalIndex = 0;
-// let orderedCache = [];
-
-// // ----------------------
-// // FETCH DATA
-// // ----------------------
-// async function fetchBoard() {
-//   try {
-//     const res = await fetch(API_URL, {
-//       method: "GET",
-//       cache: "no-store"
-//     });
-
-//     if (!res.ok) throw new Error("API error");
-
-//     const data = await res.json();
-
-//     orderedCache = buildOrderedList(data.tokens);
-
-//     renderNextPage();
-
-//     if (!refreshTimer && data.refreshIntervalSeconds) {
-//       refreshTimer = setInterval(
-//         renderNextPage,
-//         data.refreshIntervalSeconds * 1000
-//       );
-//     }
-
-//   } catch (err) {
-//     console.error("Fetch error:", err);
-//   }
-// }
-
-// // ----------------------
-// // BUILD ORDERED LIST
-// // ----------------------
-// function buildOrderedList(tokens) {
-//   const grouped = {};
-//   STATUS_ORDER.forEach(s => grouped[s] = []);
-
-//   tokens.forEach(t => {
-//     if (grouped[t.statusLabel]) {
-//       grouped[t.statusLabel].push(t);
-//     }
-//   });
-
-//   const ordered = [];
-//   STATUS_ORDER.forEach(status => {
-//     ordered.push(...grouped[status]);
-//   });
-
-//   globalIndex = 0; // reset on new data
-//   return ordered;
-// }
-
-// // ----------------------
-// // ROTATION (KEY FIX)
-// // ----------------------
-// function renderNextPage() {
-//   if (!orderedCache.length) return;
-
-//   const slice = [];
-
-//   for (let i = 0; i < DISPLAY_LIMIT; i++) {
-//     slice.push(
-//       orderedCache[(globalIndex + i) % orderedCache.length]
-//     );
-//   }
-
-//   globalIndex =
-//     (globalIndex + DISPLAY_LIMIT) % orderedCache.length;
-
-//   updateTable(slice);
-// }
-
-// // ----------------------
-// // UPDATE UI
-// // ----------------------
-// function updateTable(tokens) {
-//   const tbody = document.getElementById("tableBody");
-
-//   let html = "";
-
-//   tokens.forEach(t => {
-//     html += `
-//       <tr class="${t.highlight ? "highlight" : ""}">
-//         <td>${t.tokenNumber}</td>
-//         <td>${t.customerName}</td>
-//         <td>${t.statusLabel.replace("_", " ")}</td>
-//         <td>${t.counterNumber || "-"}</td>
-//       </tr>
-//     `;
-//   });
-
-//   tbody.innerHTML = html;
-// }
-
-// // ----------------------
-// // START
-// // ----------------------
-// fetchBoard();
+function formatStatus(label) {
+  return label
+    .split("_")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}

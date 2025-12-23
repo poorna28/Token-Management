@@ -193,7 +193,7 @@ const { fromDate, toDate } = getDateParams();
     const sort = getWhitelistedParam(params, "sort", validSortFields, "issueTime");
 
     //  Whitelist status
-    const validStatuses = ["ALL", "COMPLETED", "IN_PROGRESS", "PENDING"];
+    const validStatuses = ["ALL", "COMPLETED", "IN PROGRESS", "PENDING"];
     const status = getWhitelistedParam(params, "status", validStatuses, "ALL");
 
     const API =
@@ -241,7 +241,7 @@ const { fromDate, toDate } = getDateParams();
                                 </strong>
                                 <div>
                                     <p class="m-0">${d || "--"}</p>
-                                    <span class="phone-number">${r.customerPhone || ""}</span>
+                                    <span class="phone-number">+91 ${r.customerPhone || ""}</span>
                                 </div>
                             </div>`
                     },
@@ -257,7 +257,7 @@ const { fromDate, toDate } = getDateParams();
                     {
                         data: "exitTime",
                         className: "green-text",
-                        render: d => d ? formatDateTime(d) : "Pending"
+                        render: d => d ? formatDateTime(d) : "---"
                     },
                     {
                         data: "timeDurationMinutes",
@@ -333,15 +333,18 @@ function bindHistoryToggle(table, page, size) {
                     const html = (h.visits || []).map(h => `
                         <li class="history-block">
             <span style="min-width: 80px;display: inline-block;">${h.tokenNumber}</span>
-            <span style="min-width: 200px;display: inline-block;" class="green-text">${formatDateTime(h.issueTime)}</span>
+            <span style="min-width: 200px;display: inline-block;" >${formatDateTime(h.issueTime)}</span>
+              <span style="min-width: 200px;display: inline-block;" class="green-text">${formatDateTime(h.exitTime) ?? '---'}</span>
             <span style="min-width:200px; display:inline-block;" class="exit-time">
     ${h.issueTime && h.exitTime
                             ? `${Math.floor((new Date(h.exitTime) - new Date(h.issueTime)) / 60000)} min`
                             : "--"
                         }
 </span>
-            <span style="min-width: 120px;display: inline-block;">${h.status}</span>
-            <span style="min-width: 120px;display: inline-block;">Order: ${h.orderId || "--"}</span>
+           <span style="min-width: 120px;display: inline-block;">${((h.status || "---").replace(/_/g, " ")).toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}</span>
+
+            <span style="min-width: 120px;display: inline-block;">${h.counterNumber|| "---"}</span>
+        
           </li>`).join("");
 
                     row.child(`<div style="background-color:#f6f6f6;padding:10px 15px;border-radius:10px;border:1px solid #ccc;margin-left:45px">
@@ -464,10 +467,10 @@ $('#filterDate').on('change', function () {
 
 
 function formatDateTime(value) {
-    if (!value) return "Pending";
+    if (!value) return "---";
 
     const date = new Date(value);
-    if (isNaN(date)) return "--";
+    if (isNaN(date)) return "---";
 
     return date.toLocaleString("en-US", {
         month: "short",
