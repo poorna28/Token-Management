@@ -36,9 +36,21 @@ function getLocationId() {
 }
 window.getLocationId = getLocationId;
 
+function formatDateDDMMMYYYY(date) {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return `${String(date.getDate()).padStart(2, "0")}-${months[date.getMonth()]}-${date.getFullYear()}`;
+}
 
-
-
+function toDDMMYYYY(date) {
+    if (date instanceof Date) {
+        return `${String(date.getDate()).padStart(2, "0")}-${String(date.getMonth() + 1).padStart(2, "0")}-${date.getFullYear()}`;
+    }
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        const [y, m, d] = date.split("-");
+        return `${d}-${m}-${y}`;
+    }
+    return date || "";
+}
 
 /* ============================================================
    FETCH LOCATIONS + DROPDOWN
@@ -53,10 +65,11 @@ async function fetchLocationsAndBind(userIdParam) {
     const params = new URLSearchParams(window.location.search);
     const urlLocationId = params.get("locationId");
 
-    // const API =
-    //     `https://zcutilities.zeroco.de/api/get/06368b0c1d5d5c14f6cc9c7e330761ce3e4a974bd87ebe392be31adbd115eaf1?username=${encodeURIComponent(userId)}`;
+   // const API =
+      // `https://zcutilities.zeroco.de/api/get/06368b0c1d5d5c14f6cc9c7e330761ce3e4a974bd87ebe392be31adbd115eaf1?username=${encodeURIComponent(userId)}`;
+
     const API =
-        `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/getLocationMaster?username=${encodeURIComponent(userId)}`;
+       `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/getLocationMaster?username=${encodeURIComponent(userId)}`;
 
     try {
         const res = await fetch(API, { cache: "no-store" });
@@ -105,7 +118,6 @@ async function fetchLocationsAndBind(userIdParam) {
                 alert("Invalid location selected.");
                 return;
             }
-
             const { fromDate, toDate } = getDateParams();
             updateUrl({ locationId: locationIdValue, fromDate, toDate });
 
@@ -134,9 +146,9 @@ async function fetchAndBindMetrics(locationId) {
 
     // showLoader();   //  START LOADER
 
-    const { fromDate, toDate } = getDateParams();
+    const { fromDate, toDate } = getDateParams(); const apiFrom = toDDMMMYYYY(parseDDMMYYYY(fromDate)); const apiTo = toDDMMMYYYY(parseDDMMYYYY(toDate));
     const API =
-        `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetTokenSummary/store-tokens/summary?locationId=${locationId}&fromDate=${fromDate}&toDate=${toDate}`;
+        `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetTokenSummary/store-tokens/summary?locationId=${locationId}&fromDate=${apiFrom}&toDate=${apiTo}`;
 
     try {
         const res = await fetch(API, { cache: "no-store" });
@@ -171,7 +183,7 @@ function loadTokens() {
     const params = new URLSearchParams(window.location.search);
 
     const locationId = params.get("locationId") || locationIdValue;
-    const { fromDate, toDate } = getDateParams();
+const { fromDate, toDate } = getDateParams();
     // Validate page + size
     const page = getIntParam(params, "page", 0, 0, 9999);
     const size = getIntParam(params, "size", 20, 1, 100);
@@ -277,7 +289,8 @@ function loadTokens() {
             ============================ */
             if (data.fromDate && data.toDate) {
                 updateUrl({
-                    fromDate: data.fromDate, toDate: data.toDate
+                    fromDate: toDDMMYYYY(data.fromDate),
+                    toDate: toDDMMYYYY(data.toDate)
                 });
             }
 
@@ -310,8 +323,9 @@ function bindHistoryToggle(table, page, size) {
                 return;
             }
 
-            const { fromDate, toDate } = getDateParams(); const API =
-                `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetCustomerHistory/customers/history?customerId=${data.customerId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&size=${size}`;
+            const { fromDate, toDate } = getDateParams(); const apiFrom = toDDMMMYYYY(parseDDMMYYYY(fromDate)); const apiTo = toDDMMMYYYY(parseDDMMYYYY(toDate));
+            const API =
+                `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetCustomerHistory/customers/history?customerId=${data.customerId}&fromDate=${apiFrom}&toDate=${apiTo}&page=${page}&size=${size}`;
 
             fetch(API)
                 .then(r => r.json())
@@ -358,6 +372,51 @@ function updateUrl(values) {
     window.history.replaceState({}, "", url);
 }
 
+//  Set max date once on DOM ready
+document.addEventListener("DOMContentLoaded", () => {
+    const today = new Date().toISOString().split('T')[0];
+    $('#filterDate').attr('max', today);
+});
+
+// Custom filter by issue date
+// $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+
+//     const selectedDate = $('#filterDate').val();
+//     if (!selectedDate) return true;
+
+//     const issueTime = data[3]; // 4th column: Issue Time
+//     const issueDate = issueTime.split("T")[0];
+
+//     return issueDate === selectedDate;
+// });
+
+// Custom filter by issue date using raw data
+$.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+    const selectedDate = $('#filterDate').val(); // "YYYY-MM-DD" from <input type="date">
+    if (!selectedDate) return true;
+
+    // Get the full row object instead of the formatted string
+    const rowData = $('#tokenTable').DataTable().row(dataIndex).data();
+    const issueTimeRaw = rowData.issueTime; // e.g. "2025-11-07T08:27:04+05:30"
+
+    if (!issueTimeRaw) return false;
+
+    // Normalize to YYYY-MM-DD
+    const issueDate = issueTimeRaw.split("T")[0]; // "2025-11-07"
+
+    return issueDate === selectedDate;
+});
+
+// Trigger filter on date change
+$('#filterDate').on('change', function () {
+    $('#tokenTable').DataTable().draw();
+});
+
+
+// Trigger filter on date change
+$('#filterDate').on('change', function () {
+    $('#tokenTable').DataTable().draw();
+});
 
 
 
@@ -451,23 +510,24 @@ function getWhitelistedParam(params, key, whitelist, defaultValue) {
 }
 
 
+function todayDDMMYYYY() {
+    const d = new Date();
+    return `${String(d.getDate()).padStart(2, "0")}-${String(d.getMonth() + 1).padStart(2, "0")}-${d.getFullYear()}`;
+}
 
+function toDDMMMYYYY(date) {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return `${String(date.getDate()).padStart(2, "0")}-${months[date.getMonth()]}-${date.getFullYear()}`;
+}
 
+function parseDDMMYYYY(str) {
+    const [d, m, y] = str.split("-").map(Number);
+    return new Date(y, m - 1, d);
+}
 
 function getDateParams() {
     const params = new URLSearchParams(window.location.search);
-    const isoRegex = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD
-
-    let fromDate = params.get("fromDate");
-    let toDate = params.get("toDate");
-
-    if (!fromDate || !isoRegex.test(fromDate)) {
-        fromDate = new Date().toISOString().split("T")[0]; // today
-    }
-    if (!toDate || !isoRegex.test(toDate)) {
-        toDate = new Date().toISOString().split("T")[0]; // today
-    }
-
+    const fromDate = params.get("fromDate") || todayDDMMYYYY();
+    const toDate = params.get("toDate") || todayDDMMYYYY();
     return { fromDate, toDate };
 }
-
