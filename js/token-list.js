@@ -131,12 +131,20 @@ async function fetchAndBindMetrics(locationId) {
     // showLoader();   //  START LOADER
 
     const { fromDate, toDate } = getDateParams();
+
+
+
+    if (fromDate !== toDate) { alert("Metrics are only available for single-day filters."); clearMetricsUI(); return; }
+
+    if (new Date(fromDate) > new Date(toDate)) { alert("From date cannot be later than To date."); return; }
     const API =
         `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetTokenSummary/store-tokens/summary?locationId=${locationId}&fromDate=${fromDate}&toDate=${toDate}`;
 
     try {
         const res = await fetch(API, { cache: "no-store" });
         const data = await res.json();
+
+        if (!data.metrics) { alert(`No metrics found between ${fromDate} and ${toDate}`); return; }
 
         document.getElementById("patients").textContent = data.metrics.patients ?? "--";
         document.getElementById("completed").textContent = data.metrics.completed ?? "--";
@@ -169,6 +177,11 @@ function loadTokens() {
 
     const locationId = params.get("locationId") || locationIdValue;
     const { fromDate, toDate } = getDateParams();
+
+   if (fromDate !== toDate) { 
+    alert("Token list is only available for single-day filters.");
+$("#tokenTable tbody").html(` <tr style="position: relative; z-index: 9999"> <td colspan="8" style="text-align:center;"> <p>Please select a single-day filter to view token data.</p> </td> </tr> `);      return; 
+    }
     // Validate page + size
     const page = getIntParam(params, "page", 0, 0, 9999);
     const size = getIntParam(params, "size", 20, 1, 100);
@@ -191,6 +204,8 @@ function loadTokens() {
         .then(data => {
 
             const tokens = data?.content || [];
+            if (!tokens.length) { alert(`No records found between ${fromDate} and ${toDate}`); }
+            if (!tokens.length) { $("#tokenTable tbody").html(` <tr><td colspan="8" style="text-align:center;">No tokens found for ${fromDate}</td></tr> `); return; }
 
             /* ============================
                SAFE DESTROY
@@ -210,6 +225,7 @@ function loadTokens() {
                 destroy: true,
                 responsive: true,
                 scrollY: "calc(100vh - 370px)",
+                order: [[3, "asc"]],
                 language: {
                     search: "",
                     searchPlaceholder: "Search by Name, Token, Location, Counter..."
@@ -305,37 +321,62 @@ function bindHistoryToggle(table, page, size) {
                 return;
             }
 
-            const { fromDate, toDate } = getDateParams(); const API =
+            const { fromDate, toDate } = getDateParams();
+            if (fromDate !== toDate) {
+                alert("History is only available for single-day filters.");
+                return;
+            }
+
+            // Validate range 
+            if (new Date(fromDate) > new Date(toDate)) { alert("From date cannot be later than To date."); return; }
+
+            const API =
                 `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetCustomerHistory/customers/history?customerId=${data.customerId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&size=${size}`;
 
             fetch(API)
                 .then(r => r.json())
-                .then(h => {
-                    const html = (h.visits || []).map(h => `
-                        <li class="history-block">
-            <span style="min-width: 80px;display: inline-block;">${h.tokenNumber}</span>
-            <span style="min-width: 200px;display: inline-block;" >${formatDateTime(h.issueTime)}</span>
-              <span style="min-width: 200px;display: inline-block;" class="green-text">${formatDateTime(h.exitTime) ?? '---'}</span>
-            <span style="min-width:200px; display:inline-block;" class="exit-time">
-    ${h.issueTime && h.exitTime
-                            ? `${Math.floor((new Date(h.exitTime) - new Date(h.issueTime)) / 60000)} min`
-                            : "--"
-                        }
-</span>
-           <span style="min-width: 120px;display: inline-block;">${((h.status || "---").replace(/_/g, " ")).toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}</span>
+              .then(h => {
+  const html = (h.visits || []).map(h => `
+    <tr class="token-list-accordian-table">
+      <td>${h.tokenNumber}</td>
+      <td>${formatDateTime(h.issueTime)}</td>
+      <td class="green-text">${formatDateTime(h.exitTime) ?? '---'}</td>
+      <td>
+        ${h.issueTime && h.exitTime
+          ? `${Math.floor((new Date(h.exitTime) - new Date(h.issueTime)) / 60000)} min`
+          : "--"
+        }
+      </td>
+      <td>${((h.status || "---").replace(/_/g, " ")).toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}</td>
+      <td>${h.counterNumber || "---"}</td>
+    </tr>
+  `).join("");
 
-            <span style="min-width: 120px;display: inline-block;">${h.counterNumber || "---"}</span>
-        
-          </li>`).join("");
+  row.child(`
+    <div style="background-color:#f6f6f6;padding:10px 15px;border-radius:10px;border:1px solid #ccc;margin-left:45px">
+      <h6 class="mb-2">History:</h6>
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr >
+            <th style="padding:6px;">Token</th>
+            <th style="padding:6px;">Issue Time</th>
+            <th style="padding:6px;">Exit Time</th>
+            <th style="padding:6px;">Duration</th>
+            <th style="padding:6px;">Status</th>
+            <th style="padding:6px;">Counter</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${html || `<tr><td colspan="6"><em>No history available.</em></td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `).show();
 
-                    row.child(`<div style="background-color:#f6f6f6;padding:10px 15px;border-radius:10px;border:1px solid #ccc;margin-left:45px">
-            <h6 class="mb-0">History:</h6>
-            <ul>${html || "<em>No history available.</em>"}</ul>
-          </div>
-        `).show();
-                    icon.toggleClass("bi-chevron-down bi-chevron-up");
-                });
+  icon.toggleClass("bi-chevron-down bi-chevron-up");
+})
 
+                .catch(err => { console.error("History API Error:", err); alert("Error loading history. Please try again."); });
         });
 }
 
@@ -497,20 +538,27 @@ function getWhitelistedParam(params, key, whitelist, defaultValue) {
 
 function getDateParams() {
     const params = new URLSearchParams(window.location.search);
-    const isoRegex = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD
-
     let fromDate = params.get("fromDate");
     let toDate = params.get("toDate");
 
-    if (!fromDate || !isoRegex.test(fromDate)) {
-        fromDate = new Date().toISOString().split("T")[0]; // today
+    if (!isValidISODate(fromDate)) {
+        alert("Invalid fromDate in URL. Defaulting to today.");
+        fromDate = new Date().toISOString().split("T")[0];
     }
-    if (!toDate || !isoRegex.test(toDate)) {
-        toDate = new Date().toISOString().split("T")[0]; // today
+    if (!isValidISODate(toDate)) {
+        alert("Invalid toDate in URL. Defaulting to today.");
+        toDate = new Date().toISOString().split("T")[0];
+    }
+
+    if (new Date(fromDate) > new Date(toDate)) {
+        alert("From date cannot be later than To date.");
+        [fromDate, toDate] = [toDate, fromDate]; // or block the call
     }
 
     return { fromDate, toDate };
 }
+
+
 
 function formatDateDisplay(value) {
     if (!value) return "--";
@@ -522,3 +570,20 @@ function formatDateDisplay(value) {
         year: "numeric"
     });
 }
+
+
+function isValidISODate(dateStr) {
+    const date = new Date(dateStr);
+    return !isNaN(date.getTime());
+}
+
+
+function clearMetricsUI() 
+{ document.getElementById("patients").textContent = "--";
+     document.getElementById("completed").textContent = "--";
+      document.getElementById("inProgress").textContent = "--";
+       document.getElementById("kioskCount").textContent = "--"; 
+       document.getElementById("directCount").textContent = "--"; 
+       document.getElementById("fromDate").textContent = "--"; 
+       document.getElementById("toDate").textContent = "--";
+ }

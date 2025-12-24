@@ -879,4 +879,6 @@ tr.status-collect_here {
 
 }
 
-
+.token-list-accordian-table td{
+    background-color: transparent !important;
+}
