@@ -9,13 +9,13 @@ let locationIdValue = null;
 document.addEventListener("DOMContentLoaded", async () => {
     await initPage();
 });
-function showLoader() {
-    $("#loader").show();
-}
+// function showLoader() {
+//     $("#loader").show();
+// }
 
-function hideLoader() {
-    $("#loader").hide();
-}
+// function hideLoader() {
+//     $("#loader").hide();
+// }
 /* ============================================================
    INITIALIZER
 ============================================================ */
@@ -157,6 +157,7 @@ async function fetchAndBindMetrics(locationId) {
 
     } catch (err) {
         console.error("Metrics API Error:", err);
+        clearMetricsUI();
     } finally {
         // hideLoader();   //  STOP LOADER
     }
@@ -217,6 +218,8 @@ $("#tokenTable tbody").html(` <tr style="position: relative; z-index: 9999"> <td
                 $("#tokenTable tbody").empty(); //  REQUIRED
             }
 
+            // Clear any previously pushed filters
+            $.fn.dataTable.ext.search = [];
             /* ============================
                INIT DATATABLE
             ============================ */
@@ -295,6 +298,7 @@ $("#tokenTable tbody").html(` <tr style="position: relative; z-index: 9999"> <td
         })
         .catch(err => {
             console.error("Tokens API Error:", err);
+            $("#tokenTable tbody").html( `<tr><td colspan="8" style="text-align:center;">Error loading tokens</td></tr>` );
         })
         .finally(() => {
             // hideLoader(); //  STOP LOADER
@@ -313,6 +317,12 @@ function bindHistoryToggle(table, page, size) {
 
             const row = table.row($(this).closest("tr"));
             const data = row.data();
+            console.group(" History Toggle Click");
+console.log("Row data object:", data);
+console.log("customerId:", data?.customerId);
+console.log("Row index:", row.index());
+console.groupEnd();
+
             const icon = $(this).find("i");
 
             if (row.child.isShown()) {
@@ -327,13 +337,24 @@ function bindHistoryToggle(table, page, size) {
                 return;
             }
 
+            if (!data || !data.customerId) {
+    console.error("❌ customerId missing in row data", data);
+    alert("Customer ID not available for this record.");
+    return;
+}
+
+
+
             // Validate range 
             if (new Date(fromDate) > new Date(toDate)) { alert("From date cannot be later than To date."); return; }
 
             const API =
                 `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetCustomerHistory/customers/history?customerId=${data.customerId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&size=${size}`;
 
-            fetch(API)
+              console.log(" API URL:", API);
+
+
+           fetch(API)
                 .then(r => r.json())
               .then(h => {
   const html = (h.visits || []).map(h => `
@@ -358,12 +379,12 @@ function bindHistoryToggle(table, page, size) {
       <table style="width:100%;border-collapse:collapse;">
         <thead>
           <tr >
-            <th style="padding:6px;">Token</th>
-            <th style="padding:6px;">Issue Time</th>
-            <th style="padding:6px;">Exit Time</th>
-            <th style="padding:6px;">Duration</th>
-            <th style="padding:6px;">Status</th>
-            <th style="padding:6px;">Counter</th>
+            <th style="padding:0px 0px 6px;">Token</th>
+            <th style="padding:0px 0px 6px;">Issue Time</th>
+            <th style="padding:0px 0px 6px;">Exit Time</th>
+            <th style="padding:0px 0px 6px;">Duration</th>
+            <th style="padding:0px 0px 6px;">Status</th>
+            <th style="padding:0px 0px 6px;">Counter</th>
           </tr>
         </thead>
         <tbody>
@@ -433,15 +454,17 @@ $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
 });
 
 // Trigger filter on date change
+// Trigger filter on date change (single binding)
 $('#filterDate').on('change', function () {
-    $('#tokenTable').DataTable().draw();
+    const table = $('#tokenTable').DataTable();
+    if (table) {
+        table.draw();
+    }
 });
 
 
-// Trigger filter on date change
-$('#filterDate').on('change', function () {
-    $('#tokenTable').DataTable().draw();
-});
+
+
 
 
 
@@ -552,7 +575,7 @@ function getDateParams() {
 
     if (new Date(fromDate) > new Date(toDate)) {
         alert("From date cannot be later than To date.");
-        [fromDate, toDate] = [toDate, fromDate]; // or block the call
+        return { fromDate: null, toDate: null }; // block instead of swap
     }
 
     return { fromDate, toDate };
