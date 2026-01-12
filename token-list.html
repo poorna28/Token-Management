@@ -20,9 +20,9 @@
 
     <link rel="stylesheet" href="css/dataTables-min.css">
     <!-- <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.min.css"> -->
-   <script src="jquery/jquery-min.js"></script>
+    <script src="jquery/jquery-min.js"></script>
     <!-- <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script> -->
-     
+
     <script src="js/dataTables-min.js"></script>
     <!-- <script src="https://cdn.datatables.net/2.3.5/js/dataTables.min.js"></script> -->
 
@@ -53,10 +53,10 @@
             TOKEN ADMIN MANAGER
         </h2>
 
-            <div class=" d-flex align-items-center p-0">
-                    <img height="20px" src="images/map.png" alt="" class="me-2"><select id="location-dropdown"
-                        class="location-dropdown"></select>
-                </div>
+        <div class=" d-flex align-items-center p-0">
+            <img height="20px" src="images/map.png" alt="" class="me-2"><select id="location-dropdown"
+                class="location-dropdown"></select>
+        </div>
         </div>
         <!-- Right Section -->
         <div class="zc-header-right d-flex h-100 align-items-center d-none">
@@ -179,7 +179,7 @@
                 </div>
 
                 <div class="stat-box col d-flex align-items-center gap-2">
-             
+
                     <img src="images/Artboard 3.svg">
                     <div>
                         <small>Direct</small>
@@ -208,10 +208,24 @@
                 <!-- <div class="filter-sub">
 
                
-                    <div class="filters">
+                    <div id="applyFilter" class="filters">
                         <button class="btn"><i class="bi bi-file-earmark-text-fill me-2"></i>Filter</button>
                     </div>
                 </div> -->
+
+              
+            <div class="filter-sub">
+    <input type="date" id="filterDate" class="form-control" />
+
+    <div id="applyFilter" class="filters">
+        <button class="btn filter-btn">
+            <i class="bi bi-file-earmark-text-fill"></i>
+            <span>Filter</span>
+        </button>
+    </div>
+</div>
+
+
                 <h4 class="token-list-heading">Token List</h4>
 
 

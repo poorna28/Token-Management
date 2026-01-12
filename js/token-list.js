@@ -179,9 +179,9 @@ function loadTokens() {
     const locationId = params.get("locationId") || locationIdValue;
     const { fromDate, toDate } = getDateParams();
 
-   if (fromDate !== toDate) { 
-    alert("Token list is only available for single-day filters.");
-$("#tokenTable tbody").html(` <tr style="position: relative; z-index: 9999"> <td colspan="8" style="text-align:center;"> <p>Please select a single-day filter to view token data.</p> </td> </tr> `);      return; 
+    if (fromDate !== toDate) {
+        alert("Token list is only available for single-day filters.");
+        $("#tokenTable tbody").html(` <tr style="position: relative; z-index: 9999"> <td colspan="8" style="text-align:center;"> <p>Please select a single-day filter to view token data.</p> </td> </tr> `); return;
     }
     // Validate page + size
     const page = getIntParam(params, "page", 0, 0, 9999);
@@ -298,7 +298,7 @@ $("#tokenTable tbody").html(` <tr style="position: relative; z-index: 9999"> <td
         })
         .catch(err => {
             console.error("Tokens API Error:", err);
-            $("#tokenTable tbody").html( `<tr><td colspan="8" style="text-align:center;">Error loading tokens</td></tr>` );
+            $("#tokenTable tbody").html(`<tr><td colspan="8" style="text-align:center;">Error loading tokens</td></tr>`);
         })
         .finally(() => {
             // hideLoader(); //  STOP LOADER
@@ -318,10 +318,10 @@ function bindHistoryToggle(table, page, size) {
             const row = table.row($(this).closest("tr"));
             const data = row.data();
             console.group(" History Toggle Click");
-console.log("Row data object:", data);
-console.log("customerId:", data?.customerId);
-console.log("Row index:", row.index());
-console.groupEnd();
+            console.log("Row data object:", data);
+            console.log("customerId:", data?.customerId);
+            console.log("Row index:", row.index());
+            console.groupEnd();
 
             const icon = $(this).find("i");
 
@@ -338,10 +338,10 @@ console.groupEnd();
             }
 
             if (!data || !data.customerId) {
-    console.error("❌ customerId missing in row data", data);
-    alert("Customer ID not available for this record.");
-    return;
-}
+                console.error("❌ customerId missing in row data", data);
+                alert("Customer ID not available for this record.");
+                return;
+            }
 
 
 
@@ -351,29 +351,29 @@ console.groupEnd();
             const API =
                 `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetCustomerHistory/customers/history?customerId=${data.customerId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&size=${size}`;
 
-              console.log(" API URL:", API);
+            console.log(" API URL:", API);
 
 
-           fetch(API)
+            fetch(API)
                 .then(r => r.json())
-              .then(h => {
-  const html = (h.visits || []).map(h => `
+                .then(h => {
+                    const html = (h.visits || []).map(h => `
     <tr class="token-list-accordian-table">
       <td>${h.tokenNumber}</td>
       <td>${formatDateTime(h.issueTime)}</td>
       <td class="green-text">${formatDateTime(h.exitTime) ?? '---'}</td>
       <td>
         ${h.issueTime && h.exitTime
-          ? `${Math.floor((new Date(h.exitTime) - new Date(h.issueTime)) / 60000)} min`
-          : "--"
-        }
+                            ? `${Math.floor((new Date(h.exitTime) - new Date(h.issueTime)) / 60000)} min`
+                            : "--"
+                        }
       </td>
       <td>${((h.status || "---").replace(/_/g, " ")).toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}</td>
       <td>${h.counterNumber || "---"}</td>
     </tr>
   `).join("");
 
-  row.child(`
+                    row.child(`
     <div style="background-color:#f6f6f6;padding:10px 15px;border-radius:10px;border:1px solid #ccc;margin-left:45px">
       <h6 class="mb-2">History:</h6>
       <table style="width:100%;border-collapse:collapse;">
@@ -394,8 +394,8 @@ console.groupEnd();
     </div>
   `).show();
 
-  icon.toggleClass("bi-chevron-down bi-chevron-up");
-})
+                    icon.toggleClass("bi-chevron-down bi-chevron-up");
+                })
 
                 .catch(err => { console.error("History API Error:", err); alert("Error loading history. Please try again."); });
         });
@@ -437,30 +437,30 @@ document.addEventListener("DOMContentLoaded", () => {
 // });
 
 // Custom filter by issue date using raw data
-$.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-    const selectedDate = $('#filterDate').val(); // "YYYY-MM-DD" from <input type="date">
-    if (!selectedDate) return true;
+// $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+//     const selectedDate = $('#filterDate').val(); // "YYYY-MM-DD" from <input type="date">
+//     if (!selectedDate) return true;
 
-    // Get the full row object instead of the formatted string
-    const rowData = $('#tokenTable').DataTable().row(dataIndex).data();
-    const issueTimeRaw = rowData.issueTime; // e.g. "2025-11-07T08:27:04+05:30"
+//     // Get the full row object instead of the formatted string
+//     const rowData = $('#tokenTable').DataTable().row(dataIndex).data();
+//     const issueTimeRaw = rowData.issueTime; // e.g. "2025-11-07T08:27:04+05:30"
 
-    if (!issueTimeRaw) return false;
+//     if (!issueTimeRaw) return false;
 
-    // Normalize to YYYY-MM-DD
-    const issueDate = issueTimeRaw.split("T")[0]; // "2025-11-07"
+//     // Normalize to YYYY-MM-DD
+//     const issueDate = issueTimeRaw.split("T")[0]; // "2025-11-07"
 
-    return issueDate === selectedDate;
-});
+//     return issueDate === selectedDate;
+// });
 
 // Trigger filter on date change
 // Trigger filter on date change (single binding)
-$('#filterDate').on('change', function () {
-    const table = $('#tokenTable').DataTable();
-    if (table) {
-        table.draw();
-    }
-});
+// $('#filterDate').on('change', function () {
+//     const table = $('#tokenTable').DataTable();
+//     if (table) {
+//         table.draw();
+//     }
+// });
 
 
 
@@ -601,12 +601,33 @@ function isValidISODate(dateStr) {
 }
 
 
-function clearMetricsUI() 
-{ document.getElementById("patients").textContent = "--";
-     document.getElementById("completed").textContent = "--";
-      document.getElementById("inProgress").textContent = "--";
-       document.getElementById("kioskCount").textContent = "--"; 
-       document.getElementById("directCount").textContent = "--"; 
-       document.getElementById("fromDate").textContent = "--"; 
-       document.getElementById("toDate").textContent = "--";
- }
+function clearMetricsUI() {
+    document.getElementById("patients").textContent = "--";
+    document.getElementById("completed").textContent = "--";
+    document.getElementById("inProgress").textContent = "--";
+    document.getElementById("kioskCount").textContent = "--";
+    document.getElementById("directCount").textContent = "--";
+    document.getElementById("fromDate").textContent = "--";
+    document.getElementById("toDate").textContent = "--";
+}
+
+
+
+document.getElementById("applyFilter").addEventListener("click", () => {
+    const selectedDate = document.getElementById("filterDate").value;
+    // const status = document.getElementById("statusFilter").value;
+
+    if (!selectedDate) {
+        alert("Please select a date");
+        return;
+    }
+
+    updateUrl({
+        fromDate: selectedDate,
+        toDate: selectedDate
+        // status: status,
+        // page: 0
+    });
+
+    loadTokens();
+});

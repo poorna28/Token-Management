@@ -642,8 +642,8 @@ div.dt-container.dt-empty-footer .dt-scroll-body {
 
 .token-list div.dt-container .dt-search {
     position: absolute;
-    right: 47px;
-    top: 11px;
+    right: 276px;
+    top: 13px;
     width: 500px;
 }
 
@@ -881,4 +881,18 @@ tr.status-collect_here {
 
 .token-list-accordian-table td{
     background-color: transparent !important;
+}
+
+
+.filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    padding: 6px 12px;
+}
+
+.filter-btn i {
+    font-size: 16px;
+    line-height: 1;
 }
