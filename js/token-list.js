@@ -155,6 +155,7 @@ async function fetchAndBindMetrics(locationId) {
         document.getElementById("toDate").textContent = formatDateDisplay(data.toDate);
 
 
+
     } catch (err) {
         console.error("Metrics API Error:", err);
         clearMetricsUI();
@@ -629,5 +630,23 @@ document.getElementById("applyFilter").addEventListener("click", () => {
         // page: 0
     });
 
+    const locationId = getLocationId();
+    fetchAndBindMetrics(locationId);
+
     loadTokens();
+});
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const fromDate = params.get("fromDate");
+
+  if (fromDate) {
+    document.getElementById("filterDate").value = fromDate;
+
+    const locationId = getLocationId();
+    fetchAndBindMetrics(locationId);
+    loadTokens();
+  }
 });
