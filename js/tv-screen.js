@@ -4,8 +4,18 @@
 // const API_URL =
   // "https://zcutilities.zeroco.de/api/get/d0cc0866412341f65eec468ca97d4a73c1adf6f75be22e81cb4c7e9e83e7a8ff?locationId=10&limit=25";
 
-  const API_URL = "https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=10&limit=25";
-const DISPLAY_LIMIT = 6;
+  // const API_URL = "https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=10&limit=25";
+
+  const params = new URLSearchParams(window.location.search);
+
+const locationId = getIntParam(params, "locationId", 10, 1, 100000);
+const limit = getIntParam(params, "limit", 25, 1, 100);
+
+const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
+
+
+
+  const DISPLAY_LIMIT = 6;
 
 const STATUS_ORDER = [
   "READY_FOR_DELIVERY",
@@ -146,4 +156,13 @@ function formatStatus(label) {
     .split("_")
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+}
+
+
+function getIntParam(params, key, defaultVal, min, max) {
+  const val = parseInt(params.get(key), 10);
+  if (isNaN(val)) return defaultVal;
+  if (val < min) return min;
+  if (val > max) return max;
+  return val;
 }
