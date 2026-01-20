@@ -466,18 +466,21 @@ table.dataTable thead>tr>th div.dt-column-header span.dt-column-title {
     clear: both;
     background: #fff;
     margin: 0;
-    padding: 40px 24px 5px;
+    /* padding: 40px 24px 5px; */
+    padding: 5px 24px 5px;
     border-radius: 5px;
 }
 
 .token-list .token-list-heading {
-    position: absolute;
+    /* position: absolute; */
     top: 24px;
     z-index: 9;
     left: 24px;
     font-size: 18px;
     margin-bottom: 0px;
     font-weight: 600;
+    width: max-content;
+    padding: 17px 0 0 17px;
 }
 
 .token-list .dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-start {
@@ -514,6 +517,7 @@ div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
 
 .token-list {
     position: relative;
+    background: #fff;
 }
 
 .token-list td {
@@ -642,9 +646,9 @@ div.dt-container.dt-empty-footer .dt-scroll-body {
 
 .token-list div.dt-container .dt-search {
     position: absolute;
-    right: 276px;
-    top: 13px;
-    width: 500px;
+    right: 607px;
+    top: -26px;
+    width: 389px;
 }
 
 .token-list div.dt-container .dt-search::before {
@@ -895,4 +899,15 @@ tr.status-collect_here {
 .filter-btn i {
     font-size: 16px;
     line-height: 1;
+}
+
+#tokenTable{
+    margin-top: 20px;
+}
+#tokenTable  tr th{
+   padding: 10px 20px;
+}
+.fronDate{
+    font-size: 15px;
+    white-space: nowrap;
 }

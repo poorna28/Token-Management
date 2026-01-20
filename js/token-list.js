@@ -77,6 +77,7 @@ async function fetchLocationsAndBind(userIdParam) {
         if (!selected) {
             alert("Invalid or missing locationId in URL. Defaulting to first location.");
             selected = locations[0];
+            
         }
 
         locationIdValue = selected?.LocationId || null;
@@ -134,7 +135,7 @@ async function fetchAndBindMetrics(locationId) {
 
 
 
-    if (fromDate !== toDate) { alert("Metrics are only available for single-day filters."); clearMetricsUI(); return; }
+    // if (fromDate !== toDate) { alert("Metrics are only available for single-day filters."); clearMetricsUI(); return; }
 
     if (new Date(fromDate) > new Date(toDate)) { alert("From date cannot be later than To date."); return; }
     const API =
@@ -180,13 +181,13 @@ function loadTokens() {
     const locationId = params.get("locationId") || locationIdValue;
     const { fromDate, toDate } = getDateParams();
 
-    if (fromDate !== toDate) {
-        alert("Token list is only available for single-day filters.");
-        $("#tokenTable tbody").html(` <tr style="position: relative; z-index: 9999"> <td colspan="8" style="text-align:center;"> <p>Please select a single-day filter to view token data.</p> </td> </tr> `); return;
-    }
+    // if (fromDate !== toDate) {
+    //     alert("Token list is only available for single-day filters.");
+    //     $("#tokenTable tbody").html(` <tr style="position: relative; z-index: 9999"> <td colspan="8" style="text-align:center;"> <p>Please select a single-day filter to view token data.</p> </td> </tr> `); return;
+    // }
     // Validate page + size
     const page = getIntParam(params, "page", 0, 0, 9999);
-    const size = getIntParam(params, "size", 20, 1, 100);
+    const size = getIntParam(params, "size", 10000, 1, 100);
 
     // Whitelist sort
     const validSortFields = ["issueTime", "exitTime", "tokenNumber"];
@@ -228,7 +229,7 @@ function loadTokens() {
                 data: tokens,
                 destroy: true,
                 responsive: true,
-                scrollY: "calc(100vh - 370px)",
+                scrollY: "calc(100vh - 340px)",
                 order: [[3, "asc"]],
                 language: {
                     search: "",
@@ -333,10 +334,10 @@ function bindHistoryToggle(table, page, size) {
             }
 
             const { fromDate, toDate } = getDateParams();
-            if (fromDate !== toDate) {
-                alert("History is only available for single-day filters.");
-                return;
-            }
+            // if (fromDate !== toDate) {
+            //     alert("History is only available for single-day filters.");
+            //     return;
+            // }
 
             if (!data || !data.customerId) {
                 console.error("❌ customerId missing in row data", data);
@@ -615,38 +616,81 @@ function clearMetricsUI() {
 
 
 document.getElementById("applyFilter").addEventListener("click", () => {
-    const selectedDate = document.getElementById("filterDate").value;
-    // const status = document.getElementById("statusFilter").value;
+  const fromDate = document.getElementById("fromDateInput").value;
+  const toDate = document.getElementById("toDateInput").value;
 
-    if (!selectedDate) {
-        alert("Please select a date");
-        return;
-    }
+  if (!fromDate || !toDate) {
+    alert("Please select both From and To dates");
+    return;
+  }
 
-    updateUrl({
-        fromDate: selectedDate,
-        toDate: selectedDate
-        // status: status,
-        // page: 0
-    });
+  if (new Date(fromDate) > new Date(toDate)) {
+    alert("From date cannot be greater than To date");
+    return;
+  }
 
+  updateUrl({ fromDate, toDate });
+
+  const locationId = getLocationId();
+  fetchAndBindMetrics(locationId);
+  loadTokens();
+});
+
+
+
+
+// document.addEventListener("DOMContentLoaded", () => {
+//   const params = new URLSearchParams(window.location.search);
+//   const fromDate = params.get("fromDate");
+
+//   if (fromDate) {
+//     document.getElementById("filterDate").value = fromDate;
+
+//     const locationId = getLocationId();
+//     fetchAndBindMetrics(locationId);
+//     loadTokens();
+//   }
+// });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+
+  const fromDate = params.get("fromDate");
+  const toDate = params.get("toDate");
+
+  const fromInput = document.getElementById("fromDateInput");
+  const toInput = document.getElementById("toDateInput");
+
+  if (fromDate && fromInput) {
+    fromInput.value = fromDate; // MUST be YYYY-MM-DD
+  }
+
+  if (toDate && toInput) {
+    toInput.value = toDate;
+  }
+
+  
     const locationId = getLocationId();
     fetchAndBindMetrics(locationId);
-
     loadTokens();
 });
 
 
 
+// function setTokenSectionInvalid(isInvalid) {
+//   const wrapper = document.getElementById("tokenSectionWrapper");
+//   if (!wrapper) return;
+//   wrapper.classList.toggle("invalid-ui", isInvalid);
+// }
+
+
 document.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  const fromDate = params.get("fromDate");
+  const today = new Date().toISOString().split("T")[0];
 
-  if (fromDate) {
-    document.getElementById("filterDate").value = fromDate;
+  const fromInput = document.getElementById("fromDateInput");
+  const toInput = document.getElementById("toDateInput");
 
-    const locationId = getLocationId();
-    fetchAndBindMetrics(locationId);
-    loadTokens();
-  }
+  if (fromInput) fromInput.max = today;
+  if (toInput) toInput.max = today;
 });

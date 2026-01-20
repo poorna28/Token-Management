@@ -202,48 +202,41 @@
                     <img src="images/check-white.png" alt="">
                 </div>
             </div>
-
-            <div class="token-list">
-
-                <!-- <div class="filter-sub">
-
-               
+            <div id="tokenSectionWrapper" class="token-section-wrapper">
+                <div class="token-list">
+                    <!-- <div class="filter-sub">
                     <div id="applyFilter" class="filters">
                         <button class="btn"><i class="bi bi-file-earmark-text-fill me-2"></i>Filter</button>
                     </div>
                 </div> -->
+                    <div class="filter-sub">
+                       <span class="fronDate">From Date:</span> <input type="date" id="fromDateInput" class="form-control" />
+                      <span class="fronDate">To Date:</span>  <input type="date" id="toDateInput" class="form-control" />
 
-              
-            <div class="filter-sub">
-    <input type="date" id="filterDate" class="form-control" />
-
-    <div id="applyFilter" class="filters">
-        <button class="btn filter-btn">
-            <i class="bi bi-file-earmark-text-fill"></i>
-            <span>Filter</span>
-        </button>
-    </div>
-</div>
-
-
-                <h4 class="token-list-heading">Token List</h4>
-
-
-                <table id="tokenTable" class="display" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Customer</th>
-                            <th>Location</th>
-                            <th>Token</th>
-                            <th>Issue Time</th>
-                            <th>Exit Time</th>
-                            <th>Time Duration</th>
-                            <th>Counter</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                        <div id="applyFilter" class="filters">
+                            <button class="btn filter-btn">
+                                <i class="bi bi-file-earmark-text-fill"></i>
+                                <span>Filter</span>
+                            </button>
+                        </div>
+                    </div>
+                    <h4 class="token-list-heading">Token List</h4>
+                    <table id="tokenTable" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Location</th>
+                                <th>Token</th>
+                                <th>Issue Time</th>
+                                <th>Exit Time</th>
+                                <th>Time Duration</th>
+                                <th>Counter</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
 
         </div>
