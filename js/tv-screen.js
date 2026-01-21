@@ -1,22 +1,18 @@
-// ----------------------
-// CONFIG
-// ----------------------
-// const API_URL =
-  // "https://zcutilities.zeroco.de/api/get/d0cc0866412341f65eec468ca97d4a73c1adf6f75be22e81cb4c7e9e83e7a8ff?locationId=10&limit=25";
-
-  // const API_URL = "https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=10&limit=25";
-
-  const params = new URLSearchParams(window.location.search);
+/*************************************************
+ * CONFIG
+ *************************************************/
+const params = new URLSearchParams(window.location.search);
 
 const locationId = getIntParam(params, "locationId", 10, 1, 100000);
 const limit = getIntParam(params, "limit", 25, 1, 100);
 
 const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
 
+console.log("API URL 👉", API_URL);
 
+const DISPLAY_LIMIT = 6;
 
-  const DISPLAY_LIMIT = 6;
-
+// Display order (business decision)
 const STATUS_ORDER = [
   "READY_FOR_DELIVERY",
   "BILLING",
@@ -24,7 +20,15 @@ const STATUS_ORDER = [
   "PACKING"
 ];
 
-// Cursor memory per status
+// Backend → UI status mapping
+const STATUS_MAP = {
+  "Token in Progress": "READY_FOR_DELIVERY",
+  "Billing in Progress": "BILLING",
+  "Picking in Progress": "PICKING",
+  "Packing in Progress": "PACKING"
+};
+
+// Rotation index per status
 const statusIndex = {
   READY_FOR_DELIVERY: 0,
   BILLING: 0,
@@ -34,36 +38,52 @@ const statusIndex = {
 
 let refreshTimer = null;
 
-// ----------------------
-// FETCH API
-// ----------------------
+/*************************************************
+ * FETCH TOKENS
+ *************************************************/
 async function fetchTokenBoard() {
   try {
-    const res = await fetch(API_URL, { cache: "no-store" });
-    if (!res.ok) throw new Error("API failed");
+    const response = await fetch(API_URL, { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error(`API failed: ${response.status}`);
+    }
 
-    const data = await res.json();
+    const data = await response.json();
+    console.log("FULL API RESPONSE 👉", data);
 
-    const displayTokens = buildDisplayList(data.tokens);
+    const tokens =
+      data.tokens ||
+      data.TokenDisplayList ||
+      data.data ||
+      [];
+
+    console.log("TOKENS RECEIVED 👉", tokens);
+
+    if (!Array.isArray(tokens) || tokens.length === 0) {
+      updateTable([]);
+      return;
+    }
+
+    const displayTokens = buildDisplayList(tokens);
     updateTable(displayTokens);
 
-    // Start interval only once
+    // Auto refresh (if backend sends interval)
     if (!refreshTimer && data.refreshIntervalSeconds) {
       refreshTimer = setInterval(
         fetchTokenBoard,
         data.refreshIntervalSeconds * 1000
       );
     }
-  } catch (err) {
-    console.error("Token fetch error:", err);
+
+  } catch (error) {
+    console.error("TOKEN BOARD ERROR ❌", error);
   }
 }
 
-// ----------------------
-// CORE BOARD LOGIC
-// ----------------------
+/*************************************************
+ * ROUND-ROBIN DISPLAY LOGIC (OPTION-1)
+ *************************************************/
 function buildDisplayList(tokens) {
-  // Group by STATUS LABEL
   const grouped = {
     READY_FOR_DELIVERY: [],
     BILLING: [],
@@ -71,72 +91,75 @@ function buildDisplayList(tokens) {
     PACKING: []
   };
 
-  tokens.forEach(t => {
-    if (grouped[t.statusLabel]) {
-      grouped[t.statusLabel].push(t);
+  // Group tokens by mapped status
+  tokens.forEach(token => {
+    const mappedStatus = STATUS_MAP[token.statusLabel];
+    if (mappedStatus && grouped[mappedStatus]) {
+      grouped[mappedStatus].push({
+        ...token,
+        statusLabel: mappedStatus
+      });
     }
   });
+
+  console.log("GROUPED TOKENS 👉", grouped);
 
   const result = [];
   let remaining = DISPLAY_LIMIT;
 
-  // Respect strict order
-  for (const status of STATUS_ORDER) {
-    if (remaining === 0) break;
+  // Round-robin across statuses
+  while (remaining > 0) {
+    let addedThisRound = false;
 
-    const list = grouped[status];
-    if (!list.length) continue;
+    for (const status of STATUS_ORDER) {
+      const list = grouped[status];
+      if (!list || list.length === 0) continue;
 
-    const start = statusIndex[status];
-    const take = Math.min(list.length, remaining);
+      const index = statusIndex[status] % list.length;
+      result.push(list[index]);
 
-    for (let i = 0; i < take; i++) {
-      result.push(list[(start + i) % list.length]);
+      statusIndex[status]++;
+      remaining--;
+      addedThisRound = true;
+
+      if (remaining === 0) break;
     }
 
-    // Move cursor forward
-    statusIndex[status] = (start + take) % list.length;
-    remaining -= take;
+    // Stop if no status had tokens
+    if (!addedThisRound) break;
   }
 
+  console.log("DISPLAY TOKENS 👉", result);
   return result;
 }
 
-// ----------------------
-// UI UPDATE (NO FLICKER)
-// ----------------------
-// function updateTable(tokens) {
-//   const tbody = document.getElementById("tableBody");
-
-//   let html = "";
-//   tokens.forEach(t => {
-//     html += `
-//     <div>
-//       <tr class="${t.highlight ? "highlight" : ""}">
-//         <td>${t.tokenNumber}</td>
-//         <td>${t.customerName || "-"}</td>
-//         <td>${formatStatus(t.statusLabel)}</td>
-
-//         <td>${t.counterNumber || "-"}</td>
-//       </tr>
-//     </div>
-//     `;
-//   });
-
-//   tbody.innerHTML = html;
-// }
+/*************************************************
+ * UI RENDER
+ *************************************************/
 function updateTable(tokens) {
   const tbody = document.getElementById("tableBody");
 
+  if (!tokens || tokens.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4" style="text-align:center;">No Tokens Available</td>
+      </tr>`;
+    return;
+  }
+
   let html = "";
-  tokens.forEach(t => {
-    const statusClass = `status-${t.statusLabel.toLowerCase()}`;
+
+  tokens.forEach(token => {
+    const statusClass = token.statusLabel
+      ? `status-${token.statusLabel.toLowerCase()}`
+      : "";
+
     html += `
-      <tr class="${statusClass} ${t.highlight ? "highlight" : ""}">
-        <td>${t.tokenNumber}</td>
-        <td>${t.customerName || "-"}</td>
-        <td>${formatStatus(t.statusLabel)}</td>
-        <td>${t.counterNumber || "-"}</td>
+      <tr class="${statusClass} ${token.highlight ? "highlight" : ""}">
+        <td>${token.tokenNumber ?? "-"}</td>
+        <td>${token.customerName ?? "-"}</td>
+        <td>${formatStatus(token.statusLabel)}</td>
+        <td>${token.counterNumber ?? "-"}</td>
       </tr>
     `;
   });
@@ -144,25 +167,26 @@ function updateTable(tokens) {
   tbody.innerHTML = html;
 }
 
-
-// ----------------------
-// INITIAL LOAD
-// ----------------------
-fetchTokenBoard();
-
-
-function formatStatus(label) {
-  return label
+/*************************************************
+ * HELPERS
+ *************************************************/
+function formatStatus(status) {
+  if (!status) return "-";
+  return status
     .split("_")
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .map(word => word.charAt(0) + word.slice(1).toLowerCase())
     .join(" ");
 }
 
-
 function getIntParam(params, key, defaultVal, min, max) {
-  const val = parseInt(params.get(key), 10);
-  if (isNaN(val)) return defaultVal;
-  if (val < min) return min;
-  if (val > max) return max;
-  return val;
+  const value = parseInt(params.get(key), 10);
+  if (isNaN(value)) return defaultVal;
+  if (value < min) return min;
+  if (value > max) return max;
+  return value;
 }
+
+/*************************************************
+ * INITIAL LOAD
+ *************************************************/
+fetchTokenBoard();
