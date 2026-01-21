@@ -77,7 +77,7 @@ async function fetchLocationsAndBind(userIdParam) {
         if (!selected) {
             alert("Invalid or missing locationId in URL. Defaulting to first location.");
             selected = locations[0];
-            
+
         }
 
         locationIdValue = selected?.LocationId || null;
@@ -260,10 +260,23 @@ function loadTokens() {
                         render: d => d ? formatDateTime(d) : "--"
                     },
 
+                    // {
+                    //     data: "exitTime",
+                    //     className: "green-text",
+                    //     render: d => d ? formatDateTime(d) : "In Progress"
+                    // },
+
                     {
                         data: "exitTime",
-                        className: "green-text",
-                        render: d => d ? formatDateTime(d) : "---"
+                        render: d => {
+                            if (d) {
+                                // If exitTime exists, show formatted date in green
+                                return `<span class="green-text">${formatDateTime(d)}</span>`;
+                            } else {
+                                // If it doesn't exist, show "In Progress" in orange
+                                return `<span class="orange-text">In Progress</span>`;
+                            }
+                        }
                     },
                     {
                         data: "timeDurationMinutes",
@@ -390,7 +403,7 @@ function bindHistoryToggle(table, page, size) {
           </tr>
         </thead>
         <tbody>
-          ${html || `<tr><td colspan="6"><em>No history available.</em></td></tr>`}
+          ${html || `<tr><td colspan="6"><em class="no-history-available">No history available.</em></td></tr>`}
         </tbody>
       </table>
     </div>
@@ -616,24 +629,24 @@ function clearMetricsUI() {
 
 
 document.getElementById("applyFilter").addEventListener("click", () => {
-  const fromDate = document.getElementById("fromDateInput").value;
-  const toDate = document.getElementById("toDateInput").value;
+    const fromDate = document.getElementById("fromDateInput").value;
+    const toDate = document.getElementById("toDateInput").value;
 
-  if (!fromDate || !toDate) {
-    alert("Please select both From and To dates");
-    return;
-  }
+    if (!fromDate || !toDate) {
+        alert("Please select both From and To dates");
+        return;
+    }
 
-  if (new Date(fromDate) > new Date(toDate)) {
-    alert("From date cannot be greater than To date");
-    return;
-  }
+    if (new Date(fromDate) > new Date(toDate)) {
+        alert("From date cannot be greater than To date");
+        return;
+    }
 
-  updateUrl({ fromDate, toDate });
+    updateUrl({ fromDate, toDate });
 
-  const locationId = getLocationId();
-  fetchAndBindMetrics(locationId);
-  loadTokens();
+    const locationId = getLocationId();
+    fetchAndBindMetrics(locationId);
+    loadTokens();
 });
 
 
@@ -654,23 +667,23 @@ document.getElementById("applyFilter").addEventListener("click", () => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(window.location.search);
 
-  const fromDate = params.get("fromDate");
-  const toDate = params.get("toDate");
+    const fromDate = params.get("fromDate");
+    const toDate = params.get("toDate");
 
-  const fromInput = document.getElementById("fromDateInput");
-  const toInput = document.getElementById("toDateInput");
+    const fromInput = document.getElementById("fromDateInput");
+    const toInput = document.getElementById("toDateInput");
 
-  if (fromDate && fromInput) {
-    fromInput.value = fromDate; // MUST be YYYY-MM-DD
-  }
+    if (fromDate && fromInput) {
+        fromInput.value = fromDate; // MUST be YYYY-MM-DD
+    }
 
-  if (toDate && toInput) {
-    toInput.value = toDate;
-  }
+    if (toDate && toInput) {
+        toInput.value = toDate;
+    }
 
-  
+
     const locationId = getLocationId();
     fetchAndBindMetrics(locationId);
     loadTokens();
@@ -686,11 +699,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  const today = new Date().toISOString().split("T")[0];
+    const today = new Date().toISOString().split("T")[0];
 
-  const fromInput = document.getElementById("fromDateInput");
-  const toInput = document.getElementById("toDateInput");
+    const fromInput = document.getElementById("fromDateInput");
+    const toInput = document.getElementById("toDateInput");
 
-  if (fromInput) fromInput.max = today;
-  if (toInput) toInput.max = today;
+    if (fromInput) fromInput.max = today;
+    if (toInput) toInput.max = today;
 });
