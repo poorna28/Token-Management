@@ -707,3 +707,24 @@ document.addEventListener("DOMContentLoaded", () => {
     if (fromInput) fromInput.max = today;
     if (toInput) toInput.max = today;
 });
+
+
+ const inputDateField = document.getElementById("fromDateInput");
+  const inputDateField1 = document.getElementById("toDateInput");
+
+
+  inputDateField.addEventListener("click", function () {
+    this.showPicker();
+  });
+
+  inputDateField.addEventListener("focus", function () {
+    this.showPicker();
+  });
+
+    inputDateField1.addEventListener("click", function () {
+    this.showPicker();
+  });
+
+  inputDateField1.addEventListener("focus", function () {
+    this.showPicker();
+  });
