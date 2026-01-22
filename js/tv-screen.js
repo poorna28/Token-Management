@@ -10,36 +10,10 @@ const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransacti
 
 console.log("API URL 👉", API_URL);
 
-const DISPLAY_LIMIT = 6;
-
-// Display order (business decision)
-const STATUS_ORDER = [
-  "READY_FOR_DELIVERY",
-  "BILLING",
-  "PICKING",
-  "PACKING"
-];
-
-// Backend → UI status mapping
-const STATUS_MAP = {
-  "Token in Progress": "READY_FOR_DELIVERY",
-  "Billing in Progress": "BILLING",
-  "Picking in Progress": "PICKING",
-  "Packing in Progress": "PACKING"
-};
-
-// Rotation index per status
-const statusIndex = {
-  READY_FOR_DELIVERY: 0,
-  BILLING: 0,
-  PICKING: 0,
-  PACKING: 0
-};
-
 let refreshTimer = null;
 
 /*************************************************
- * FETCH TOKENS
+ * FETCH TOKENS (AS-IS)
  *************************************************/
 async function fetchTokenBoard() {
   try {
@@ -59,15 +33,9 @@ async function fetchTokenBoard() {
 
     console.log("TOKENS RECEIVED 👉", tokens);
 
-    if (!Array.isArray(tokens) || tokens.length === 0) {
-      updateTable([]);
-      return;
-    }
+    updateTable(tokens);
 
-    const displayTokens = buildDisplayList(tokens);
-    updateTable(displayTokens);
-
-    // Auto refresh (if backend sends interval)
+    // Auto refresh from backend interval
     if (!refreshTimer && data.refreshIntervalSeconds) {
       refreshTimer = setInterval(
         fetchTokenBoard,
@@ -81,65 +49,12 @@ async function fetchTokenBoard() {
 }
 
 /*************************************************
- * ROUND-ROBIN DISPLAY LOGIC (OPTION-1)
- *************************************************/
-function buildDisplayList(tokens) {
-  const grouped = {
-    READY_FOR_DELIVERY: [],
-    BILLING: [],
-    PICKING: [],
-    PACKING: []
-  };
-
-  // Group tokens by mapped status
-  tokens.forEach(token => {
-    const mappedStatus = STATUS_MAP[token.statusLabel];
-    if (mappedStatus && grouped[mappedStatus]) {
-      grouped[mappedStatus].push({
-        ...token,
-        statusLabel: mappedStatus
-      });
-    }
-  });
-
-  console.log("GROUPED TOKENS 👉", grouped);
-
-  const result = [];
-  let remaining = DISPLAY_LIMIT;
-
-  // Round-robin across statuses
-  while (remaining > 0) {
-    let addedThisRound = false;
-
-    for (const status of STATUS_ORDER) {
-      const list = grouped[status];
-      if (!list || list.length === 0) continue;
-
-      const index = statusIndex[status] % list.length;
-      result.push(list[index]);
-
-      statusIndex[status]++;
-      remaining--;
-      addedThisRound = true;
-
-      if (remaining === 0) break;
-    }
-
-    // Stop if no status had tokens
-    if (!addedThisRound) break;
-  }
-
-  console.log("DISPLAY TOKENS 👉", result);
-  return result;
-}
-
-/*************************************************
  * UI RENDER
  *************************************************/
 function updateTable(tokens) {
   const tbody = document.getElementById("tableBody");
 
-  if (!tokens || tokens.length === 0) {
+  if (!Array.isArray(tokens) || tokens.length === 0) {
     tbody.innerHTML = `
       <tr>
         <td colspan="4" style="text-align:center;">No Tokens Available</td>
@@ -150,15 +65,13 @@ function updateTable(tokens) {
   let html = "";
 
   tokens.forEach(token => {
-    const statusClass = token.statusLabel
-      ? `status-${token.statusLabel.toLowerCase()}`
-      : "";
+    const statusClass = getStatusClass(token.statusLabel);
 
     html += `
       <tr class="${statusClass} ${token.highlight ? "highlight" : ""}">
         <td>${token.tokenNumber ?? "-"}</td>
-        <td>${token.customerName ?? "-"}</td>
-        <td>${formatStatus(token.statusLabel)}</td>
+      <td>${token.customerName.replace(/\n|\r/g, " ")}</td>
+        <td>${token.statusLabel ?? "-"}</td>
         <td>${token.counterNumber ?? "-"}</td>
       </tr>
     `;
@@ -168,16 +81,33 @@ function updateTable(tokens) {
 }
 
 /*************************************************
- * HELPERS
+ * STATUS → CSS CLASS (VISUAL ONLY)
  *************************************************/
-function formatStatus(status) {
-  if (!status) return "-";
-  return status
-    .split("_")
-    .map(word => word.charAt(0) + word.slice(1).toLowerCase())
-    .join(" ");
+function getStatusClass(statusLabel) {
+  switch (statusLabel) {
+    case "Token in Progress":
+      return "status-ready_for_delivery";
+
+    case "Billing in Progress":
+      return "status-billing";
+
+    case "Picking in Progress":
+      return "status-picking";
+
+    case "Packing in Progress":
+      return "status-packing";
+
+    case "Completed":
+      return "status-completed";
+
+    default:
+      return "";
+  }
 }
 
+/*************************************************
+ * HELPERS
+ *************************************************/
 function getIntParam(params, key, defaultVal, min, max) {
   const value = parseInt(params.get(key), 10);
   if (isNaN(value)) return defaultVal;

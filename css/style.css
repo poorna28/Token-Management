@@ -880,7 +880,10 @@ tr.status-collect_here {
 .status-packing {
   background-color: #f0f0f0; 
   color: #ef5922;
-
+}
+.status-completed {
+  background-color: #fff; /* dark grey */
+  color: #000;
 }
 
 .token-list-accordian-table td{
