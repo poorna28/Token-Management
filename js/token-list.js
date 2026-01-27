@@ -728,3 +728,26 @@ document.addEventListener("DOMContentLoaded", () => {
   inputDateField1.addEventListener("focus", function () {
     this.showPicker();
   });
+
+
+  /* ============================================================
+   AUTO REFRESH PAGE EVERY 5 MINUTES
+============================================================ */
+setInterval(() => {
+    console.log(" Auto refreshing page (5 minutes elapsed)");
+    window.location.reload();
+}, 5 * 60 * 1000); // 5 minutes
+
+
+/* ============================================================
+   AUTO REFRESH DATA EVERY 5 MINUTES (NO PAGE RELOAD)
+============================================================ */
+// setInterval(() => {
+//     console.log(" Auto refreshing data (5 minutes)");
+
+//     const locationId = getLocationId();
+//     if (!locationId) return;
+
+//     fetchAndBindMetrics(locationId);
+//     loadTokens();
+// }, 5 * 60 * 1000);
