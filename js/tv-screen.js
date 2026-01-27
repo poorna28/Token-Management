@@ -88,6 +88,9 @@ function getStatusClass(statusLabel) {
     case "Token in Progress":
       return "status-ready_for_delivery";
 
+      case "Ready to Deliver":
+      return "status-ready_for_delivery";
+
     case "Billing in Progress":
       return "status-billing";
 
