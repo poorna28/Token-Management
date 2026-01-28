@@ -6,9 +6,9 @@ const params = new URLSearchParams(window.location.search);
 const locationId = getIntParam(params, "locationId", 10, 1, 100000);
 const limit = getIntParam(params, "limit", 50, 1, 500); // total records from API
 
- // const API_URL = `https://zcutilities.zeroco.de/api/get/112e46603b29bdfba06cf59e4f00a92e82483d25d66fc707974537e78fc5d6b7?locationId=${locationId}&limit=${limit}`;
+// const API_URL = `https://zcutilities.zeroco.de/api/get/112e46603b29bdfba06cf59e4f00a92e82483d25d66fc707974537e78fc5d6b7?locationId=${locationId}&limit=${limit}`;
 
-const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
+ const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
 
 
 
@@ -150,7 +150,7 @@ function getStatusClass(statusLabel) {
     case "Billing in Progress":
       return "status-billing";
 
-    case "Picking in Progress":
+    case "Picking In Progress":
       return "status-picking";
 
     case "Packing in Progress":

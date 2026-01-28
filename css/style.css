@@ -807,7 +807,7 @@ div.dt-container.dt-empty-footer .dt-scroll-body {
 }
 
 .tv-screen tr:has(.p2) td {
-    background: #ef5922;
+    background: #d17453;
     color: white;
     font-weight: 600;
 }
@@ -820,7 +820,7 @@ div.dt-container.dt-empty-footer .dt-scroll-body {
 }
 
 .tv-screen tr .p3 {
-    color: #ef5922 !important;
+    color: #d17453 !important;
     font-weight: 600;
 }
 
@@ -872,7 +872,7 @@ tr.status-collect_here {
   background-color: #00a89c; /* light green */
 }
 .status-billing {
-  background-color: #ef5922; 
+  background-color: #d17453; 
   color: #fff;
 }
 .status-picking {
@@ -881,7 +881,7 @@ tr.status-collect_here {
 }
 .status-packing {
   background-color: #f0f0f0; 
-  color: #ef5922;
+  color: #000;
 }
 .status-completed {
   background-color: #fff; /* dark grey */
