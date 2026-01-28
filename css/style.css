@@ -926,7 +926,7 @@ tr.status-collect_here {
 }
 
 /* Tbody animation */
-#tableBody {
+/* #tableBody {
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
@@ -938,4 +938,4 @@ tr.status-collect_here {
 #tableBody.fade-in {
   opacity: 1;
   transform: translateY(0);
-}
+} */

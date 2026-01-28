@@ -8,7 +8,7 @@ const limit = getIntParam(params, "limit", 50, 1, 500); // total records from AP
 
 // const API_URL = `https://zcutilities.zeroco.de/api/get/112e46603b29bdfba06cf59e4f00a92e82483d25d66fc707974537e78fc5d6b7?locationId=${locationId}&limit=${limit}`;
 
- const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
+const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
 
 
 
@@ -98,44 +98,53 @@ function showNextBatch() {
  *************************************************/
 function updateTable(tokens) {
   const tbody = document.getElementById("tableBody");
+  const oldRows = Array.from(tbody.children);
 
-  // Start fade-out
-  tbody.classList.remove("fade-in");
-  tbody.classList.add("fade-out");
+  // STEP 1: Hide old rows one-by-one
+  oldRows.forEach((tr, index) => {
+    tr.classList.add("row-hide");
+    tr.style.animationDelay = `${index * 0.08}s`;
+  });
 
+  const hideDuration = oldRows.length * 80 + 400;
+
+  // STEP 2: Replace rows after hide animation
   setTimeout(() => {
-    // Update content after fade-out
+    tbody.innerHTML = "";
+
     if (!Array.isArray(tokens) || tokens.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="4" style="text-align:center;">No Tokens Available</td>
+          <td colspan="4" style="text-align:center;">
+            No Tokens Available
+          </td>
         </tr>`;
-    } else {
-      let html = "";
-
-      tokens.forEach(token => {
-        const statusClass = getStatusClass(token.statusLabel);
-
-        html += `
-          <tr class="${statusClass} ${token.highlight ? "highlight" : "-"}">
-            <td>${token.tokenNumber ?? "-"}</td>
-            <td>${token.customerName?.replace(/\n|\r/g, " ") ?? "-"}</td>
-            <td>${token.statusLabel ?? "-"}</td>
-            <td>${token.counterNumber?.toString().trim() || "-"}</td>
-
-          </tr>
-        `;
-      });
-
-      tbody.innerHTML = html;
+      return;
     }
 
-    // Fade-in after content update
-    tbody.classList.remove("fade-out");
-    tbody.classList.add("fade-in");
+    // STEP 3: Show new rows one-by-one
+    tokens.forEach((token, index) => {
+      const statusClass = getStatusClass(token.statusLabel);
+      const tr = document.createElement("tr");
 
-  }, 600); // match CSS transition time
+      tr.classList.add(statusClass, "row-animate");
+      tr.style.animationDelay = `${index * 0.12}s`;
+
+      tr.innerHTML = `
+        <td>${token.tokenNumber ?? "-"}</td>
+        <td>${token.customerName?.replace(/\n|\r/g, " ") ?? "-"}</td>
+        <td>${token.statusLabel ?? "-"}</td>
+        <td>${token.counterNumber?.toString().trim() || "-"}</td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+
+  }, hideDuration);
 }
+
+
+
 
 
 /*************************************************
