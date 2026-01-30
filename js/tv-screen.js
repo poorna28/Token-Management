@@ -1,14 +1,28 @@
 /*************************************************
  * CONFIG
  *************************************************/
+// const params = new URLSearchParams(window.location.search);
+
+// const locationId = getIntParam(params, "locationId", 10, 1, 100000);
+// const limit = getIntParam(params, "limit", 50, 1, 500); // total records from API
+
 const params = new URLSearchParams(window.location.search);
 
-const locationId = getIntParam(params, "locationId", 10, 1, 100000);
-const limit = getIntParam(params, "limit", 50, 1, 500); // total records from API
+let locationId, limit;
+
+try {
+  locationId = getRequiredIntParam(params, "locationId", 1, 100000);
+  limit = getRequiredIntParam(params, "limit", 1, 500);
+} catch (e) {
+  console.error(e.message);
+  // STOP everything
+  throw e;
+}
+
 
 // const API_URL = `https://zcutilities.zeroco.de/api/get/112e46603b29bdfba06cf59e4f00a92e82483d25d66fc707974537e78fc5d6b7?locationId=${locationId}&limit=${limit}`;
 
-const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
+ const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
 
 
 
@@ -22,7 +36,7 @@ let currentIndex = 0;
 let rotateTimer = null;
 
 const DISPLAY_COUNT = 6;      // show 10 records at a time
-const ROTATE_INTERVAL = 5000; // 5 seconds
+const ROTATE_INTERVAL = 20000; // 5 seconds
 
 /*************************************************
  * FETCH TOKENS
@@ -98,6 +112,18 @@ function showNextBatch() {
  *************************************************/
 function updateTable(tokens) {
   const tbody = document.getElementById("tableBody");
+
+  // 🚫 NO animation for "No Tokens Available"
+  if (!Array.isArray(tokens) || tokens.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4" style="text-align:center;">
+          No Tokens Available
+        </td>
+      </tr>`;
+    return;
+  }
+
   const oldRows = Array.from(tbody.children);
 
   // STEP 1: Hide old rows one-by-one
@@ -111,16 +137,6 @@ function updateTable(tokens) {
   // STEP 2: Replace rows after hide animation
   setTimeout(() => {
     tbody.innerHTML = "";
-
-    if (!Array.isArray(tokens) || tokens.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="4" style="text-align:center;">
-            No Tokens Available
-          </td>
-        </tr>`;
-      return;
-    }
 
     // STEP 3: Show new rows one-by-one
     tokens.forEach((token, index) => {
@@ -176,13 +192,36 @@ function getStatusClass(statusLabel) {
 /*************************************************
  * HELPERS
  *************************************************/
-function getIntParam(params, key, defaultVal, min, max) {
-  const value = parseInt(params.get(key), 10);
-  if (isNaN(value)) return defaultVal;
-  if (value < min) return min;
-  if (value > max) return max;
+// function getIntParam(params, key, defaultVal, min, max) {
+//   const value = parseInt(params.get(key), 10);
+//   if (isNaN(value)) return defaultVal;
+//   if (value < min) return min;
+//   if (value > max) return max;
+//   return value;
+// }
+
+function getRequiredIntParam(params, key, min, max) {
+  const raw = params.get(key);
+  const value = parseInt(raw, 10);
+
+  if (raw === null || raw === "") {
+    alert(`Missing required URL parameter: ${key}`);
+    throw new Error(`Missing param: ${key}`);
+  }
+
+  if (isNaN(value)) {
+    alert(`Invalid ${key}. Must be a number`);
+    throw new Error(`Invalid param: ${key}`);
+  }
+
+  if (value < min || value > max) {
+    alert(`${key} must be between ${min} and ${max}`);
+    throw new Error(`Out of range param: ${key}`);
+  }
+
   return value;
 }
+
 
 /*************************************************
  * INITIAL LOAD
