@@ -22,7 +22,7 @@ try {
 
 // const API_URL = `https://zcutilities.zeroco.de/api/get/112e46603b29bdfba06cf59e4f00a92e82483d25d66fc707974537e78fc5d6b7?locationId=${locationId}&limit=${limit}`;
 
- const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
+const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
 
 
 
@@ -97,8 +97,7 @@ function showNextBatch() {
   );
 
   console.log(
-    `Showing records ${currentIndex + 1} to ${
-      currentIndex + batch.length
+    `Showing records ${currentIndex + 1} to ${currentIndex + batch.length
     }`
   );
 
@@ -143,7 +142,13 @@ function updateTable(tokens) {
       const statusClass = getStatusClass(token.statusLabel);
       const tr = document.createElement("tr");
 
-      tr.classList.add(statusClass, "row-animate");
+      // tr.classList.add(statusClass, "row-animate");
+      tr.classList.add("row-animate");
+
+      if (statusClass) {
+        tr.classList.add(statusClass);
+      }
+
       tr.style.animationDelay = `${index * 0.12}s`;
 
       tr.innerHTML = `
@@ -178,7 +183,7 @@ function getStatusClass(statusLabel) {
     case "Picking In Progress":
       return "status-picking";
 
-    case "Packing in Progress":
+    case "Packing In Progress":
       return "status-packing";
 
     case "Completed":
