@@ -22,7 +22,7 @@ try {
 
 // const API_URL = `https://zcutilities.zeroco.de/api/get/112e46603b29bdfba06cf59e4f00a92e82483d25d66fc707974537e78fc5d6b7?locationId=${locationId}&limit=${limit}`;
 
-const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
+ const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
 
 
 
@@ -111,21 +111,24 @@ function showNextBatch() {
  *************************************************/
 function updateTable(tokens) {
   const tbody = document.getElementById("tableBody");
+  const DISPLAY_COUNT = 5;
+  const COLS = 4;
 
-  // 🚫 NO animation for "No Tokens Available"
+  //  No Tokens case (keep your behavior)
   if (!Array.isArray(tokens) || tokens.length === 0) {
     tbody.innerHTML = `
-      <tr>
+      <tr class="empty-row">
         <td colspan="4" style="text-align:center;">
           No Tokens Available
         </td>
-      </tr>`;
+      </tr>
+    `;
     return;
   }
 
   const oldRows = Array.from(tbody.children);
 
-  // STEP 1: Hide old rows one-by-one
+  /* STEP 1: hide old rows */
   oldRows.forEach((tr, index) => {
     tr.classList.add("row-hide");
     tr.style.animationDelay = `${index * 0.08}s`;
@@ -133,21 +136,17 @@ function updateTable(tokens) {
 
   const hideDuration = oldRows.length * 80 + 400;
 
-  // STEP 2: Replace rows after hide animation
+  /* STEP 2: replace rows */
   setTimeout(() => {
     tbody.innerHTML = "";
 
-    // STEP 3: Show new rows one-by-one
+    /* STEP 3: render actual token rows */
     tokens.forEach((token, index) => {
       const statusClass = getStatusClass(token.statusLabel);
       const tr = document.createElement("tr");
 
-      // tr.classList.add(statusClass, "row-animate");
       tr.classList.add("row-animate");
-
-      if (statusClass) {
-        tr.classList.add(statusClass);
-      }
+      if (statusClass) tr.classList.add(statusClass);
 
       tr.style.animationDelay = `${index * 0.12}s`;
 
@@ -161,8 +160,23 @@ function updateTable(tokens) {
       tbody.appendChild(tr);
     });
 
+    /* STEP 4: pad EMPTY rows to make total = 5 */
+    const remaining = DISPLAY_COUNT - tokens.length;
+
+    for (let i = 0; i < remaining; i++) {
+      const tr = document.createElement("tr");
+      tr.className = "empty-row";
+
+      for (let j = 0; j < COLS; j++) {
+        tr.appendChild(document.createElement("td"));
+      }
+
+      tbody.appendChild(tr);
+    }
+
   }, hideDuration);
 }
+
 
 
 
@@ -184,6 +198,9 @@ function getStatusClass(statusLabel) {
       return "status-picking";
 
     case "Packing In Progress":
+      return "status-packing";
+
+         case "Packing in Progress":
       return "status-packing";
 
     case "Completed":

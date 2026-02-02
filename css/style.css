@@ -987,7 +987,8 @@ tr.status-collect_here {
 .tv-screen table {
     width: 100%;
     height: calc(100vh - 120px); /* logo + padding */
-    border-collapse: separate;
+     border-collapse: separate; 
+   
     border-spacing: 0 7px;
     color: white;
 }
@@ -1012,12 +1013,16 @@ tr.status-collect_here {
    TABLE BODY (AUTO FIT 5 ROWS)
 =========================== */
 
-.tv-screen tbody {
+/* .tv-screen tbody {
     height: calc(100% - 60px);
+} */
+ .tv-screen tbody {
+    height: 100%;
 }
 
+
 .tv-screen tbody tr {
-    height: calc((100% - (7px * 4)) / 5); /* 5 rows, 4 gaps */
+    height: 20%; /* exactly 5 rows */
 }
 
 .tv-screen th,
