@@ -770,9 +770,9 @@ div.dt-container.dt-empty-footer .dt-scroll-body {
 
 .tv-screen th,
 .tv-screen td {
-    padding: 14px;
+    padding: 25px;
     text-align: left;
-    font-size: 30px;
+    font-size: 40px;
     margin-bottom: 10px;
     font-weight: 500 !important;
 
@@ -948,3 +948,187 @@ tr.status-collect_here {
         font-size: 20px !important;
     }
   }
+
+
+  /* ===========================
+   TV SCREEN LAYOUT
+=========================== */
+
+.tv-screen {
+    background: #313031;
+    padding: 3px;
+    border: 18px solid #6a5555;
+    box-shadow: inset 0px 0px 46px #000;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+}
+
+.tv-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===========================
+   LOGO
+=========================== */
+
+.tv-screen .logo {
+    height: 65px;
+    margin-bottom: 10px;
+    width: 110px;
+}
+
+/* ===========================
+   TABLE STRUCTURE
+=========================== */
+
+.tv-screen table {
+    width: 100%;
+    height: calc(100vh - 120px); /* logo + padding */
+    border-collapse: separate;
+    border-spacing: 0 7px;
+    color: white;
+}
+
+/* ===========================
+   TABLE HEADER
+=========================== */
+
+.tv-screen thead {
+    height: 60px;
+}
+
+.tv-screen thead th {
+    color: #fefe00;
+    font-weight: 600;
+    padding-bottom: 0;
+    font-size: 30px;
+    text-align: left;
+}
+
+/* ===========================
+   TABLE BODY (AUTO FIT 5 ROWS)
+=========================== */
+
+.tv-screen tbody {
+    height: calc(100% - 60px);
+}
+
+.tv-screen tbody tr {
+    height: calc((100% - (7px * 4)) / 5); /* 5 rows, 4 gaps */
+}
+
+.tv-screen th,
+.tv-screen td {
+    padding: 14px;
+    text-align: left;
+    font-size: 30px;
+    font-weight: 500 !important;
+    vertical-align: middle;
+}
+
+/* Rounded corners per row */
+.tv-screen tr td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.tv-screen tr td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+/* ===========================
+   STATUS COLORS
+=========================== */
+
+tr.status-collect_here td {
+    background-color: #73d13d;
+    color: #fff;
+}
+
+tr.status-ready_for_delivery td {
+    background-color: #3d7a20;
+    color: #fff;
+}
+
+tr.status-billing td {
+    background-color: #ef5922;
+    color: #fff;
+}
+
+tr.status-picking td {
+    background-color: #0f6176;
+    color: #fff;
+}
+
+tr.status-packing td {
+    background-color: #97118c;
+    color: #fff;
+}
+
+tr.status-completed td {
+    background-color: #fff;
+    color: #000;
+}
+
+/* ===========================
+   PRIORITY COLORS (OPTIONAL)
+=========================== */
+
+.tv-screen tr:has(.p1) td {
+    background: #00a89c;
+    color: white;
+    font-weight: 600;
+}
+
+.tv-screen tr:has(.p2) td {
+    background: #d17453;
+    color: white;
+    font-weight: 600;
+}
+
+.tv-screen tr:has(.p3) td,
+.tv-screen tr:has(.p4) td {
+    background: #fff;
+    color: #000;
+    font-weight: 600;
+}
+
+.tv-screen tr .p3 {
+    color: #d17453 !important;
+}
+
+/* ===========================
+   MISC
+=========================== */
+
+.tv-screen .date-status {
+    display: none;
+}
+
+.token-list-accordian-table td {
+    background-color: transparent !important;
+}
+
+.no-history-available {
+    display: block;
+    text-align: center;
+}
+
+.orange-text {
+    color: #f89c34;
+}
+
+/* ===========================
+   RESPONSIVE FONT SCALE
+=========================== */
+
+@media (max-width: 1366px) {
+    .tv-screen td,
+    .tv-screen th {
+        font-size: 20px !important;
+    }
+}
