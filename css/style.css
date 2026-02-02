@@ -1004,7 +1004,7 @@ tr.status-collect_here {
     color: #fefe00;
     font-weight: 600;
     padding-bottom: 0;
-    font-size: 30px;
+    font-size: 40px;
     text-align: left;
 }
 
@@ -1024,7 +1024,7 @@ tr.status-collect_here {
 .tv-screen td {
     padding: 14px;
     text-align: left;
-    font-size: 30px;
+    font-size: 40px;
     font-weight: 500 !important;
     vertical-align: middle;
 }
@@ -1132,3 +1132,4 @@ tr.status-completed td {
         font-size: 20px !important;
     }
 }
+
