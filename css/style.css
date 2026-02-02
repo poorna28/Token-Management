@@ -772,11 +772,14 @@ div.dt-container.dt-empty-footer .dt-scroll-body {
 .tv-screen td {
     padding: 14px;
     text-align: left;
-    font-size: 20px;
+    font-size: 30px;
     margin-bottom: 10px;
     font-weight: 500 !important;
 
 }
+/* .tv-screen tr{
+    height: calc(100vh-110px);
+} */
 
 .tv-screen {
     background: #313031;
@@ -865,27 +868,27 @@ div.dt-container.dt-empty-footer .dt-scroll-body {
 /* Collect Here */
 tr.status-collect_here {
   background-color: #73d13d; /* green */
-  color: #000;
+  color: #fff;
 }
 
 .status-ready_for_delivery {
-  background-color: #00a89c; /* light green */
+  background-color: #3d7a20; /* light green */
 }
 .status-billing {
-  background-color: #d17453; 
+  background-color: #a96512; 
   color: #fff;
 }
 .status-picking {
-  background-color: #f0f0f0; 
-  color: #000;
+  background-color: #0f6176; 
+  color: #fff;
 }
 .status-packing {
-  background-color: #f0f0f0; 
-  color: #000;
+  background-color: #97118c; 
+  color: #fff;
 }
 .status-completed {
   background-color: #fff; /* dark grey */
-  color: #000;
+  color: #fff;
 }
 
 .token-list-accordian-table td{
@@ -939,3 +942,9 @@ tr.status-collect_here {
   opacity: 1;
   transform: translateY(0);
 } */
+
+  @media (max-width: 1366px) {
+    .tv-screen td,.tv-screen th{
+        font-size: 20px !important;
+    }
+  }
