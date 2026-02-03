@@ -1141,6 +1141,6 @@ tr.status-completed td {
 @media (min-width: 3000px) {
     .tv-screen td,
     .tv-screen th {
-        font-size: 6.25rem !important;
+        font-size: 130px !important;
     }
 }
