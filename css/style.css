@@ -1005,7 +1005,7 @@ tr.status-collect_here {
     color: #fefe00;
     font-weight: 600;
     padding-bottom: 0;
-    font-size: 75px;
+    font-size: 120px;
     text-align: left;
 }
 
@@ -1029,7 +1029,7 @@ tr.status-collect_here {
 .tv-screen td {
     padding: 14px;
     text-align: left;
-    font-size: 75px;
+    font-size: 120px;
     font-weight: 500 !important;
     vertical-align: middle;
 }
