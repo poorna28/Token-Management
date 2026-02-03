@@ -1142,10 +1142,10 @@ tr.status-completed td {
 @media (min-width: 3000px) {
     .tv-screen td,
     .tv-screen th {
-        font-size: 100px ;
+        font-size: 150px ;
     }
     .tv-screen thead th{
-        font-size: 100px;
+        font-size: 150px;
     }
 }
 
