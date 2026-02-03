@@ -20,9 +20,9 @@ try {
 }
 
 
- // const API_URL = `https://zcutilities.zeroco.de/api/get/112e46603b29bdfba06cf59e4f00a92e82483d25d66fc707974537e78fc5d6b7?locationId=${locationId}&limit=${limit}`;
+  const API_URL = `https://zcutilities.zeroco.de/api/get/112e46603b29bdfba06cf59e4f00a92e82483d25d66fc707974537e78fc5d6b7?locationId=${locationId}&limit=${limit}`;
 
-  const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
+ // const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
 
 
 
@@ -36,7 +36,7 @@ let currentIndex = 0;
 let rotateTimer = null;
 
 const DISPLAY_COUNT = 5;      // show 10 records at a time
-const ROTATE_INTERVAL = 20000; // 5 seconds
+const ROTATE_INTERVAL = 200000; // 5 seconds
 
 /*************************************************
  * FETCH TOKENS
@@ -81,6 +81,15 @@ allTokens.sort((a, b) => {
 
   } catch (error) {
     console.error("TOKEN BOARD ERROR ", error);
+
+      alert(
+    "Unable to connect to Token Board service.\n" +
+    "Please check network connection or try again later."
+  );
+
+    updateTable([]); // shows "No Tokens Available"
+
+    
   }
 }
 
@@ -268,3 +277,10 @@ function getRequiredIntParam(params, key, min, max) {
  * INITIAL LOAD
  *************************************************/
 fetchTokenBoard();
+
+
+function showStatusMessage(message, isError = false) {
+  const status = document.getElementById("status");
+  status.textContent = message;
+  status.style.color = isError ? "#ff4d4f" : "#52c41a";
+}
