@@ -204,7 +204,9 @@ const STATUS_PRIORITY = {
   "Packing In Progress": 2,
   "Packing in Progress": 2,
   "Picking In Progress": 3,
-  "Billing in Progress": 4
+  "Picking in Progress": 3,
+  "Billing in Progress": 4,
+  "Billing In Progress": 4,
 };
 
 
@@ -220,9 +222,11 @@ function getStatusClass(statusLabel) {
       return "status-ready_for_delivery";
 
     case "Billing in Progress":
+    case "Billing In Progress":
       return "status-billing";
 
     case "Picking In Progress":
+    case "Picking in Progress":
       return "status-picking";
 
     case "Packing In Progress":
