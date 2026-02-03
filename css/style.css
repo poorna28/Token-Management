@@ -986,7 +986,7 @@ tr.status-collect_here {
 
 .tv-screen table {
     width: 100%;
-    height: calc(100vh - 120px); /* logo + padding */
+    height: calc(100vh - 40px); /* logo + padding */
      border-collapse: separate; 
    
     border-spacing: 0 7px;
@@ -1005,7 +1005,7 @@ tr.status-collect_here {
     color: #fefe00;
     font-weight: 600;
     padding-bottom: 0;
-    font-size: 40px;
+    font-size: 75px;
     text-align: left;
 }
 
@@ -1029,7 +1029,7 @@ tr.status-collect_here {
 .tv-screen td {
     padding: 14px;
     text-align: left;
-    font-size: 40px;
+    font-size: 75px;
     font-weight: 500 !important;
     vertical-align: middle;
 }

@@ -20,9 +20,9 @@ try {
 }
 
 
-// const API_URL = `https://zcutilities.zeroco.de/api/get/112e46603b29bdfba06cf59e4f00a92e82483d25d66fc707974537e78fc5d6b7?locationId=${locationId}&limit=${limit}`;
+ // const API_URL = `https://zcutilities.zeroco.de/api/get/112e46603b29bdfba06cf59e4f00a92e82483d25d66fc707974537e78fc5d6b7?locationId=${locationId}&limit=${limit}`;
 
- const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
+  const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
 
 
 
@@ -53,11 +53,19 @@ async function fetchTokenBoard() {
     const data = await response.json();
     console.log("FULL API RESPONSE ", data);
 
-    allTokens =
-      data.tokens ||
-      data.TokenDisplayList ||
-      data.data ||
-      [];
+ allTokens =
+  data.tokens ||
+  data.TokenDisplayList ||
+  data.data ||
+  [];
+
+/* SORT TOKENS BY PRIORITY */
+allTokens.sort((a, b) => {
+  const p1 = STATUS_PRIORITY[a.statusLabel] ?? 99;
+  const p2 = STATUS_PRIORITY[b.statusLabel] ?? 99;
+  return p1 - p2;
+});
+
 
     console.log("TOTAL TOKENS ", allTokens.length);
 
@@ -180,6 +188,14 @@ function updateTable(tokens) {
 
 
 
+const STATUS_PRIORITY = {
+  "Ready to Deliver": 1,
+  "Token in Progress": 1,
+  "Packing In Progress": 2,
+  "Packing in Progress": 2,
+  "Picking In Progress": 3,
+  "Billing in Progress": 4
+};
 
 
 /*************************************************

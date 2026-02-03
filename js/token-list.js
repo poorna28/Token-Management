@@ -384,7 +384,7 @@ function bindHistoryToggle(table, page, size) {
                         }
       </td>
       <td>${((h.status || "---").replace(/_/g, " ")).toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}</td>
-      <td>${h.counterNumber || "---"}</td>
+      <td>${h.Counter || "---"}</td>
     </tr>
   `).join("");
 
