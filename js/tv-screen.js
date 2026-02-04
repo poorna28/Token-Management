@@ -200,6 +200,7 @@ function updateTable(tokens) {
 const STATUS_PRIORITY = {
   "Ready to Deliver": 1,
   "Ready To Deliver": 1,
+  "Delivered": 1,
   "Token in Progress": 1,
   "Packing In Progress": 2,
   "Packing in Progress": 2,
@@ -219,6 +220,7 @@ function getStatusClass(statusLabel) {
     case "Token In Progress":
     case "Ready to Deliver":
     case "Ready To Deliver":
+    case "Delivered":
       return "status-ready_for_delivery";
 
     case "Billing in Progress":
