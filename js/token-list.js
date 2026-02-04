@@ -364,17 +364,17 @@ function bindHistoryToggle(table, page, size) {
                 .then(h => {
                     const html = (h.visits || []).map(h => `
     <tr class="token-list-accordian-table">
-      <td>${h.tokenNumber}</td>
-      <td>${formatDateTime(h.issueTime)}</td>
-      <td class="green-text">${formatDateTime(h.exitTime) ?? '---'}</td>
+      <td>${safeValue(h.tokenNumber)}</td>
+    <td>${safeValue(formatDateTime(h.issueTime))}</td>
+     <td class="green-text">${safeValue(formatDateTime(h.exitTime))}</td>
       <td>
         ${h.issueTime && h.exitTime
                             ? `${Math.floor((new Date(h.exitTime) - new Date(h.issueTime)) / 60000)} min`
                             : "--"
                         }
       </td>
-      <td>${((h.status || "---").replace(/_/g, " ")).toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}</td>
-      <td>${h.Counter || "---"}</td>
+    <td>${safeValue(h.status).replace(/_/g, " ").toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}</td>  
+      <td>${safeValue(h.Counter)}</td>
     </tr>
   `).join("");
 
