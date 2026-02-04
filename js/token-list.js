@@ -242,9 +242,10 @@ function loadTokens() {
             data: "customerName",
             render: (d, t, r) => `
                 <div class="d-flex align-items-center gap-2">
-                    <strong class="name-letter">
-                        ${safeValue(r.customerInitials !== "--" ? r.customerInitials : (d ? d[0] : ""))}
-                    </strong>
+                  <strong class="name-letter">
+                        ${(r.customerInitials || (d ? d[0] : "")).toUpperCase()}
+                </strong>
+
                     <div>
                         <p class="m-0">${safeValue(d)}</p>
                         <span class="phone-number">+91 ${safeValue(r.customerPhone)}</span>
