@@ -36,7 +36,7 @@ let currentIndex = 0;
 let rotateTimer = null;
 
 const DISPLAY_COUNT = 5;      // show 10 records at a time
-const ROTATE_INTERVAL = 20000; // 5 seconds
+const ROTATE_INTERVAL = 10000; // 5 seconds
 
 /*************************************************
  * FETCH TOKENS
