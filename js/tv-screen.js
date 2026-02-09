@@ -290,3 +290,7 @@ function showStatusMessage(message, isError = false) {
   status.textContent = message;
   status.style.color = isError ? "#ff4d4f" : "#52c41a";
 }
+
+  setTimeout(() => {
+    location.reload();
+  }, 24 * 60 * 60 * 1000);
