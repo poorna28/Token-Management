@@ -20,7 +20,7 @@ try {
 }
 
 
-//  const API_URL = `https://zcutilities.zeroco.de/api/get/112e46603b29bdfba06cf59e4f00a92e82483d25d66fc707974537e78fc5d6b7?locationId=${locationId}&limit=${limit}`;
+// const API_URL = `https://zcutilities.zeroco.de/api/get/112e46603b29bdfba06cf59e4f00a92e82483d25d66fc707974537e78fc5d6b7?locationId=${locationId}&limit=${limit}`;
 
  const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
 
@@ -46,25 +46,41 @@ async function fetchTokenBoard() {
     // console.log("Calling API again ");
 
     const response = await fetch(API_URL, { cache: "no-store" });
+
     if (!response.ok) {
+
+      if (response.status === 400) {
+        showToast("Bad Request (400). Please check parameters.", "danger");
+      }
+      else if (response.status === 404) {
+        showToast("Token Board service not found (404).", "danger");
+      }
+      else if (response.status === 500) {
+        showToast("Server error (500). Please try again later.", "danger");
+      }
+      else {
+        showToast(`Unexpected error: ${response.status}`, "danger");
+      }
+
       throw new Error(`API failed: ${response.status}`);
     }
+
 
     const data = await response.json();
     // console.log("FULL API RESPONSE ", data);
 
- allTokens =
-  data.tokens ||
-  data.TokenDisplayList ||
-  data.data ||
-  [];
+    allTokens =
+      data.tokens ||
+      data.TokenDisplayList ||
+      data.data ||
+      [];
 
-/* SORT TOKENS BY PRIORITY */
-allTokens.sort((a, b) => {
-  const p1 = STATUS_PRIORITY[a.statusLabel] ?? 99;
-  const p2 = STATUS_PRIORITY[b.statusLabel] ?? 99;
-  return p1 - p2;
-});
+    /* SORT TOKENS BY PRIORITY */
+    allTokens.sort((a, b) => {
+      const p1 = STATUS_PRIORITY[a.statusLabel] ?? 99;
+      const p2 = STATUS_PRIORITY[b.statusLabel] ?? 99;
+      return p1 - p2;
+    });
 
 
     // console.log("TOTAL TOKENS ", allTokens.length);
@@ -82,14 +98,20 @@ allTokens.sort((a, b) => {
   } catch (error) {
     console.error("TOKEN BOARD ERROR ", error);
 
-      alert(
-    "Unable to connect to Token Board service.\n" +
-    "Please check network connection or try again later."
-  );
+    //     alert(
+    //   "Unable to connect to Token Board service.\n" +
+    //   "Please check network connection or try again later."
+    // );
+
+    showToast(
+      "Unable to connect to Token Board service. Please check network connection.",
+      "danger"
+    );
+
 
     updateTable([]); // shows "No Tokens Available"
 
-    
+
   }
 }
 
@@ -99,7 +121,7 @@ allTokens.sort((a, b) => {
 function showNextBatch() {
   if (!Array.isArray(allTokens) || allTokens.length === 0) {
     updateTable([]);
-        setTimeout(fetchTokenBoard, ROTATE_INTERVAL);
+    setTimeout(fetchTokenBoard, ROTATE_INTERVAL);
 
     return;
   }
@@ -236,7 +258,7 @@ function getStatusClass(statusLabel) {
     case "Packing In Progress":
       return "status-packing";
 
-         case "Packing in Progress":
+    case "Packing in Progress":
       return "status-packing";
 
     case "Completed":
@@ -263,17 +285,20 @@ function getRequiredIntParam(params, key, min, max) {
   const value = parseInt(raw, 10);
 
   if (raw === null || raw === "") {
-    alert(`Missing required URL parameter: ${key}`);
+    // alert(`Missing required URL parameter: ${key}`);
+    showToast(`Missing required URL parameter: ${key}`, "danger");
     throw new Error(`Missing param: ${key}`);
   }
 
   if (isNaN(value)) {
-    alert(`Invalid ${key}. Must be a number`);
+    // alert(`Invalid ${key}. Must be a number`);
+    showToast(`Invalid ${key}. Must be a number`, "danger");
     throw new Error(`Invalid param: ${key}`);
   }
 
   if (value < min || value > max) {
-    alert(`${key} must be between ${min} and ${max}`);
+    // alert(`${key} must be between ${min} and ${max}`);
+    showToast(`${key} must be between ${min} and ${max}`, "danger");
     throw new Error(`Out of range param: ${key}`);
   }
 
@@ -293,6 +318,24 @@ function showStatusMessage(message, isError = false) {
   status.style.color = isError ? "#ff4d4f" : "#52c41a";
 }
 
-  // setTimeout(() => {
-  //   location.reload();
-  // }, 24 * 60 * 60 * 1000);
+// setTimeout(() => {
+//   location.reload();
+// }, 24 * 60 * 60 * 1000);
+
+
+function showToast(message, type = "danger") {
+  const toastEl = document.getElementById("networkToast");
+  const toastMsg = document.getElementById("networkToastMessage");
+
+  // Change color dynamically
+  toastEl.classList.remove("text-bg-danger", "text-bg-success", "text-bg-warning");
+  toastEl.classList.add(`text-bg-${type}`);
+
+  toastMsg.textContent = message;
+
+  const toast = new bootstrap.Toast(toastEl, {
+    delay: 4000
+  });
+
+  toast.show();
+}
