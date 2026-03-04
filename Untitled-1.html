@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QueueMaster — All Tokens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #f0f4f9;
+  --surface:  #ffffff;
+  --s2:       #f7f9fc;
+  --border:   #e2e8f0;
+  --border2:  #cbd5e8;
+  --navy:     #0f1f3d;
+  --navy2:    #1e3a5f;
+  --blue:     #2563eb;
+  --blue-lt:  #eff4ff;
+  --teal:     #0891b2;
+  --teal-lt:  #ecfeff;
+  --green:    #16a34a;
+  --green-lt: #f0fdf4;
+  --amber:    #d97706;
+  --amber-lt: #fffbeb;
+  --red:      #dc2626;
+  --red-lt:   #fef2f2;
+  --purple:   #7c3aed;
+  --purple-lt:#f5f3ff;
+  --t1:       #0f1f3d;
+  --t2:       #4a5878;
+  --t3:       #8a9bbf;
+  --r:        12px;
+  --rsm:      8px;
+  --sh:       0 1px 3px rgba(15,31,61,.06), 0 4px 14px rgba(15,31,61,.05);
+  --shm:      0 4px 16px rgba(15,31,61,.10), 0 1px 3px rgba(15,31,61,.06);
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0 }
+html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--t1) }
+button { border: none; cursor: pointer; font-family: inherit }
+input, select { font-family: inherit }
+::-webkit-scrollbar { width: 5px; height: 5px }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px }
+
+/* ── HEADER ── */
+.hdr {
+  background: var(--navy);
+  padding: 0 24px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 12px rgba(15,31,61,.25);
+}
+.hdr-top {
+  height: 58px;
+  display: flex; align-items: center; gap: 16px;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
+}
+.brand-mark {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 15px; color: #fff;
+}
+.brand-text { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: -.3px }
+.brand-sub { font-size: 10px; color: #64748b; font-weight: 500; margin-top: 1px; text-transform: uppercase; letter-spacing: .8px }
+.hdr-divider { width: 1px; height: 28px; background: rgba(255,255,255,.1); flex-shrink: 0 }
+
+/* Location ID chip in header */
+.loc-chip {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+  border-radius: 9px; padding: 6px 12px; flex-shrink: 0;
+}
+.loc-chip-label { font-size: 10px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .8px }
+.loc-chip-val { font-size: 13px; font-weight: 700; color: #93c5fd; font-family: 'JetBrains Mono', monospace }
+.hdr-spacer { flex: 1 }
+.live-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(22,163,74,.15); border: 1px solid rgba(22,163,74,.3);
+  border-radius: 20px; padding: 5px 12px;
+  font-size: 11px; font-weight: 600; color: #4ade80;
+}
+.ldot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: blink 1.4s infinite }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+.hdr-time { font-size: 12px; font-weight: 500; color: #64748b; font-family: 'JetBrains Mono', monospace }
+
+/* ── FILTER BAR (below header) ── */
+.filter-zone {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap;
+  box-shadow: 0 1px 4px rgba(15,31,61,.04);
+}
+.fg { display: flex; flex-direction: column; gap: 5px }
+.fg label { font-size: 11px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: .5px }
+.fg input, .fg select {
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: var(--rsm); padding: 8px 12px;
+  font-size: 13px; color: var(--t1); outline: none;
+  transition: border-color .15s, box-shadow .15s;
+  height: 38px;
+}
+.fg input:focus, .fg select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.1) }
+.fg.wide input { width: 200px }
+.fg.date input { width: 148px }
+.fg.locid input { width: 140px; font-family: 'JetBrains Mono', monospace; font-weight: 600 }
+
+/* Stage pills */
+.stage-group { display: flex; flex-direction: column; gap: 5px }
+.stage-group label { font-size: 11px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: .5px }
+.stage-pills { display: flex; gap: 6px; flex-wrap: wrap }
+.spill {
+  padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  border: 1.5px solid var(--border); background: var(--s2); color: var(--t2);
+  cursor: pointer; transition: all .15s; white-space: nowrap;
+}
+.spill:hover { border-color: var(--blue); color: var(--blue) }
+.spill.active { color: #fff; border-color: transparent }
+.spill.picking.active { background: var(--blue) }
+.spill.packing.active { background: var(--purple) }
+.spill.billing.active { background: var(--teal) }
+.spill.ready.active { background: var(--green) }
+.spill.all.active { background: var(--navy) }
+
+.filter-actions { display: flex; gap: 8px; align-items: flex-end; margin-left: auto; flex-shrink: 0 }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 0 18px; height: 38px; border-radius: var(--rsm); font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s }
+.btn-p { background: var(--blue); color: #fff; border: 1px solid var(--blue) }
+.btn-p:hover { background: #1d4ed8 }
+.btn-o { background: var(--surface); color: var(--t2); border: 1px solid var(--border) }
+.btn-o:hover { border-color: var(--blue); color: var(--blue) }
+.btn-xs { height: 30px; padding: 0 10px; font-size: 11px; font-weight: 600 }
+
+/* ── MAIN ── */
+.main { padding: 20px 24px; max-width: 1600px; margin: 0 auto }
+
+/* ── SUMMARY CARDS ── */
+.kpi-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; margin-bottom: 20px }
+.kpi {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--r); padding: 16px 18px;
+  box-shadow: var(--sh); cursor: pointer; user-select: none;
+  transition: all .18s; position: relative; overflow: hidden;
+}
+.kpi:hover { transform: translateY(-2px); box-shadow: var(--shm) }
+.kpi.active { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.13), var(--shm) }
+.kpi::after { content:''; position:absolute; right:-16px; top:-16px; width:72px; height:72px; border-radius:50%; opacity:.06 }
+.kpi.k-all::after{background:var(--navy)}
+.kpi.k-comp::after{background:var(--green)}
+.kpi.k-prog::after{background:var(--blue)}
+.kpi.k-avg::after{background:var(--amber)}
+.kpi.k-breach::after{background:var(--red)}
+.kpi-icon { font-size: 18px; margin-bottom: 10px }
+.kpi-lbl { font-size: 10.5px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px }
+.kpi-val { font-size: 28px; font-weight: 800; letter-spacing: -1.2px; line-height: 1; margin-bottom: 4px }
+.kpi-sub { font-size: 11px; color: var(--t3) }
+.kpi-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-top: 3px }
+.up { background: var(--green-lt); color: var(--green) }
+.dn { background: var(--red-lt); color: var(--red) }
+.wn { background: var(--amber-lt); color: var(--amber) }
+.kpi-hint { position: absolute; bottom: 8px; right: 10px; font-size: 9.5px; color: var(--t3); opacity: 0; transition: opacity .15s }
+.kpi:hover .kpi-hint { opacity: 1 }
+
+/* ── ACTIVE FILTER BANNER ── */
+.active-banner {
+  display: none; align-items: center; gap: 10px;
+  background: var(--blue-lt); border: 1px solid #bfdbfe;
+  border-radius: var(--rsm); padding: 9px 14px; margin-bottom: 14px;
+  font-size: 13px; color: var(--blue); font-weight: 600;
+}
+.active-banner.show { display: flex }
+.ab-clear { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--blue); cursor: pointer; text-decoration: underline }
+
+/* ── TABLE CARD ── */
+.table-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); box-shadow: var(--sh); overflow: hidden;
+}
+.tc-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; border-bottom: 1px solid var(--border);
+  gap: 12px; flex-wrap: wrap;
+  background: var(--s2);
+}
+.tc-title { font-size: 14px; font-weight: 700; color: var(--navy) }
+.tc-sub { font-size: 11px; color: var(--t3); margin-top: 2px }
+.tc-search {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--rsm); padding: 7px 12px; width: 240px;
+  transition: border-color .15s;
+}
+.tc-search:focus-within { border-color: var(--blue) }
+.tc-search input { border: none; outline: none; background: none; font-size: 13px; color: var(--t1); width: 100% }
+.tc-search input::placeholder { color: var(--t3) }
+
+/* ── TABLE ── */
+.tw { overflow-x: auto }
+table { width: 100%; border-collapse: collapse; font-size: 13px }
+th {
+  padding: 10px 14px; text-align: left;
+  font-size: 10px; font-weight: 700; color: var(--t3);
+  letter-spacing: .7px; text-transform: uppercase;
+  border-bottom: 2px solid var(--border);
+  background: var(--s2); white-space: nowrap;
+  cursor: pointer; user-select: none;
+}
+th:hover { color: var(--navy) }
+th .sort-icon { opacity: .35; margin-left: 3px; font-size: 9px }
+th.sorted .sort-icon { opacity: 1; color: var(--blue) }
+td {
+  padding: 11px 14px; border-bottom: 1px solid var(--border);
+  color: var(--t2); vertical-align: middle;
+}
+tr:last-child td { border-bottom: none }
+tr:hover td { background: #fafbfd }
+
+/* Specific cell types */
+.cell-id {
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600;
+  color: var(--navy); background: var(--s2); padding: 3px 8px;
+  border-radius: 5px; border: 1px solid var(--border); display: inline-block;
+}
+.cell-cust { display: flex; flex-direction: column }
+.cell-cust-name { font-weight: 600; color: var(--navy); font-size: 13px }
+.cell-cust-id { font-size: 11px; color: var(--t3); font-family: 'JetBrains Mono', monospace; margin-top: 1px }
+.cell-loc { display: flex; flex-direction: column }
+.cell-loc-name { font-weight: 500; color: var(--t1); font-size: 13px }
+.cell-loc-id { font-size: 11px; color: var(--t3); font-family: 'JetBrains Mono', monospace; margin-top: 1px }
+
+/* Stage badge */
+.stage-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 6px;
+  font-size: 11px; font-weight: 700; white-space: nowrap;
+}
+.s-picking   { background: #eff4ff; color: var(--blue) }
+.s-packing   { background: var(--purple-lt); color: var(--purple) }
+.s-billing   { background: var(--teal-lt); color: var(--teal) }
+.s-ready     { background: var(--green-lt); color: var(--green) }
+
+/* Status badge */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600;
+}
+.status-badge::before { content:''; width:5px; height:5px; border-radius:50%; flex-shrink:0 }
+.st-completed  { background: var(--green-lt); color: var(--green) }
+.st-completed::before  { background: var(--green) }
+.st-inprogress { background: var(--blue-lt); color: var(--blue) }
+.st-inprogress::before { background: var(--blue) }
+.st-waiting    { background: var(--amber-lt); color: var(--amber) }
+.st-waiting::before    { background: var(--amber) }
+.st-breached   { background: var(--red-lt); color: var(--red) }
+.st-breached::before   { background: var(--red); animation: blink 1s infinite }
+
+/* Duration cell */
+.dur-cell { display: flex; align-items: center; gap: 8px }
+.dur-val { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; min-width: 32px }
+.dur-bar { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; min-width: 40px }
+.dur-fill { height: 100%; border-radius: 3px }
+
+/* TAT breach cell */
+.tat-cell { display: flex; align-items: center; gap: 7px; white-space: nowrap }
+.tat-limit { font-size: 11px; font-weight: 600; color: var(--t3) }
+.breach-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+}
+.breach-yes { background: var(--red-lt); color: var(--red) }
+.breach-no  { background: var(--green-lt); color: var(--green) }
+
+/* PAGINATION */
+.pg-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 18px; border-top: 1px solid var(--border);
+  flex-wrap: wrap; gap: 10px;
+}
+.pg-info { font-size: 12px; color: var(--t3) }
+.pg-btns { display: flex; gap: 4px; align-items: center; flex-wrap: wrap }
+.pgb {
+  padding: 5px 10px; font-size: 12px; font-weight: 600; border-radius: 6px;
+  background: var(--surface); border: 1px solid var(--border); color: var(--t2); cursor: pointer; transition: all .15s;
+}
+.pgb:hover:not(:disabled) { border-color: var(--blue); color: var(--blue) }
+.pgb.cur { background: var(--blue); color: #fff; border-color: var(--blue) }
+.pgb:disabled { opacity: .35; cursor: not-allowed }
+
+/* EMPTY */
+.empty-state { text-align: center; padding: 48px 24px; color: var(--t3) }
+.empty-state svg { width: 44px; height: 44px; margin: 0 auto 12px; opacity: .3; display: block }
+.empty-state p { font-size: 14px; font-weight: 600; color: var(--t2); margin-bottom: 4px }
+.empty-state span { font-size: 13px }
+
+/* RESPONSIVE */
+@media(max-width:1100px) { .kpi-row { grid-template-columns: repeat(3,1fr) } }
+@media(max-width:768px) {
+  .hdr-top { flex-wrap: wrap; height: auto; padding: 12px 0 }
+  .filter-zone { padding: 12px 16px }
+  .main { padding: 14px 16px }
+  .kpi-row { grid-template-columns: 1fr 1fr }
+  .fg.wide input { width: 100% }
+  .tc-search { width: 100% }
+  .hdr { padding: 0 16px }
+}
+@media(max-width:480px) { .kpi-row { grid-template-columns: 1fr } }
+</style>
+</head>
+<body>
+
+<!-- ════════ HEADER ════════ -->
+<header class="hdr">
+  <div class="hdr-top">
+    <!-- Brand -->
+    <div class="brand">
+      <div class="brand-mark">Q</div>
+      <div>
+        <div class="brand-text">QueueMaster</div>
+        <div class="brand-sub">Super Admin</div>
+      </div>
+    </div>
+    <div class="hdr-divider"></div>
+
+    <!-- Active Location in Header -->
+    <div class="loc-chip">
+      <div>
+        <div class="loc-chip-label">Location ID</div>
+        <div class="loc-chip-val" id="hdr-loc-id">LOC-HYD-001</div>
+      </div>
+    </div>
+    <div class="loc-chip">
+      <div>
+        <div class="loc-chip-label">Location Name</div>
+        <div class="loc-chip-val" id="hdr-loc-name" style="color:#67e8f9">Hyderabad Central</div>
+      </div>
+    </div>
+
+    <div class="hdr-spacer"></div>
+
+    <div class="live-pill"><span class="ldot"></span>Live</div>
+    <div class="hdr-time" id="hdr-clock">--:--:--</div>
+  </div>
+</header>
+
+<!-- ════════ FILTER ZONE ════════ -->
+<div class="filter-zone">
+
+  <!-- Location ID -->
+  <div class="fg locid">
+    <label>Location ID</label>
+    <input id="f-locid" type="text" placeholder="LOC-HYD-001" value="LOC-HYD-001" oninput="syncLocHeader()">
+  </div>
+
+  <!-- Location Name -->
+  <div class="fg wide">
+    <label>Location Name</label>
+    <select id="f-locname" onchange="syncLocHeader();applyFilters()">
+      <option value="">All Locations</option>
+      <option value="LOC-HYD-001" data-id="LOC-HYD-001">Hyderabad Central</option>
+      <option value="LOC-CHN-002" data-id="LOC-CHN-002">Chennai South</option>
+      <option value="LOC-MUM-003" data-id="LOC-MUM-003">Mumbai West</option>
+      <option value="LOC-BLR-004" data-id="LOC-BLR-004">Bangalore Tech Park</option>
+      <option value="LOC-PUN-005" data-id="LOC-PUN-005">Pune Kothrud</option>
+      <option value="LOC-DEL-006" data-id="LOC-DEL-006">Delhi NCR</option>
+    </select>
+  </div>
+
+  <!-- From Date -->
+  <div class="fg date">
+    <label>From Date</label>
+    <input id="f-from" type="date" value="2025-01-15" onchange="applyFilters()">
+  </div>
+
+  <!-- To Date -->
+  <div class="fg date">
+    <label>To Date</label>
+    <input id="f-to" type="date" value="2025-01-15" onchange="applyFilters()">
+  </div>
+
+  <!-- Stage Filter Pills -->
+  <div class="stage-group">
+    <label>Stage</label>
+    <div class="stage-pills">
+      <span class="spill all active" data-stage="" onclick="setStage('',this)">All Stages</span>
+      <span class="spill picking" data-stage="Picking" onclick="setStage('Picking',this)">📦 Picking</span>
+      <span class="spill packing" data-stage="Packing" onclick="setStage('Packing',this)">🛍 Packing</span>
+      <span class="spill billing" data-stage="Billing" onclick="setStage('Billing',this)">🧾 Billing</span>
+      <span class="spill ready" data-stage="ReadyToDeliver" onclick="setStage('ReadyToDeliver',this)">🚚 Ready to Deliver</span>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="filter-actions">
+    <button class="btn btn-p" onclick="applyFilters()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"/></svg>
+      Apply
+    </button>
+    <button class="btn btn-o" onclick="clearFilters()">Clear</button>
+    <button class="btn btn-o">
+      <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke-width="2"/></svg>
+      Export
+    </button>
+  </div>
+</div>
+
+<!-- ════════ MAIN ════════ -->
+<div class="main">
+
+  <!-- KPI Summary Cards (clickable) -->
+  <div class="kpi-row" id="kpi-row">
+    <div class="kpi k-all active" id="kpi-all" onclick="kpiClick('',this)">
+      <div class="kpi-icon">🎫</div>
+      <div class="kpi-lbl">Total Tokens</div>
+      <div class="kpi-val" style="color:var(--navy)" id="kv-total">0</div>
+      <div class="kpi-sub">All statuses</div>
+      <div class="kpi-hint">Click to show all</div>
+    </div>
+    <div class="kpi k-comp" id="kpi-Completed" onclick="kpiClick('Completed',this)">
+      <div class="kpi-icon">✅</div>
+      <div class="kpi-lbl">Completed</div>
+      <div class="kpi-val" style="color:var(--green)" id="kv-Completed">0</div>
+      <div class="kpi-badge up" id="kv-comp-rate">— %</div>
+      <div class="kpi-hint">Click to filter</div>
+    </div>
+    <div class="kpi k-prog" id="kpi-InProgress" onclick="kpiClick('InProgress',this)">
+      <div class="kpi-icon">⚡</div>
+      <div class="kpi-lbl">In Progress</div>
+      <div class="kpi-val" style="color:var(--blue)" id="kv-InProgress">0</div>
+      <div class="kpi-sub">Currently active</div>
+      <div class="kpi-hint">Click to filter</div>
+    </div>
+    <div class="kpi k-avg" id="kpi-avg" onclick="kpiClick('',this)">
+      <div class="kpi-icon">⏱️</div>
+      <div class="kpi-lbl">Avg Completion</div>
+      <div class="kpi-val" style="color:var(--amber)" id="kv-avg">0<span style="font-size:14px;font-weight:600"> m</span></div>
+      <div class="kpi-sub">Avg duration (mins)</div>
+      <div class="kpi-hint">Click to show all</div>
+    </div>
+    <div class="kpi k-breach" id="kpi-Breached" onclick="kpiClick('Breached',this)">
+      <div class="kpi-icon">🚨</div>
+      <div class="kpi-lbl">TAT Breached</div>
+      <div class="kpi-val" style="color:var(--red)" id="kv-Breached">0</div>
+      <div class="kpi-badge dn" id="kv-breach-rate">— %</div>
+      <div class="kpi-hint">Click to filter</div>
+    </div>
+  </div>
+
+  <!-- Active filter banner -->
+  <div class="active-banner" id="active-banner">
+    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" stroke-width="2"/></svg>
+    <span id="banner-text">Showing filtered results</span>
+    <span class="ab-clear" onclick="kpiClick('',document.getElementById('kpi-all'));clearFilters()">✕ Clear all filters</span>
+  </div>
+
+  <!-- Token Table -->
+  <div class="table-card">
+    <div class="tc-hdr">
+      <div>
+        <div class="tc-title" id="tbl-title">All Tokens</div>
+        <div class="tc-sub" id="tbl-sub">Showing all results</div>
+      </div>
+      <div class="tc-search">
+        <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"/></svg>
+        <input id="tbl-search" placeholder="Search customer, ID, location…" oninput="applyFilters()">
+      </div>
+    </div>
+
+    <div class="tw">
+      <table>
+        <thead>
+          <tr>
+            <th onclick="sortBy('customerId')">Customer ID <span class="sort-icon" id="si-customerId">↕</span></th>
+            <th onclick="sortBy('customerName')">Customer Name <span class="sort-icon" id="si-customerName">↕</span></th>
+            <th onclick="sortBy('locationId')">Location ID <span class="sort-icon" id="si-locationId">↕</span></th>
+            <th onclick="sortBy('locationName')">Location Name <span class="sort-icon" id="si-locationName">↕</span></th>
+            <th onclick="sortBy('currentStage')">Current Stage <span class="sort-icon" id="si-currentStage">↕</span></th>
+            <th onclick="sortBy('overallStatus')">Overall Status <span class="sort-icon" id="si-overallStatus">↕</span></th>
+            <th onclick="sortBy('overallDurationMinutes')">Duration (mins) <span class="sort-icon" id="si-overallDurationMinutes">↕</span></th>
+            <th onclick="sortBy('overallTatLimit')">TAT Limit <span class="sort-icon" id="si-overallTatLimit">↕</span></th>
+            <th onclick="sortBy('tatBreach')">TAT Breach <span class="sort-icon" id="si-tatBreach">↕</span></th>
+          </tr>
+        </thead>
+        <tbody id="tbl-body"></tbody>
+      </table>
+    </div>
+
+    <div class="pg-bar">
+      <span class="pg-info" id="pg-info"></span>
+      <div class="pg-btns" id="pg-btns"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════ DATA ═══════════════
+const LOCATIONS = [
+  { id: 'LOC-HYD-001', name: 'Hyderabad Central', tat: 30 },
+  { id: 'LOC-CHN-002', name: 'Chennai South',     tat: 20 },
+  { id: 'LOC-MUM-003', name: 'Mumbai West',        tat: 40 },
+  { id: 'LOC-BLR-004', name: 'Bangalore Tech Park',tat: 25 },
+  { id: 'LOC-PUN-005', name: 'Pune Kothrud',       tat: 35 },
+  { id: 'LOC-DEL-006', name: 'Delhi NCR',          tat: 30 },
+];
+const STAGES   = ['Picking','Packing','Billing','ReadyToDeliver'];
+const STATUSES = ['Completed','Completed','Completed','Completed','InProgress','InProgress','Waiting','Waiting','Breached','Breached'];
+const FIRST_NAMES = ['Arjun','Priya','Rohan','Meena','Deepak','Ananya','Ravi','Kavita','Suresh','Divya','Mohan','Sunita','Farhan','Latha','Kishore','Pooja','Rahul','Usha','Smita','Vinay','Radha','Karan','Aisha','Tejas','Priti','Rajan','Mala','Dev','Aarav','Sneha','Nisha','Leela','Harish','Rekha'];
+const LAST_NAMES  = ['Kumar','Mehta','Sharma','Rao','Singh','Patel','Desai','Nair','Iyer','Joshi','Reddy','Pillai','Bose','Ghosh','Murthy','Verma','Malhotra','Chopra','Agarwal','Gupta'];
+
+function rnd(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+function pad2(n){return n<10?'0'+n:n}
+function randName(){return FIRST_NAMES[rnd(0,FIRST_NAMES.length-1)]+' '+LAST_NAMES[rnd(0,LAST_NAMES.length-1)]}
+
+// Generate 120 tokens
+const ALL_TOKENS = [];
+let seq = 1000;
+for(let i=0;i<120;i++){
+  const loc   = LOCATIONS[rnd(0,LOCATIONS.length-1)];
+  const stage = STAGES[rnd(0,STAGES.length-1)];
+  const status= STATUSES[rnd(0,STATUSES.length-1)];
+  const dur   = rnd(5, 65);
+  const breach= dur > loc.tat;
+  const finalStatus = breach && status === 'Completed' ? 'Breached' : status;
+  ALL_TOKENS.push({
+    customerId:             'CUST-' + pad2(rnd(1,99)),
+    customerName:           randName(),
+    locationId:             loc.id,
+    locationName:           loc.name,
+    currentStage:           stage,
+    overallStatus:          finalStatus,
+    overallDurationMinutes: dur,
+    overallTatLimit:        loc.tat,
+    tatBreach:              dur > loc.tat,
+  });
+  seq++;
+}
+
+// ═══════════════ STATE ═══════════════
+let filtered    = [...ALL_TOKENS];
+let currentPage = 1;
+const PAGE_SIZE  = 15;
+let kpiFilter    = '';
+let stageFilter  = '';
+let sortKey      = '';
+let sortDir      = 1;  // 1 asc, -1 desc
+
+// ═══════════════ HEADER SYNC ═══════════════
+function syncLocHeader(){
+  const locId   = document.getElementById('f-locid').value.trim();
+  const locSel  = document.getElementById('f-locname');
+  const selOpt  = locSel.options[locSel.selectedIndex];
+  const locName = locSel.value ? selOpt.text : (locId ? 'Custom Location' : 'All Locations');
+  document.getElementById('hdr-loc-id').textContent   = locId  || '—';
+  document.getElementById('hdr-loc-name').textContent  = locName;
+}
+
+// ═══════════════ STAGE PILLS ═══════════════
+function setStage(stage, el){
+  stageFilter = stage;
+  document.querySelectorAll('.spill').forEach(p=>{
+    p.classList.remove('active');
+    // remove all colour classes
+    ['picking','packing','billing','ready','all'].forEach(c=>p.classList.remove(c));
+  });
+  // re-apply base class
+  document.querySelectorAll('.spill').forEach(p=>{
+    const s = p.dataset.stage;
+    if(s==='')p.classList.add('all');
+    else if(s==='Picking')p.classList.add('picking');
+    else if(s==='Packing')p.classList.add('packing');
+    else if(s==='Billing')p.classList.add('billing');
+    else if(s==='ReadyToDeliver')p.classList.add('ready');
+  });
+  el.classList.add('active');
+  applyFilters();
+}
+
+// ═══════════════ KPI CARDS ═══════════════
+function kpiClick(status, el){
+  kpiFilter = status;
+  document.querySelectorAll('.kpi').forEach(k=>k.classList.remove('active'));
+  el.classList.add('active');
+  applyFilters();
+}
+
+function updateKPIs(data){
+  const total     = data.length;
+  const completed = data.filter(t=>t.overallStatus==='Completed').length;
+  const inprog    = data.filter(t=>t.overallStatus==='InProgress').length;
+  const breached  = data.filter(t=>t.tatBreach).length;
+  const avgDur    = total ? Math.round(data.reduce((s,t)=>s+t.overallDurationMinutes,0)/total) : 0;
+  const compRate  = total ? Math.round(completed/total*100) : 0;
+  const brRate    = total ? Math.round(breached/total*100) : 0;
+
+  document.getElementById('kv-total').textContent     = total;
+  document.getElementById('kv-Completed').textContent  = completed;
+  document.getElementById('kv-InProgress').textContent = inprog;
+  document.getElementById('kv-Breached').textContent   = breached;
+  document.getElementById('kv-avg').innerHTML          = `${avgDur}<span style="font-size:14px;font-weight:600"> m</span>`;
+  document.getElementById('kv-comp-rate').textContent  = `${compRate}% completion`;
+  document.getElementById('kv-breach-rate').textContent= `${brRate}% breach rate`;
+}
+
+// ═══════════════ FILTER + RENDER ═══════════════
+function applyFilters(){
+  const search   = (document.getElementById('tbl-search')?.value||'').toLowerCase();
+  const locId    = (document.getElementById('f-locid')?.value||'').trim().toLowerCase();
+  const locName  = document.getElementById('f-locname')?.value||'';
+
+  // Update KPIs based on location/stage filter (without status filter)
+  const baseFiltered = ALL_TOKENS.filter(t=>{
+    const locMatch  = !locName  || t.locationId===locName;
+    const stgMatch  = !stageFilter || t.currentStage===stageFilter;
+    return locMatch && stgMatch;
+  });
+  updateKPIs(baseFiltered);
+
+  // Full filter including KPI status and search
+  filtered = ALL_TOKENS.filter(t=>{
+    const locMatch    = !locName     || t.locationId===locName;
+    const locIdMatch  = !locId       || t.locationId.toLowerCase().includes(locId);
+    const stgMatch    = !stageFilter  || t.currentStage===stageFilter;
+    const kpiMatch    = !kpiFilter    || t.overallStatus===kpiFilter || (kpiFilter==='Breached'&&t.tatBreach);
+    const srch        = !search
+      || t.customerId.toLowerCase().includes(search)
+      || t.customerName.toLowerCase().includes(search)
+      || t.locationId.toLowerCase().includes(search)
+      || t.locationName.toLowerCase().includes(search)
+      || t.currentStage.toLowerCase().includes(search)
+      || t.overallStatus.toLowerCase().includes(search);
+    return locMatch && locIdMatch && stgMatch && kpiMatch && srch;
+  });
+
+  if(sortKey) applySort();
+  currentPage = 1;
+
+  // Banner
+  const hasFilt = kpiFilter||stageFilter||locName||(document.getElementById('tbl-search')?.value);
+  const banner = document.getElementById('active-banner');
+  banner.classList.toggle('show', !!hasFilt);
+  if(hasFilt){
+    const parts=[];
+    if(locName){const opt=document.querySelector(`#f-locname option[value="${locName}"]`);parts.push('📍 '+( opt?opt.text:locName));}
+    if(stageFilter)parts.push('Stage: '+stageFilter);
+    if(kpiFilter)parts.push('Status: '+kpiFilter);
+    document.getElementById('banner-text').textContent = parts.join(' · ') + ` — ${filtered.length} result${filtered.length!==1?'s':''}`;
+  }
+
+  renderTable();
+  updateTableTitle();
+}
+
+function clearFilters(){
+  document.getElementById('f-locid').value='LOC-HYD-001';
+  document.getElementById('f-locname').value='';
+  document.getElementById('tbl-search').value='';
+  stageFilter=''; kpiFilter='';
+  // reset stage pills
+  document.querySelectorAll('.spill').forEach(p=>p.classList.remove('active'));
+  document.querySelector('.spill.all').classList.add('active');
+  // reset kpi
+  document.querySelectorAll('.kpi').forEach(k=>k.classList.remove('active'));
+  document.getElementById('kpi-all').classList.add('active');
+  document.getElementById('active-banner').classList.remove('show');
+  syncLocHeader();
+  filtered=[...ALL_TOKENS];
+  updateKPIs(filtered);
+  currentPage=1;
+  renderTable();
+  updateTableTitle();
+}
+
+function updateTableTitle(){
+  const stageLbl = stageFilter ? stageFilter==='ReadyToDeliver'?'Ready to Deliver':stageFilter : 'All Stages';
+  const statusLbl= kpiFilter   ? kpiFilter : 'All Status';
+  document.getElementById('tbl-title').textContent = `Token List — ${stageLbl} · ${statusLbl}`;
+  document.getElementById('tbl-sub').textContent   = `${filtered.length} token${filtered.length!==1?'s':''} found`;
+}
+
+// ═══════════════ SORT ═══════════════
+function sortBy(key){
+  if(sortKey===key) sortDir*=-1; else {sortKey=key;sortDir=1;}
+  document.querySelectorAll('.sort-icon').forEach(s=>s.textContent='↕');
+  document.querySelectorAll('th').forEach(t=>t.classList.remove('sorted'));
+  const si=document.getElementById('si-'+key);
+  if(si){si.textContent=sortDir===1?'↑':'↓';si.closest('th').classList.add('sorted');}
+  applySort();
+  currentPage=1;
+  renderTable();
+}
+function applySort(){
+  filtered.sort((a,b)=>{
+    let va=a[sortKey], vb=b[sortKey];
+    if(typeof va==='string') va=va.toLowerCase(), vb=vb.toLowerCase();
+    if(va===vb)return 0;
+    return va<vb?-sortDir:sortDir;
+  });
+}
+
+// ═══════════════ RENDER TABLE ═══════════════
+function stageHTML(stage){
+  const map={Picking:'s-picking 📦',Packing:'s-packing 🛍',Billing:'s-billing 🧾',ReadyToDeliver:'s-ready 🚚'};
+  const [cls,ico]=(map[stage]||'s-picking 📦').split(' ');
+  const lbl=stage==='ReadyToDeliver'?'Ready to Deliver':stage;
+  return`<span class="stage-badge ${cls}">${ico} ${lbl}</span>`;
+}
+function statusHTML(status){
+  const map={Completed:'st-completed',InProgress:'st-inprogress',Waiting:'st-waiting',Breached:'st-breached'};
+  const lbl={Completed:'Completed',InProgress:'In Progress',Waiting:'Waiting',Breached:'Breached'};
+  return`<span class="status-badge ${map[status]||'st-waiting'}">${lbl[status]||status}</span>`;
+}
+function durHTML(dur,tat){
+  const pct=Math.min(Math.round(dur/tat*100),100);
+  const col=dur>tat?'var(--red)':dur>tat*.8?'var(--amber)':'var(--green)';
+  return`<div class="dur-cell">
+    <span class="dur-val" style="color:${col}">${dur}</span>
+    <div class="dur-bar"><div class="dur-fill" style="width:${pct}%;background:${col}"></div></div>
+  </div>`;
+}
+function tatHTML(dur,tat,breach){
+  return`<div class="tat-cell">
+    <span class="tat-limit">${tat}m</span>
+    <span class="breach-tag ${breach?'breach-yes':'breach-no'}">${breach?'🔴 Breach':'✅ OK'}</span>
+  </div>`;
+}
+
+function renderTable(){
+  const total=filtered.length;
+  const pages=Math.max(1,Math.ceil(total/PAGE_SIZE));
+  const p=Math.min(currentPage,pages);
+  const items=filtered.slice((p-1)*PAGE_SIZE, p*PAGE_SIZE);
+
+  const tbody=document.getElementById('tbl-body');
+  if(!items.length){
+    tbody.innerHTML=`<tr><td colspan="9">
+      <div class="empty-state">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="1.5"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="1.5"/></svg>
+        <p>No tokens found</p><span>Try adjusting your filters or search term</span>
+      </div>
+    </td></tr>`;
+  } else {
+    tbody.innerHTML=items.map(t=>`<tr>
+      <td><span class="cell-id">${t.customerId}</span></td>
+      <td><div class="cell-cust"><span class="cell-cust-name">${t.customerName}</span></div></td>
+      <td><div class="cell-loc"><span class="cell-id" style="font-size:11px">${t.locationId}</span></div></td>
+      <td><div class="cell-loc"><span class="cell-loc-name">${t.locationName}</span></div></td>
+      <td>${stageHTML(t.currentStage)}</td>
+      <td>${statusHTML(t.overallStatus)}</td>
+      <td>${durHTML(t.overallDurationMinutes,t.overallTatLimit)}</td>
+      <td><span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--t2)">${t.overallTatLimit}m</span></td>
+      <td>${tatHTML(t.overallDurationMinutes,t.overallTatLimit,t.tatBreach)}</td>
+    </tr>`).join('');
+  }
+
+  // Pagination info
+  const from=(p-1)*PAGE_SIZE+1, to=Math.min(p*PAGE_SIZE,total);
+  document.getElementById('pg-info').textContent = total===0?'No results':`Showing ${from}–${to} of ${total} tokens`;
+
+  // Pagination buttons
+  const range=pgRange(p,pages);
+  let btns=`<button class="pgb" ${p<=1?'disabled':''} onclick="goPg(${p-1})">← Prev</button>`;
+  range.forEach(x=>{
+    btns+=x==='…'
+      ?`<span style="padding:0 5px;color:var(--t3);font-size:13px">…</span>`
+      :`<button class="pgb ${x===p?'cur':''}" onclick="goPg(${x})">${x}</button>`;
+  });
+  btns+=`<button class="pgb" ${p>=pages?'disabled':''} onclick="goPg(${p+1})">Next →</button>`;
+  document.getElementById('pg-btns').innerHTML=btns;
+}
+
+function goPg(p){ currentPage=p; renderTable(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+function pgRange(cur,total){
+  if(total<=7) return Array.from({length:total},(_,i)=>i+1);
+  if(cur<=4)   return [1,2,3,4,5,'…',total];
+  if(cur>=total-3) return [1,'…',total-4,total-3,total-2,total-1,total];
+  return [1,'…',cur-1,cur,cur+1,'…',total];
+}
+
+// ═══════════════ CLOCK ═══════════════
+function tick(){
+  const now=new Date();
+  document.getElementById('hdr-clock').textContent=
+    pad2(now.getHours())+':'+pad2(now.getMinutes())+':'+pad2(now.getSeconds());
+}
+setInterval(tick,1000); tick();
+
+// ═══════════════ INIT ═══════════════
+syncLocHeader();
+updateKPIs(ALL_TOKENS);
+renderTable();
+updateTableTitle();
+</script>
+</body>
+</html>9.2179
