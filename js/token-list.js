@@ -237,10 +237,10 @@ function loadTokens() {
                 },
                 deferRender: true,
                 autoWidth: false,
-      columns: [
-        {
-            data: "customerName",
-            render: (d, t, r) => `
+                columns: [
+                    {
+                        data: "customerName",
+                        render: (d, t, r) => `
                 <div class="d-flex align-items-center gap-2">
                   <strong class="name-letter">
                         ${(r.customerInitials || (d ? d[0] : "")).toUpperCase()}
@@ -251,42 +251,64 @@ function loadTokens() {
                         <span class="phone-number">+91 ${safeValue(r.customerPhone)}</span>
                     </div>
                 </div>`
-        },
+                    },
 
-        { data: "location", render: safeValue },
-        { data: "tokenNumber", render: safeValue },
+                    { data: "location", render: safeValue },
+                    { data: "tokenNumber", render: safeValue },
 
-        {
-            data: "issueTime",
-            className: "green-text",
-            render: d => d ? formatDateTime(d) : "--"
-        },
+                    {
+                        data: "issueTime",
+                        className: "green-text",
+                        render: d => d ? formatDateTime(d) : "--"
+                    },
 
-        {
-            data: "exitTime",
-            render: d =>
-                d
-                    ? `<span class="green-text">${formatDateTime(d)}</span>`
-                    : `<span class="orange-text">In Progress</span>`
-        },
+                    // {
+                    //     data: "exitTime",
+                    //     render: d =>
+                    //         d
+                    //             ? `<span class="green-text">${formatDateTime(d)}</span>`
+                    //             : `<span class="orange-text">In Progress</span>`
+                    // },
 
-        {
-            data: "timeDurationMinutes",
-            render: d => (d === 0 ? "0 min" : safeValue(d) + (d ? " min" : ""))
-        },
+                    {
+                        data: "exitTime",
+                        render: (d, type, row) => {
 
-        { data: "counterNumber", render: safeValue },
+                            // Case 1: Empty → In Progress
+                            if (!d) {
+                                return `<span class="orange-text">In Progress</span>`;
+                            }
 
-        {
-            data: null,
-            orderable: false,
-            searchable: false,
-            render: () => `
+                            // Case 2: Check if valid date
+                            const isValidDate = !isNaN(new Date(d).getTime());
+
+                            if (isValidDate) {
+                                return `<span class="green-text">${formatDateTime(d)}</span>`;
+                            }
+
+                            // Case 3: Any non-date text (Cancelled, Failed, etc.)
+                            return `<span class="text-danger">${d}</span>`;
+                        }
+                    },
+
+
+                    {
+                        data: "timeDurationMinutes",
+                        render: d => (d === 0 ? "0 min" : safeValue(d) + (d ? " min" : ""))
+                    },
+
+                    { data: "counterNumber", render: safeValue },
+
+                    {
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        render: () => `
                 <button class="btn btn-sm btn-info toggle-history">
                     <i class="bi bi-chevron-down"></i>
                 </button>`
-        }
-    ]
+                    }
+                ]
             });
 
             /* ============================
@@ -700,29 +722,29 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
- const inputDateField = document.getElementById("fromDateInput");
-  const inputDateField1 = document.getElementById("toDateInput");
+const inputDateField = document.getElementById("fromDateInput");
+const inputDateField1 = document.getElementById("toDateInput");
 
 
-  inputDateField.addEventListener("click", function () {
+inputDateField.addEventListener("click", function () {
     this.showPicker();
-  });
+});
 
-  inputDateField.addEventListener("focus", function () {
+inputDateField.addEventListener("focus", function () {
     this.showPicker();
-  });
+});
 
-    inputDateField1.addEventListener("click", function () {
+inputDateField1.addEventListener("click", function () {
     this.showPicker();
-  });
+});
 
-  inputDateField1.addEventListener("focus", function () {
+inputDateField1.addEventListener("focus", function () {
     this.showPicker();
-  });
+});
 
 
-  /* ============================================================
-   AUTO REFRESH PAGE EVERY 5 MINUTES
+/* ============================================================
+ AUTO REFRESH PAGE EVERY 5 MINUTES
 ============================================================ */
 setInterval(() => {
     console.log(" Auto refreshing page (5 minutes elapsed)");
@@ -745,64 +767,64 @@ setInterval(() => {
 
 
 const safeValue = v =>
-  v === null || v === undefined || String(v).trim() === "" ? "--" : v;
+    v === null || v === undefined || String(v).trim() === "" ? "--" : v;
 
 
-            //  columns: [
-            //         {
-            //             data: "customerName",
-            //             render: (d, t, r) => `
-            //                 <div class="d-flex align-items-center gap-2">
-            //                     <strong class="name-letter">
-            //                         ${r.customerInitials || (d ? d[0] : "")}
-            //                     </strong>
-            //                     <div>
-            //                         <p class="m-0">${d || "--"}</p>
-            //                         <span class="phone-number">+91 ${r.customerPhone || ""}</span>
-            //                     </div>
-            //                 </div>`
-            //         },
-            //         { data: "location", defaultContent: "--" },
-            //         { data: "tokenNumber", defaultContent: "--" },
+//  columns: [
+//         {
+//             data: "customerName",
+//             render: (d, t, r) => `
+//                 <div class="d-flex align-items-center gap-2">
+//                     <strong class="name-letter">
+//                         ${r.customerInitials || (d ? d[0] : "")}
+//                     </strong>
+//                     <div>
+//                         <p class="m-0">${d || "--"}</p>
+//                         <span class="phone-number">+91 ${r.customerPhone || ""}</span>
+//                     </div>
+//                 </div>`
+//         },
+//         { data: "location", defaultContent: "--" },
+//         { data: "tokenNumber", defaultContent: "--" },
 
-            //         {
-            //             data: "issueTime",
-            //             className: "green-text",
-            //             render: d => d ? formatDateTime(d) : "--"
-            //         },
+//         {
+//             data: "issueTime",
+//             className: "green-text",
+//             render: d => d ? formatDateTime(d) : "--"
+//         },
 
-            //         // {
-            //         //     data: "exitTime",
-            //         //     className: "green-text",
-            //         //     render: d => d ? formatDateTime(d) : "In Progress"
-            //         // },
+//         // {
+//         //     data: "exitTime",
+//         //     className: "green-text",
+//         //     render: d => d ? formatDateTime(d) : "In Progress"
+//         // },
 
-            //         {
-            //             data: "exitTime",
-            //             render: d => {
-            //                 if (d) {
-            //                     // If exitTime exists, show formatted date in green
-            //                     return `<span class="green-text">${formatDateTime(d)}</span>`;
-            //                 } else {
-            //                     // If it doesn't exist, show "In Progress" in orange
-            //                     return `<span class="orange-text">In Progress</span>`;
-            //                 }
-            //             }
-            //         },
-            //         {
-            //             data: "timeDurationMinutes",
-            //             render: d => d ? `${d} min` : "--"
-            //         },
-            //         {
-            //             data: "counterNumber",defaultContent: "--"
-            //         },
-            //         {
-            //             data: null,
-            //             orderable: false,
-            //             searchable: false,
-            //             render: () => `
-            //                 <button class="btn btn-sm btn-info toggle-history">
-            //                     <i class="bi bi-chevron-down"></i>
-            //                 </button>`
-            //         }
-            //     ]
+//         {
+//             data: "exitTime",
+//             render: d => {
+//                 if (d) {
+//                     // If exitTime exists, show formatted date in green
+//                     return `<span class="green-text">${formatDateTime(d)}</span>`;
+//                 } else {
+//                     // If it doesn't exist, show "In Progress" in orange
+//                     return `<span class="orange-text">In Progress</span>`;
+//                 }
+//             }
+//         },
+//         {
+//             data: "timeDurationMinutes",
+//             render: d => d ? `${d} min` : "--"
+//         },
+//         {
+//             data: "counterNumber",defaultContent: "--"
+//         },
+//         {
+//             data: null,
+//             orderable: false,
+//             searchable: false,
+//             render: () => `
+//                 <button class="btn btn-sm btn-info toggle-history">
+//                     <i class="bi bi-chevron-down"></i>
+//                 </button>`
+//         }
+//     ]
