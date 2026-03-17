@@ -274,20 +274,18 @@ function loadTokens() {
                         data: "exitTime",
                         render: (d, type, row) => {
 
-                            // Case 1: Empty → In Progress
+                            // Case 1: Cancelled
+                            if (d === "Cancelled Token") {
+                                return `<span class="text-danger">Cancelled</span>`;
+                            }
+
+                            // Case 2: Empty / In Progress
                             if (!d) {
                                 return `<span class="orange-text">In Progress</span>`;
                             }
 
-                            // Case 2: Check if valid date
-                            const isValidDate = !isNaN(new Date(d).getTime());
-
-                            if (isValidDate) {
-                                return `<span class="green-text">${formatDateTime(d)}</span>`;
-                            }
-
-                            // Case 3: Any non-date text (Cancelled, Failed, etc.)
-                            return `<span class="text-danger">${d}</span>`;
+                            // Case 3: Valid Date
+                            return `<span class="green-text">${formatDateTime(d)}</span>`;
                         }
                     },
 
