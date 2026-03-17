@@ -270,24 +270,31 @@ function loadTokens() {
                     //             : `<span class="orange-text">In Progress</span>`
                     // },
 
-                    {
-                        data: "exitTime",
-                        render: (d, type, row) => {
+{
+  data: "exitTime",
+  render: (d, type, row) => {
 
-                            // Case 1: Cancelled
-                            if (d === "Cancelled Token") {
-                                return `<span class="text-danger">Cancelled</span>`;
-                            }
+    // 🔍 DEBUG HERE
+    console.log("exitTime raw:", d);
+    console.log("type:", typeof d);
+    console.log("row:", row);
 
-                            // Case 2: Empty / In Progress
-                            if (!d) {
-                                return `<span class="orange-text">In Progress</span>`;
-                            }
+    const value = (d || "").toString().trim().toLowerCase();
 
-                            // Case 3: Valid Date
-                            return `<span class="green-text">${formatDateTime(d)}</span>`;
-                        }
-                    },
+    if (!value) {
+      return `<span class="orange-text">In Progress</span>`;
+    }
+
+    const isValidDate = !isNaN(new Date(d).getTime());
+
+    if (isValidDate) {
+      return `<span class="green-text">${formatDateTime(d)}</span>`;
+    }
+
+    return `<span class="text-danger">${d}</span>`;
+  }
+},
+
 
 
                     {
