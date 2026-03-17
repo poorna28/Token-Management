@@ -53,7 +53,7 @@ async function fetchLocationsAndBind(userIdParam) {
     // `https://zcutilities.zeroco.de/api/get/06368b0c1d5d5c14f6cc9c7e330761ce3e4a974bd87ebe392be31adbd115eaf1?username=${encodeURIComponent(userId)}`;
 
     const API =
-        `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/getLocationMaster?username=${encodeURIComponent(userId)}`;
+        `https://phrmapvtuat.apollopharmacy.info:8443/HBPTOKEN/SalesTransactionService.svc/getLocationMaster?username=${encodeURIComponent(userId)}`;
 
     try {
         const res = await fetch(API, { cache: "no-store" });
@@ -139,7 +139,7 @@ async function fetchAndBindMetrics(locationId) {
 
     if (new Date(fromDate) > new Date(toDate)) { alert("From date cannot be later than To date."); return; }
     const API =
-        `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetTokenSummary/store-tokens/summary?locationId=${locationId}&fromDate=${fromDate}&toDate=${toDate}`;
+        `https://phrmapvtuat.apollopharmacy.info:8443/HBPTOKEN/SalesTransactionService.svc/GetTokenSummary/store-tokens/summary?locationId=${locationId}&fromDate=${fromDate}&toDate=${toDate}`;
 
     try {
         const res = await fetch(API, { cache: "no-store" });
@@ -198,7 +198,7 @@ function loadTokens() {
     const status = getWhitelistedParam(params, "status", validStatuses, "ALL");
 
     const API =
-        `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetLocationTokens/location-tokens` +
+        `https://phrmapvtuat.apollopharmacy.info:8443/HBPTOKEN/SalesTransactionService.svc/GetLocationTokens/location-tokens` +
         `?locationId=${locationId}&fromDate=${fromDate}&toDate=${toDate}` +
         `&page=${page}&size=${size}&sort=${sort}&status=${status}`;
 
@@ -270,30 +270,30 @@ function loadTokens() {
                     //             : `<span class="orange-text">In Progress</span>`
                     // },
 
-{
-  data: "exitTime",
-  render: (d, type, row) => {
+                    {
+                        data: "exitTime",
+                        render: (d, type, row) => {
 
-    // 🔍 DEBUG HERE
-    console.log("exitTime raw:", d);
-    console.log("type:", typeof d);
-    console.log("row:", row);
+                            //  DEBUG HERE
+                            console.log("exitTime raw:", d);
+                            console.log("type:", typeof d);
+                            console.log("row:", row);
 
-    const value = (d || "").toString().trim().toLowerCase();
+                            const value = (d || "").toString().trim().toLowerCase();
 
-    if (!value) {
-      return `<span class="orange-text">In Progress</span>`;
-    }
+                            if (!value) {
+                                return `<span class="orange-text">In Progress</span>`;
+                            }
 
-    const isValidDate = !isNaN(new Date(d).getTime());
+                            const isValidDate = !isNaN(new Date(d).getTime());
 
-    if (isValidDate) {
-      return `<span class="green-text">${formatDateTime(d)}</span>`;
-    }
+                            if (isValidDate) {
+                                return `<span class="green-text">${formatDateTime(d)}</span>`;
+                            }
 
-    return `<span class="text-danger">${d}</span>`;
-  }
-},
+                            return `<span class="text-danger">${d}</span>`;
+                        }
+                    },
 
 
 
@@ -382,7 +382,7 @@ function bindHistoryToggle(table, page, size) {
             if (new Date(fromDate) > new Date(toDate)) { alert("From date cannot be later than To date."); return; }
 
             const API =
-                `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/GetCustomerHistory/customers/history?customerId=${data.customerId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&size=${size}`;
+                `https://phrmapvtuat.apollopharmacy.info:8443/HBPTOKEN/SalesTransactionService.svc/GetCustomerHistory/customers/history?customerId=${data.customerId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&size=${size}`;
 
             console.log(" API URL:", API);
 
