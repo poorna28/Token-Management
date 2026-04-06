@@ -5,16 +5,9 @@
 
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
 
-const BASE_URL = "https://phrmapvtuat.apollopharmacy.info:8443/TOKENMANAGEMENT/api";
-
-const LOCATION_API = `${BASE_URL}/locations?type=All`;
-const TOKEN_API = `${BASE_URL}/tokens`;          // params appended dynamically
-
-const COMMON_HEADERS = {
-  "Auth-Token": "DJGHEHJHGFEjhgfghjkjhghWFGED==",
-  "Content-Type": "application/json"
-};
-
+const LOCATION_API = `${CONFIG.BASE_URL}${CONFIG.ENDPOINTS.LOCATIONS}`;
+const TOKEN_API = `${CONFIG.BASE_URL}${CONFIG.ENDPOINTS.TOKENS}`;
+const COMMON_HEADERS = CONFIG.HEADERS;
 // ─── STATE ───────────────────────────────────────────────────────────────────
 
 let allTokenData = [];    // raw data from API for the current query
