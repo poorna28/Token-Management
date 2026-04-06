@@ -19,7 +19,7 @@ const COMMON_HEADERS = {
 
 let allTokenData = [];    // raw data from API for the current query
 let table = null;  // DataTable instance
-let activeStageFilter = ""; // currently active card filter (stage name or "breach")
+let activeStageFilter = "total"; // currently active card filter (stage name or "breach")
 let locationMap = {};    // { locationId: locationName } — populated by loadLocations()
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
@@ -151,23 +151,27 @@ function fetchTokensForLocation(locationId) {
     });
 }
 
+// AFTER
 function loadTokenList() {
   setLoader(true);
-  activeStageFilter = "total";
-  setActiveCard("total");
+  //  Do NOT reset activeStageFilter or setActiveCard here.
+  //    Preserve whatever the user had selected before the reload.
   const selectedLocationId = document.getElementById("location-dropdown").value;
 
   const fetches = selectedLocationId
-    ? [fetchTokensForLocation(selectedLocationId)]          // single location
-    : Object.keys(locationMap).map(fetchTokensForLocation); // all locations in parallel
+    ? [fetchTokensForLocation(selectedLocationId)]
+    : Object.keys(locationMap).map(fetchTokensForLocation);
 
   Promise.all(fetches)
     .then(results => {
       allTokenData = results.flat().map(row => ({
         ...row,
         currentStage: normalizeStage(row.currentStage)
-      })); renderTable(allTokenData);
+      }));
       updateSummaryCards(deriveSummary(allTokenData));
+
+      // Re-apply the current active filter instead of dumping all data
+      applyCardFilter(activeStageFilter || "total");
     })
     .finally(() => setLoader(false));
 }
@@ -200,14 +204,16 @@ function renderTable(data) {
           return `<div class="d-flex align-items-center gap-2">
                     <strong class="name-letter">${initial}</strong>
                     <div>
-                      <p class="m-0">${d || "-"}</p>
+                      <p class="m-0 length-name">${d || "-"}</p>
                       <span class="phone-number">${r.phone || "-"}</span>
                     </div>
                   </div>`;
         }
       },
       { data: "tokenId", defaultContent: "-" },
-      { data: "locationName", defaultContent: "-" },
+      { data: "locationName",
+        className: "length-name",
+         defaultContent: "-" },
       {
         data: "currentStage",
         className: "current-stage-column",
@@ -432,25 +438,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 5. Card clicks — client-side filter over already-fetched data
   document.querySelector(".stat-card.breach")?.classList.remove("active");
-  document.querySelectorAll(".stat-card").forEach(card => {
-    card.addEventListener("click", function () {
-      document.querySelectorAll(".stat-card").forEach(c => c.classList.remove("active"));
-      this.classList.add("active");
+// AFTER — persist the key to state immediately
+document.querySelectorAll(".stat-card").forEach(card => {
+  card.addEventListener("click", function () {
+    document.querySelectorAll(".stat-card").forEach(c => c.classList.remove("active"));
+    this.classList.add("active");
 
-      const cls = this.classList;
-      let key = "total";
-      if (cls.contains("total")) key = "total";
-      else if (cls.contains("billing")) key = "billing";
-      else if (cls.contains("picking")) key = "picking";
-      else if (cls.contains("packing")) key = "packing";
-      else if (cls.contains("ready")) key = "ready";
-      else if (cls.contains("delivered")) key = "delivered";
-      else if (cls.contains("cancelled")) key = "cancelled";
-      else if (cls.contains("breach")) key = "breach";
+    const cls = this.classList;
+    let key = "total";
+    if (cls.contains("total"))          key = "total";
+    else if (cls.contains("billing"))   key = "billing";
+    else if (cls.contains("picking"))   key = "picking";
+    else if (cls.contains("packing"))   key = "packing";
+    else if (cls.contains("ready"))     key = "ready";
+    else if (cls.contains("delivered")) key = "delivered";
+    else if (cls.contains("cancelled")) key = "cancelled";
+    else if (cls.contains("breach"))    key = "breach";
 
-      applyCardFilter(key);
-    });
+    activeStageFilter = key;   // update state first
+    applyCardFilter(key);
   });
+});
 });
 
 

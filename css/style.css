@@ -1530,6 +1530,13 @@ table.dataTable.admin-dash-table tbody td {
     box-shadow: 0 6px 16px rgba(61, 122, 32, 0.15);
 }
 
+.length-name {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 @media (max-width:1281px) {
     .stat-card {
         padding: 16px 10px;
