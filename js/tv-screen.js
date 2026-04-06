@@ -22,8 +22,10 @@ try {
 
 // const API_URL = `https://zcutilities.zeroco.de/api/get/112e46603b29bdfba06cf59e4f00a92e82483d25d66fc707974537e78fc5d6b7?locationId=${locationId}&limit=${limit}`;
 
- const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBP/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
+ const API_URL = `https://phrmapvtuat.apollopharmacy.info:8443/HBPTOKEN/SalesTransactionService.svc/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
 
+//const API_URL =
+  // `${CONFIG.API_BASE}/TokenDisplay/board?locationId=${locationId}&limit=${limit}`;
 
 
 // console.log("API URL ", API_URL);
@@ -193,7 +195,7 @@ function updateTable(tokens) {
 
       tr.innerHTML = `
         <td>${token.tokenNumber ?? "-"}</td>
-        <td>${token.customerName?.replace(/\n|\r/g, " ") ?? "-"}</td>
+        <td>${token.billNo?.replace(/\n|\r/g, " ") ?? "-"}</td>
         <td>${token.statusLabel ?? "-"}</td>
         <td>${token.counterNumber?.toString().trim() || "-"}</td>
       `;
