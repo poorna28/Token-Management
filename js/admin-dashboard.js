@@ -422,12 +422,22 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // 4. Date filter — CLEAR: reset to today
-  document.getElementById("clearDateFilter").addEventListener("click", () => {
-    document.getElementById("fromDateInput").value = today();
-    document.getElementById("toDateInput").value = today();
-    syncURL();
-    loadTokenList();
-  });
+document.getElementById("clearDateFilter").addEventListener("click", () => {
+  document.getElementById("fromDateInput").value = today();
+  document.getElementById("toDateInput").value = today();
+
+  // Clear DataTable search input
+  if ($.fn.DataTable.isDataTable("#tokenAdminTable")) {
+    const dt = $("#tokenAdminTable").DataTable();
+    dt.search("").draw();
+  }
+
+  // Optional: also clear visible search box manually
+  // document.querySelector('input[type="search"]')?.value = "";
+
+  syncURL();
+  loadTokenList();
+});
 
   // 5. Card clicks — client-side filter over already-fetched data
   document.querySelector(".stat-card.breach")?.classList.remove("active");
