@@ -1263,7 +1263,7 @@ table thead tr th {
 }
 
 .token-list:has(.admin-dash-table) div.dt-container .dt-search {
-    right: 690px !important;
+    right: 778px !important;
     left: unset !important;
 }
 

@@ -161,6 +161,12 @@
                             <span>CLEAR</span>
                         </button>
                     </div>
+                    <div class="filters">
+                        <button id="exportBtn" class="btn filter-btn btn-primary" style="background-color: #000;">
+                            <i class="bi bi-file-earmark-excel-fill" style="color: #fff;"></i>
+                            <span style="color: #fff;">EXPORT</span>
+                        </button>
+                    </div>
                 </div>
                 <h4 class="token-list-heading">Total Token List</h4>
                 <table id="tokenAdminTable" class="display admin-dash-table" style="width:100%">
@@ -182,10 +188,12 @@
             </div>
         </div>
     </main>
-    
+
     <script src="js/config.js"></script>
+    <script src="js/xlsx.min.js"></script>
     <script src="js/admin-dashboard.js"></script>
-    
+
+
 </body>
 
 </html>

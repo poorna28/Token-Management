@@ -66,6 +66,13 @@ function normalizeStage(stage) {
   return stageMap[stage] || stage;
 }
 
+
+// ==================
+
+let lastUpdatedAt = "";
+
+// ===================
+
 // ===================================
 function deriveSummary(data) {
   const s = {
@@ -165,6 +172,11 @@ function loadTokenList() {
 
       // Re-apply the current active filter instead of dumping all data
       applyCardFilter(activeStageFilter || "total");
+
+      lastUpdatedAt = new Date().toLocaleTimeString();
+document.getElementById("lastUpdatedTime").textContent = `Last Updated: ${lastUpdatedAt}`;
+
+
     })
     .finally(() => setLoader(false));
 }
@@ -198,8 +210,10 @@ function renderTable(data) {
                     <strong class="name-letter">${initial}</strong>
                     <div>
                       <p class="m-0 length-name">${d || "-"}</p>
-                      <span class="phone-number">${r.phone || "-"}</span>
-                    </div>
+                <span class="phone-number">
+                ${r.phone ? r.phone.replace(/(\d{2})\d+(\d{2})/, "$1******$2") : "-"}
+                </span>         
+                  </div>
                   </div>`;
         }
       },
@@ -219,7 +233,8 @@ function renderTable(data) {
             "Billing In Progress": "current-stage-billing",
             "Ready to Deliver": "current-stage-ready",
             "Delivered": "current-stage-delivered",
-            "Cancelled": "current-stage-cancelled"
+            "Cancelled": "current-stage-cancelled",
+            "DISPATCHED": "current-stage-delivered",
           };
 
           const cls = map[stage] || "";
@@ -401,6 +416,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initial token load — dates blank by default, API returns all records
     syncURL();
     loadTokenList();
+
+
+    setInterval(loadTokenList, 24 * 60 * 60 * 1000);
   });
 
   // 3. Date filter — APPLY: re-fetch from API
@@ -499,3 +517,32 @@ function setActiveCard(cardKey = "total") {
     targetCard.classList.add("active");
   }
 }
+
+// ================================================
+
+document.getElementById("exportBtn").addEventListener("click", () => {
+
+  const exportData = $.fn.DataTable.isDataTable("#tokenAdminTable")
+    ? $("#tokenAdminTable").DataTable().rows({ search: "applied" }).data().toArray()
+    : allTokenData;
+
+  const formatted = exportData.map(r => ({
+    Customer: r.customerName || "-",
+    Phone: r.phone || "-",
+    TokenID: r.tokenId || "-",
+    Location: r.locationName || "-",
+    Stage: r.currentStage || "-",
+    IssueTime: r.issueTime || "-",
+    ExitTime: r.exitTime || "-",
+    CounterNo: r.counterNo || "-",
+    TATLimit: r.tatLimitMinutes || "-",
+    TATBreach: r.tatBreachMinutes || "-"
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(formatted);
+  const wb = XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(wb, ws, "Tokens");
+
+  XLSX.writeFile(wb, `token-report-${today()}.xlsx`);
+});
