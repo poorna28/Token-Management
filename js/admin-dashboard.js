@@ -418,7 +418,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTokenList();
 
 
-    setInterval(loadTokenList, 24 * 60 * 60 * 1000);
+setInterval(loadTokenList, 10 * 60 * 1000);
   });
 
   // 3. Date filter — APPLY: re-fetch from API
@@ -526,14 +526,31 @@ document.getElementById("exportBtn").addEventListener("click", () => {
     ? $("#tokenAdminTable").DataTable().rows({ search: "applied" }).data().toArray()
     : allTokenData;
 
+  // Format date time
+  function formatDateTime(dateStr) {
+    if (!dateStr || dateStr === "-") return "-";
+
+    const d = new Date(dateStr);
+
+    return d.toLocaleString("en-IN", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true
+    });
+  }
+
   const formatted = exportData.map(r => ({
     Customer: r.customerName || "-",
     Phone: r.phone || "-",
     TokenID: r.tokenId || "-",
     Location: r.locationName || "-",
     Stage: r.currentStage || "-",
-    IssueTime: r.issueTime || "-",
-    ExitTime: r.exitTime || "-",
+    IssueTime: formatDateTime(r.issueTime),
+    ExitTime: formatDateTime(r.exitTime),
     CounterNo: r.counterNo || "-",
     TATLimit: r.tatLimitMinutes || "-",
     TATBreach: r.tatBreachMinutes || "-"
