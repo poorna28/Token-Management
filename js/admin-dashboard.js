@@ -174,7 +174,7 @@ function loadTokenList() {
       applyCardFilter(activeStageFilter || "total");
 
       lastUpdatedAt = new Date().toLocaleTimeString();
-document.getElementById("lastUpdatedTime").textContent = `Last Updated: ${lastUpdatedAt}`;
+      document.getElementById("lastUpdatedTime").textContent = `Last Updated: ${lastUpdatedAt}`;
 
 
     })
@@ -192,6 +192,7 @@ function renderTable(data) {
   table = $("#tokenAdminTable").DataTable({
     data: data,
     autoWidth: false,
+    order: [[1, "asc"]],
     language: {
       search: "",
       searchPlaceholder: "Search by Name, Token, Location, Counter…"
@@ -217,10 +218,23 @@ function renderTable(data) {
                   </div>`;
         }
       },
-      { data: "tokenId", defaultContent: "-" },
-      { data: "locationName",
+      {
+        data: "tokenId",
+        defaultContent: "-",
+        render: function (data, type) {
+
+          if (type === "sort") {
+            return parseInt((data || "").replace(/\D/g, ""), 10) || 0;
+          }
+
+          return data || "-";
+        }
+      },
+      {
+        data: "locationName",
         className: "length-name",
-         defaultContent: "-" },
+        defaultContent: "-"
+      },
       {
         data: "currentStage",
         className: "current-stage-column",
@@ -235,6 +249,8 @@ function renderTable(data) {
             "Delivered": "current-stage-delivered",
             "Cancelled": "current-stage-cancelled",
             "DISPATCHED": "current-stage-delivered",
+            "Bill Cancelled": "current-stage-billing"
+
           };
 
           const cls = map[stage] || "";
@@ -418,7 +434,10 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTokenList();
 
 
-setInterval(loadTokenList, 10 * 60 * 1000);
+    setInterval(() => {
+      console.log("Auto refresh running:", new Date().toLocaleTimeString());
+      loadTokenList();
+    }, 10 * 60 * 1000);
   });
 
   // 3. Date filter — APPLY: re-fetch from API
@@ -440,46 +459,46 @@ setInterval(loadTokenList, 10 * 60 * 1000);
   });
 
   // 4. Date filter — CLEAR: reset to today
-document.getElementById("clearDateFilter").addEventListener("click", () => {
-  document.getElementById("fromDateInput").value = today();
-  document.getElementById("toDateInput").value = today();
+  document.getElementById("clearDateFilter").addEventListener("click", () => {
+    document.getElementById("fromDateInput").value = today();
+    document.getElementById("toDateInput").value = today();
 
-  // Clear DataTable search input
-  if ($.fn.DataTable.isDataTable("#tokenAdminTable")) {
-    const dt = $("#tokenAdminTable").DataTable();
-    dt.search("").draw();
-  }
+    // Clear DataTable search input
+    if ($.fn.DataTable.isDataTable("#tokenAdminTable")) {
+      const dt = $("#tokenAdminTable").DataTable();
+      dt.search("").draw();
+    }
 
-  // Optional: also clear visible search box manually
-  // document.querySelector('input[type="search"]')?.value = "";
+    // Optional: also clear visible search box manually
+    // document.querySelector('input[type="search"]')?.value = "";
 
-  syncURL();
-  loadTokenList();
-});
+    syncURL();
+    loadTokenList();
+  });
 
   // 5. Card clicks — client-side filter over already-fetched data
   document.querySelector(".stat-card.breach")?.classList.remove("active");
-// AFTER — persist the key to state immediately
-document.querySelectorAll(".stat-card").forEach(card => {
-  card.addEventListener("click", function () {
-    document.querySelectorAll(".stat-card").forEach(c => c.classList.remove("active"));
-    this.classList.add("active");
+  // AFTER — persist the key to state immediately
+  document.querySelectorAll(".stat-card").forEach(card => {
+    card.addEventListener("click", function () {
+      document.querySelectorAll(".stat-card").forEach(c => c.classList.remove("active"));
+      this.classList.add("active");
 
-    const cls = this.classList;
-    let key = "total";
-    if (cls.contains("total"))          key = "total";
-    else if (cls.contains("billing"))   key = "billing";
-    else if (cls.contains("picking"))   key = "picking";
-    else if (cls.contains("packing"))   key = "packing";
-    else if (cls.contains("ready"))     key = "ready";
-    else if (cls.contains("delivered")) key = "delivered";
-    else if (cls.contains("cancelled")) key = "cancelled";
-    else if (cls.contains("breach"))    key = "breach";
+      const cls = this.classList;
+      let key = "total";
+      if (cls.contains("total")) key = "total";
+      else if (cls.contains("billing")) key = "billing";
+      else if (cls.contains("picking")) key = "picking";
+      else if (cls.contains("packing")) key = "packing";
+      else if (cls.contains("ready")) key = "ready";
+      else if (cls.contains("delivered")) key = "delivered";
+      else if (cls.contains("cancelled")) key = "cancelled";
+      else if (cls.contains("breach")) key = "breach";
 
-    activeStageFilter = key;   // update state first
-    applyCardFilter(key);
+      activeStageFilter = key;   // update state first
+      applyCardFilter(key);
+    });
   });
-});
 });
 
 
