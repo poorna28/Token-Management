@@ -58,10 +58,11 @@ function setLoader(visible) {
 function normalizeStage(stage) {
   if (!stage) return "-";
 
-  const stageMap = {
-    "Completed": "Delivered",
-    "Cancelled Token": "Cancelled"
-  };
+const stageMap = {
+  "Completed": "Delivered",
+  "Cancelled Token": "Token Cancelled",
+  "Cancelled": "Token Cancelled"
+};
 
   return stageMap[stage] || stage;
 }
@@ -103,9 +104,9 @@ function deriveSummary(data) {
       case "Delivered":
         s.delivered++;
         break;
-      case "Cancelled":
-        s.cancelled++;
-        break;
+  case "Token Cancelled":
+  s.cancelled++;
+  break;
     }
 
     if (row.tatBreachMinutes > row.tatLimitMinutes) {
@@ -249,7 +250,8 @@ function renderTable(data) {
             "Delivered": "current-stage-delivered",
             "Cancelled": "current-stage-cancelled",
             "DISPATCHED": "current-stage-delivered",
-            "Bill Cancelled": "current-stage-billing"
+            "Bill Cancelled": "current-stage-billing",
+              "Token Cancelled": "current-stage-cancelled",
 
           };
 
@@ -300,7 +302,7 @@ function applyCardFilter(filterKey) {
     packing: "Packing In Progress",
     billing: "Billing In Progress",
     delivered: "Delivered",
-    cancelled: "Cancelled"
+    cancelled: "Token Cancelled",
   };
 
   let filtered = [...allTokenData];
