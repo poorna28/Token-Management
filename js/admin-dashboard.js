@@ -437,7 +437,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(() => {
       console.log("Auto refresh running:", new Date().toLocaleTimeString());
       loadTokenList();
-    }, 10 * 60 * 1000);
+    }, 5 * 60 * 1000);
   });
 
   // 3. Date filter — APPLY: re-fetch from API
